@@ -382,6 +382,7 @@ let currentLightboxItem = null;
 let currentPujaRecord = null;
 
 let currentAnnadanamSlot = null;
+let currentAnnadanamDonor = null;
 
 let isAdmin = false;
 
@@ -479,6 +480,8 @@ async function checkAdminSession() {
 function setAdminState(value) {
 
   isAdmin = value === true;
+
+  document.body.classList.toggle("admin-mode", isAdmin);
 
   const toolbar =
     document.getElementById(
@@ -1133,34 +1136,53 @@ function initSlideshow() {
 
   startSlideshowTimer();
 
-  const slideshow = document.querySelector(".slideshow");
-  if (slideshow) {
-    slideshow.onmouseenter = () => clearInterval(slideshowTimer);
-    slideshow.onmouseleave = () => startSlideshowTimer();
-    slideshow.ontouchstart = () => clearInterval(slideshowTimer);
-    slideshow.ontouchend = () => { clearInterval(slideshowTimer); startSlideshowTimer(); };
-  }
 }
 
 
-function showSlide(index, direction = "next") {
-  const slides = document.querySelectorAll(".slide");
-  const dots = document.querySelectorAll(".dot");
+function showSlide(index) {
+
+  const slides =
+    document.querySelectorAll(".slide");
+
+  const dots =
+    document.querySelectorAll(".dot");
+
   if (!slides.length) return;
 
   const previousIndex = currentSlideIndex;
-  currentSlideIndex = (index + slides.length) % slides.length;
+  const nextIndex = (index + slides.length) % slides.length;
+  const direction = nextIndex >= previousIndex ? "next" : "prev";
 
-  slides.forEach((slide, i) => {
-    slide.classList.remove("active", "slide-enter-next", "slide-enter-prev", "slide-leave-next", "slide-leave-prev");
-    if (i === currentSlideIndex) {
-      slide.classList.add("active", direction === "prev" ? "slide-enter-prev" : "slide-enter-next");
-    } else if (i === previousIndex) {
-      slide.classList.add(direction === "prev" ? "slide-leave-next" : "slide-leave-prev");
-    }
+  if (nextIndex === previousIndex) {
+    slides[previousIndex]?.classList.add("active");
+    return;
+  }
+
+  const current = slides[previousIndex];
+  const incoming = slides[nextIndex];
+
+  current?.classList.remove("is-entering-next", "is-entering-prev");
+  incoming?.classList.remove("is-leaving-next", "is-leaving-prev");
+
+  current?.classList.add(direction === "next" ? "is-leaving-next" : "is-leaving-prev");
+  incoming?.classList.add(direction === "next" ? "is-entering-next" : "is-entering-prev");
+
+  /* Force the initial state before activating the incoming slide. */
+  void incoming?.offsetWidth;
+
+  currentSlideIndex = nextIndex;
+  incoming?.classList.add("active");
+  current?.classList.remove("active");
+
+  window.setTimeout(() => {
+    current?.classList.remove("is-leaving-next", "is-leaving-prev");
+    incoming?.classList.remove("is-entering-next", "is-entering-prev");
+  }, 1100);
+
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === currentSlideIndex);
   });
 
-  dots.forEach((dot, i) => dot.classList.toggle("active", i === currentSlideIndex));
 }
 
 
@@ -2980,6 +3002,14 @@ window.saveSlotDetails =
 
     event.preventDefault();
 
+    /* Existing records may only be modified by an administrator.
+       Empty currentPujaRecord means this is a new public booking. */
+    if (currentPujaRecord?.id && !isAdmin) {
+      showToast("Only the festival administrator can update Puja slots.", "error");
+      closeSlotModal();
+      return;
+    }
+
 
     const date =
       document
@@ -3402,23 +3432,31 @@ function renderAnnadanamTable() {
 
 
         const action =
-          `
-            <button
-              class="btn-slot-action btn-slot-book"
-              onclick="openAnnadanamModal('${group.slotNumber}')">
-
-              <span
-                class="material-symbols-outlined"
-                style="font-size:14px">
-
-                volunteer_activism
-
-              </span>
-
-              Support
-
-            </button>
-          `;
+          isAdmin && group.donors.length
+            ? group.donors.map(donor => `
+                <span class="admin-annadanam-actions">
+                  <button
+                    class="btn-slot-action btn-slot-edit admin-only-control"
+                    onclick="openAnnadanamEdit('${donor.id}')">
+                    <span class="material-symbols-outlined" style="font-size:14px">edit</span>
+                    Update
+                  </button>
+                  <button
+                    class="btn-slot-action btn-danger-outline admin-only-control"
+                    onclick="deleteAnnadanamDonor('${donor.id}')">
+                    <span class="material-symbols-outlined" style="font-size:14px">delete</span>
+                    Remove
+                  </button>
+                </span>
+              `).join("")
+            : `
+                <button
+                  class="btn-slot-action btn-slot-book"
+                  onclick="openAnnadanamModal('${group.slotNumber}')">
+                  <span class="material-symbols-outlined" style="font-size:14px">volunteer_activism</span>
+                  Support
+                </button>
+              `;
 
 
         return `
@@ -3507,6 +3545,7 @@ window.openAnnadanamModal =
     slotNumber
   ) {
 
+    currentAnnadanamDonor = null;
     currentAnnadanamSlot =
       Number(slotNumber);
 
@@ -3517,6 +3556,9 @@ window.openAnnadanamModal =
       )
       .value =
       String(slotNumber);
+
+    const heading = document.querySelector("#annadanamModal .modal-heading h3");
+    if (heading) heading.textContent = "Support Annadanam";
 
 
     document
@@ -3546,6 +3588,63 @@ window.openAnnadanamModal =
       )
     );
 
+  };
+
+
+window.openAnnadanamEdit =
+  function (id) {
+
+    if (!isAdmin) {
+      showToast("Only the festival administrator can update Annadanam entries.", "error");
+      openAdminLoginModal();
+      return;
+    }
+
+    const donor = annadanamDonors.find(item => item.id === id);
+    if (!donor) return;
+
+    currentAnnadanamDonor = donor;
+    currentAnnadanamSlot = Number(donor.annadanam_slots?.slot_number || 1);
+
+    document.getElementById("annadanamSlotIdInput").value = String(currentAnnadanamSlot);
+    document.getElementById("annadanamFlatInput").value = donor.flat_number || "";
+    document.getElementById("annadanamDonorInput").value = donor.family_name || "";
+    document.getElementById("annadanamNotesInput").value = donor.notes || "";
+
+    const heading = document.querySelector("#annadanamModal .modal-heading h3");
+    if (heading) heading.textContent = "Update Annadanam Support";
+
+    openModal(document.getElementById("annadanamModal"));
+  };
+
+
+window.deleteAnnadanamDonor =
+  async function (id) {
+
+    if (!isAdmin) {
+      showToast("Only the festival administrator can remove Annadanam entries.", "error");
+      return;
+    }
+
+    const donor = annadanamDonors.find(item => item.id === id);
+    if (!donor) return;
+
+    if (!confirm(`Remove ${donor.family_name || "this sponsor"} from Annadanam?`)) return;
+
+    try {
+      const { error } = await supabaseClient
+        .from("annadanam_donors")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      await loadAnnadanamDonors();
+      showToast("Annadanam entry removed.", "info");
+    } catch (error) {
+      console.error(error);
+      showToast(error.message || "Unable to remove Annadanam entry.", "error");
+    }
   };
 
 
@@ -3643,46 +3742,45 @@ window.saveAnnadanamSponsorship =
       }
 
 
-      const {
-        error
-      } =
-        await supabaseClient
+      let error;
 
-          .from(
-            "annadanam_donors"
-          )
+      if (currentAnnadanamDonor?.id) {
+        if (!isAdmin) {
+          showToast("Only the festival administrator can update Annadanam entries.", "error");
+          return;
+        }
 
+        ({ error } = await supabaseClient
+          .from("annadanam_donors")
+          .update({
+            flat_number: flat,
+            family_name: donor,
+            notes: notes || null
+          })
+          .eq("id", currentAnnadanamDonor.id));
+      } else {
+        ({ error } = await supabaseClient
+          .from("annadanam_donors")
           .insert({
-
-            slot_id:
-              slot.id,
-
-            flat_number:
-              flat,
-
-            family_name:
-              donor,
-
-            notes:
-              notes || null
-
-          });
-
-
-      if (error) {
-
-        throw error;
-
+            slot_id: slot.id,
+            flat_number: flat,
+            family_name: donor,
+            notes: notes || null
+          }));
       }
 
+      if (error) throw error;
 
       closeAnnadanamModal();
-
       await loadAnnadanamDonors();
 
       showToast(
-        "Annadanam support registered successfully."
+        currentAnnadanamDonor?.id
+          ? "Annadanam entry updated successfully."
+          : "Annadanam support registered successfully."
       );
+
+      currentAnnadanamDonor = null;
 
     }
     catch (error) {
@@ -3709,8 +3807,11 @@ window.closeAnnadanamModal =
       )
     );
 
-    currentAnnadanamSlot =
-      null;
+    currentAnnadanamSlot = null;
+    currentAnnadanamDonor = null;
+
+    const heading = document.querySelector("#annadanamModal .modal-heading h3");
+    if (heading) heading.textContent = "Support Annadanam";
 
   };
 
