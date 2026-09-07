@@ -1,3 +1,4 @@
+/* Vinayaka Festival 2026 — final synchronized Supabase-powered script. */
 /* =========================================================
    VINAYAKA FESTIVAL 2026
    Gowtham Sai Elite Towers
@@ -46,7 +47,7 @@ const festivalConfig = {
 
   durationText: "6 Auspicious Days",
 
-  mandapLocation: "Ground Floor",
+  mandapLocation: "Clubhouse Central Mandapam",
 
   idolDonor: {
     name: "Praveen & Family",
@@ -128,7 +129,7 @@ const scheduleData = [
 
     time: "10:00 AM – 12:30 PM • Aarti 07:30 PM",
 
-    location: "Ground Floor",
+    location: "Central Clubhouse Mandapam",
 
     description:
       "Ceremonial 7ft eco-clay idol installation followed by Vedic chanting, Panchamrutha Abhishekam and evening Maha Aarti.",
@@ -151,7 +152,7 @@ const scheduleData = [
 
     time: "07:30 PM",
 
-    location: "Ground Floor",
+    location: "Central Clubhouse Mandapam",
 
     description:
       "Daily family sankalpam, Ganapati Puja and community Maha Aarti.",
@@ -174,7 +175,7 @@ const scheduleData = [
 
     time: "07:30 PM",
 
-    location: "Ground Floor",
+    location: "Central Clubhouse Mandapam",
 
     description:
       "Sacred Ganapathi Homam followed by family sankalpam and Maha Aarti.",
@@ -197,7 +198,7 @@ const scheduleData = [
 
     time: "07:30 PM",
 
-    location: "Ground Floor",
+    location: "Central Clubhouse Mandapam",
 
     description:
       "Family Gotra Archana and community Maha Aarti.",
@@ -220,7 +221,7 @@ const scheduleData = [
 
     time: "05:00 PM – 07:30 PM",
 
-    location: "Ground Floor",
+    location: "Ground Floor Multi-Purpose Hall",
 
     description:
       "Children's clay Ganesha art, Rangoli, Sloka and Bhajan Sandhya followed by Maha Aarti.",
@@ -243,7 +244,7 @@ const scheduleData = [
 
     time: "10:00 AM – 12:30 PM",
 
-    location: "Ground Floor",
+    location: "Clubhouse Central Mandapam",
 
     description:
       "Maha Purnahuti, Kalasa Udvasana and Rajopachara Puja.",
@@ -266,7 +267,7 @@ const scheduleData = [
 
     time: "12:30 PM – 03:30 PM",
 
-    location: "Ground Floor",
+    location: "Central Banquet Lawn & Dining Tent",
 
     description:
       "Traditional Satvik community feast by Mohan Rao, Flat 102, for residents, staff, security and devotees.",
@@ -289,7 +290,7 @@ const scheduleData = [
 
     time: "04:00 PM Onwards",
 
-    location: "Ground Floor",
+    location: "Festival Mandapam & Procession Route",
 
     description:
       "Sacred procession and eco-friendly Ganesha immersion ceremony.",
@@ -382,7 +383,6 @@ let currentLightboxItem = null;
 let currentPujaRecord = null;
 
 let currentAnnadanamSlot = null;
-let currentAnnadanamDonor = null;
 
 let isAdmin = false;
 
@@ -402,7 +402,6 @@ document.addEventListener(
     setupScrollSpy();
 
     setupModalAccessibility();
-    setupFestivalEffects();
 
     renderSchedule();
 
@@ -481,8 +480,6 @@ async function checkAdminSession() {
 function setAdminState(value) {
 
   isAdmin = value === true;
-
-  document.body.classList.toggle("admin-mode", isAdmin);
 
   const toolbar =
     document.getElementById(
@@ -1004,59 +1001,10 @@ function initSlideshow() {
         }`;
 
       slideDiv.innerHTML = `
-
         <img
           src="${escapeHtml(slide.image)}"
-          alt="${escapeHtml(slide.title)}"
-          loading="${
-            index === 0
-              ? "eager"
-              : "lazy"
-          }">
-
-        <div class="slide-overlay">
-
-          <div>
-
-            <span class="slide-caption-tag">
-              ${escapeHtml(
-                slide.tag ||
-                "Vinayaka Mahotsav 2026"
-              )}
-            </span>
-
-            <h2 class="slide-title">
-              ${escapeHtml(
-                slide.title
-              )}
-            </h2>
-
-          </div>
-
-          <a
-            href="${escapeHtml(
-              slide.ctaLink ||
-              "#schedule"
-            )}"
-            class="btn-primary-action">
-
-            ${escapeHtml(
-              slide.ctaText ||
-              "Explore"
-            )}
-
-            <span
-              class="material-symbols-outlined"
-              style="font-size:16px">
-
-              arrow_forward
-
-            </span>
-
-          </a>
-
-        </div>
-
+          alt="${escapeHtml(slide.title || "Festival highlight")}"
+          loading="${index === 0 ? "eager" : "lazy"}">
       `;
 
       track.appendChild(
@@ -1143,46 +1091,46 @@ function initSlideshow() {
 function showSlide(index) {
 
   const slides =
-    document.querySelectorAll(".slide");
+    document.querySelectorAll(
+      ".slide"
+    );
 
   const dots =
-    document.querySelectorAll(".dot");
+    document.querySelectorAll(
+      ".dot"
+    );
 
-  if (!slides.length) return;
+  if (!slides.length) {
 
-  const previousIndex = currentSlideIndex;
-  const nextIndex = (index + slides.length) % slides.length;
-  const direction = nextIndex >= previousIndex ? "next" : "prev";
-
-  if (nextIndex === previousIndex) {
-    slides[previousIndex]?.classList.add("active");
     return;
+
   }
 
-  const current = slides[previousIndex];
-  const incoming = slides[nextIndex];
+  currentSlideIndex =
+    (index + slides.length) %
+    slides.length;
 
-  current?.classList.remove("is-entering-next", "is-entering-prev");
-  incoming?.classList.remove("is-leaving-next", "is-leaving-prev");
+  slides.forEach(
+    (slide, i) => {
 
-  current?.classList.add(direction === "next" ? "is-leaving-next" : "is-leaving-prev");
-  incoming?.classList.add(direction === "next" ? "is-entering-next" : "is-entering-prev");
+      slide.classList.toggle(
+        "active",
+        i === currentSlideIndex
+      );
 
-  /* Force the initial state before activating the incoming slide. */
-  void incoming?.offsetWidth;
+    }
+  );
 
-  currentSlideIndex = nextIndex;
-  incoming?.classList.add("active");
-  current?.classList.remove("active");
+  dots.forEach(
+    (dot, i) => {
 
-  window.setTimeout(() => {
-    current?.classList.remove("is-leaving-next", "is-leaving-prev");
-    incoming?.classList.remove("is-entering-next", "is-entering-prev");
-  }, 1100);
+      dot.classList.toggle(
+        "active",
+        i === currentSlideIndex
+      );
 
-  dots.forEach((dot, i) => {
-    dot.classList.toggle("active", i === currentSlideIndex);
-  });
+    }
+  );
 
 }
 
@@ -1374,50 +1322,12 @@ window.handleCarouselSlideUpload =
         )
         .files[0];
 
-    const title =
-      document
-        .getElementById(
-          "carouselTitleInput"
-        )
-        .value
-        .trim();
-
-    const tag =
-      document
-        .getElementById(
-          "carouselTagInput"
-        )
-        .value
-        .trim();
-
-    const ctaText =
-      document
-        .getElementById(
-          "carouselCtaTextInput"
-        )
-        .value
-        .trim() ||
-      "Explore Schedule";
-
-    const ctaLink =
-      document
-        .getElementById(
-          "carouselCtaLinkInput"
-        )
-        .value
-        .trim() ||
-      "#schedule";
-
-
-    if (!file || !title) {
-
+    if (!file) {
       showToast(
-        "Please select an image and enter a title.",
+        "Please select a carousel image.",
         "info"
       );
-
       return;
-
     }
 
 
@@ -1477,15 +1387,14 @@ window.handleCarouselSlideUpload =
             storage_path:
               uploaded.storagePath,
 
-            title,
+            title:
+              file.name || "Festival highlight",
 
-            tag,
+            tag: null,
 
-            cta_text:
-              ctaText,
+            cta_text: null,
 
-            cta_link:
-              ctaLink,
+            cta_link: null,
 
             sort_order:
               nextOrder,
@@ -2770,30 +2679,21 @@ function renderPujaTable() {
 
             <td>
 
-              ${
-                isAdmin
-                  ? `
-                    <button
-                      class="btn-slot-action btn-slot-book"
-                      onclick="openPujaBooking('${row.day.date}',${row.slotNumber})">
+              <button
+                class="btn-slot-action btn-slot-book"
+                onclick="openPujaBooking('${row.day.date}',${row.slotNumber})">
 
-                      <span
-                        class="material-symbols-outlined"
-                        style="font-size:14px">
-                        add_circle
-                      </span>
+                <span
+                  class="material-symbols-outlined"
+                  style="font-size:14px">
 
-                      Add Booking
-                    </button>
-                  `
-                  : `
-                    <span
-                      class="badge-vacant admin-managed-badge"
-                      title="Only the festival administrator can manage Puja bookings">
-                      Admin Managed
-                    </span>
-                  `
-              }
+                  add_circle
+
+                </span>
+
+                Book Slot
+
+              </button>
 
             </td>
 
@@ -2812,14 +2712,6 @@ window.openPujaBooking =
     date,
     slotNumber
   ) {
-
-    if (!isAdmin) {
-      showToast(
-        "Only the festival administrator can add Puja bookings.",
-        "error"
-      );
-      return;
-    }
 
     currentPujaRecord =
       null;
@@ -3019,14 +2911,6 @@ window.saveSlotDetails =
   async function (event) {
 
     event.preventDefault();
-
-    /* Existing records may only be modified by an administrator.
-       Empty currentPujaRecord means this is a new public booking. */
-    if (currentPujaRecord?.id && !isAdmin) {
-      showToast("Only the festival administrator can update Puja slots.", "error");
-      closeSlotModal();
-      return;
-    }
 
 
     const date =
@@ -3450,39 +3334,23 @@ function renderAnnadanamTable() {
 
 
         const action =
-          isAdmin
-            ? (group.donors.length
-                ? group.donors.map(donor => `
-                    <span class="admin-annadanam-actions">
-                      <button
-                        class="btn-slot-action btn-slot-edit admin-only-control"
-                        onclick="openAnnadanamEdit('${donor.id}')">
-                        <span class="material-symbols-outlined" style="font-size:14px">edit</span>
-                        Update
-                      </button>
-                      <button
-                        class="btn-slot-action btn-danger-outline admin-only-control"
-                        onclick="deleteAnnadanamDonor('${donor.id}')">
-                        <span class="material-symbols-outlined" style="font-size:14px">delete</span>
-                        Remove
-                      </button>
-                    </span>
-                  `).join("")
-                : `
-                    <button
-                      class="btn-slot-action btn-slot-book"
-                      onclick="openAnnadanamModal('${group.slotNumber}')">
-                      <span class="material-symbols-outlined" style="font-size:14px">volunteer_activism</span>
-                      Add Donor
-                    </button>
-                  `)
-            : `
-                <span
-                  class="badge-vacant admin-managed-badge"
-                  title="Only the festival administrator can manage Annadanam">
-                  Admin Managed
-                </span>
-              `;
+          `
+            <button
+              class="btn-slot-action btn-slot-book"
+              onclick="openAnnadanamModal('${group.slotNumber}')">
+
+              <span
+                class="material-symbols-outlined"
+                style="font-size:14px">
+
+                volunteer_activism
+
+              </span>
+
+              Support
+
+            </button>
+          `;
 
 
         return `
@@ -3571,15 +3439,6 @@ window.openAnnadanamModal =
     slotNumber
   ) {
 
-    if (!isAdmin) {
-      showToast(
-        "Only the festival administrator can add Annadanam donors.",
-        "error"
-      );
-      return;
-    }
-
-    currentAnnadanamDonor = null;
     currentAnnadanamSlot =
       Number(slotNumber);
 
@@ -3590,9 +3449,6 @@ window.openAnnadanamModal =
       )
       .value =
       String(slotNumber);
-
-    const heading = document.querySelector("#annadanamModal .modal-heading h3");
-    if (heading) heading.textContent = "Support Annadanam";
 
 
     document
@@ -3625,75 +3481,11 @@ window.openAnnadanamModal =
   };
 
 
-window.openAnnadanamEdit =
-  function (id) {
-
-    if (!isAdmin) {
-      showToast("Only the festival administrator can update Annadanam entries.", "error");
-      openAdminLoginModal();
-      return;
-    }
-
-    const donor = annadanamDonors.find(item => item.id === id);
-    if (!donor) return;
-
-    currentAnnadanamDonor = donor;
-    currentAnnadanamSlot = Number(donor.annadanam_slots?.slot_number || 1);
-
-    document.getElementById("annadanamSlotIdInput").value = String(currentAnnadanamSlot);
-    document.getElementById("annadanamFlatInput").value = donor.flat_number || "";
-    document.getElementById("annadanamDonorInput").value = donor.family_name || "";
-    document.getElementById("annadanamNotesInput").value = donor.notes || "";
-
-    const heading = document.querySelector("#annadanamModal .modal-heading h3");
-    if (heading) heading.textContent = "Update Annadanam Support";
-
-    openModal(document.getElementById("annadanamModal"));
-  };
-
-
-window.deleteAnnadanamDonor =
-  async function (id) {
-
-    if (!isAdmin) {
-      showToast("Only the festival administrator can remove Annadanam entries.", "error");
-      return;
-    }
-
-    const donor = annadanamDonors.find(item => item.id === id);
-    if (!donor) return;
-
-    if (!confirm(`Remove ${donor.family_name || "this sponsor"} from Annadanam?`)) return;
-
-    try {
-      const { error } = await supabaseClient
-        .from("annadanam_donors")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-
-      await loadAnnadanamDonors();
-      showToast("Annadanam entry removed.", "info");
-    } catch (error) {
-      console.error(error);
-      showToast(error.message || "Unable to remove Annadanam entry.", "error");
-    }
-  };
-
-
 window.saveAnnadanamSponsorship =
   async function (event) {
 
     event.preventDefault();
 
-    if (!isAdmin || !currentUser) {
-      showToast(
-        "Only the festival administrator can add Annadanam donors.",
-        "error"
-      );
-      return;
-    }
 
     const slotNumber =
       Number(
@@ -3783,45 +3575,46 @@ window.saveAnnadanamSponsorship =
       }
 
 
-      let error;
+      const {
+        error
+      } =
+        await supabaseClient
 
-      if (currentAnnadanamDonor?.id) {
-        if (!isAdmin) {
-          showToast("Only the festival administrator can update Annadanam entries.", "error");
-          return;
-        }
+          .from(
+            "annadanam_donors"
+          )
 
-        ({ error } = await supabaseClient
-          .from("annadanam_donors")
-          .update({
-            flat_number: flat,
-            family_name: donor,
-            notes: notes || null
-          })
-          .eq("id", currentAnnadanamDonor.id));
-      } else {
-        ({ error } = await supabaseClient
-          .from("annadanam_donors")
           .insert({
-            slot_id: slot.id,
-            flat_number: flat,
-            family_name: donor,
-            notes: notes || null
-          }));
+
+            slot_id:
+              slot.id,
+
+            flat_number:
+              flat,
+
+            family_name:
+              donor,
+
+            notes:
+              notes || null
+
+          });
+
+
+      if (error) {
+
+        throw error;
+
       }
 
-      if (error) throw error;
 
       closeAnnadanamModal();
+
       await loadAnnadanamDonors();
 
       showToast(
-        currentAnnadanamDonor?.id
-          ? "Annadanam entry updated successfully."
-          : "Annadanam support registered successfully."
+        "Annadanam support registered successfully."
       );
-
-      currentAnnadanamDonor = null;
 
     }
     catch (error) {
@@ -3848,11 +3641,8 @@ window.closeAnnadanamModal =
       )
     );
 
-    currentAnnadanamSlot = null;
-    currentAnnadanamDonor = null;
-
-    const heading = document.querySelector("#annadanamModal .modal-heading h3");
-    if (heading) heading.textContent = "Support Annadanam";
+    currentAnnadanamSlot =
+      null;
 
   };
 
@@ -4349,118 +4139,6 @@ function setupModalAccessibility() {
 
 
 /* =========================================================
-   FESTIVAL EFFECTS
-   Temple bell + flower shower
-   ========================================================= */
-
-function setupFestivalEffects() {
-  const bell = document.getElementById("templeBellBtn");
-  const flowers = document.getElementById("flowerBtn");
-
-  if (bell) {
-    bell.addEventListener("click", ringTempleBell);
-  }
-
-  if (flowers) {
-    flowers.addEventListener("click", scatterFlowers);
-  }
-}
-
-function ringTempleBell() {
-  const button = document.getElementById("templeBellBtn");
-  if (button) {
-    button.classList.remove("bell-ringing");
-    void button.offsetWidth;
-    button.classList.add("bell-ringing");
-  }
-
-  try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) throw new Error("Web Audio API unavailable");
-
-    const ctx = new AudioContext();
-    const now = ctx.currentTime;
-
-    const master = ctx.createGain();
-    master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(0.34, now + 0.015);
-    master.gain.exponentialRampToValueAtTime(0.0001, now + 3.1);
-    master.connect(ctx.destination);
-
-    const partials = [
-      [392.00, 0.22],
-      [523.25, 0.16],
-      [659.25, 0.12],
-      [783.99, 0.08]
-    ];
-
-    partials.forEach(([frequency, volume], index) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = index === 0 ? "sine" : "triangle";
-      osc.frequency.setValueAtTime(frequency, now);
-      osc.frequency.exponentialRampToValueAtTime(
-        frequency * 0.985,
-        now + 2.8
-      );
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(volume, now + 0.012);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
-
-      osc.connect(gain);
-      gain.connect(master);
-
-      osc.start(now);
-      osc.stop(now + 3.0);
-    });
-
-    setTimeout(() => {
-      try { ctx.close(); } catch (_) {}
-    }, 3400);
-  }
-  catch (error) {
-    console.warn("Temple bell audio unavailable:", error);
-    showToast("Temple bell effect played.", "info");
-  }
-}
-
-function scatterFlowers() {
-  const layer = document.createElement("div");
-  layer.className = "flower-shower-layer";
-  layer.setAttribute("aria-hidden", "true");
-  document.body.appendChild(layer);
-
-  const flowers = ["🌸", "🌺", "🌼", "🪷", "🌻", "💮"];
-  const count = window.innerWidth < 600 ? 28 : 48;
-
-  for (let i = 0; i < count; i++) {
-    const petal = document.createElement("span");
-    petal.className = "falling-flower";
-    petal.textContent = flowers[Math.floor(Math.random() * flowers.length)];
-
-    const startX = Math.random() * 100;
-    const drift = (Math.random() - 0.5) * 260;
-    const size = 16 + Math.random() * 18;
-    const duration = 2.6 + Math.random() * 2.4;
-    const delay = Math.random() * 0.65;
-    const rotation = Math.random() * 360;
-
-    petal.style.left = `${startX}vw`;
-    petal.style.fontSize = `${size}px`;
-    petal.style.animationDuration = `${duration}s`;
-    petal.style.animationDelay = `${delay}s`;
-    petal.style.setProperty("--drift", `${drift}px`);
-    petal.style.setProperty("--rotation", `${rotation}deg`);
-
-    layer.appendChild(petal);
-  }
-
-  setTimeout(() => layer.remove(), 5800);
-}
-
-/* =========================================================
    UTILITIES
    ========================================================= */
 
@@ -4611,4 +4289,150 @@ supabaseClient.auth.onAuthStateChange(
     }
 
   }
-);
+);/* =========================================================
+   FESTIVAL EFFECTS
+   ========================================================= */
+
+window.ringTempleBell = function () {
+  const button = document.getElementById("templeBellBtn");
+  if (!button) return;
+  button.classList.remove("bell-ringing");
+  void button.offsetWidth;
+  button.classList.add("bell-ringing");
+  setTimeout(() => button.classList.remove("bell-ringing"), 850);
+
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(540, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 1.1);
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.15);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 1.2);
+      osc.addEventListener("ended", () => ctx.close());
+    }
+  } catch (_) {}
+};
+
+window.scatterFlowers = function () {
+  let layer = document.querySelector(".flower-shower-layer");
+  if (!layer) {
+    layer = document.createElement("div");
+    layer.className = "flower-shower-layer";
+    layer.setAttribute("aria-hidden", "true");
+    document.body.appendChild(layer);
+  }
+  const flowers = ["🌸", "🌼", "🌺", "🪷", "🌻"];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement("span");
+    el.className = "falling-flower";
+    el.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+    el.style.left = `${Math.random() * 100}vw`;
+    el.style.fontSize = `${16 + Math.random() * 18}px`;
+    el.style.animationDuration = `${2.8 + Math.random() * 2.6}s`;
+    el.style.animationDelay = `${Math.random() * 0.7}s`;
+    el.style.setProperty("--drift", `${-120 + Math.random() * 240}px`);
+    el.style.setProperty("--rotation", `${Math.random() * 360}deg`);
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), 6500);
+  }
+};
+
+/* =========================================================
+   PLAYFUL WANDERING RAT
+   Moves around the visible page, pauses, looks toward the visitor,
+   then continues wandering.
+   ========================================================= */
+function setupFestivalRat() {
+  if (document.getElementById("festivalRat")) return;
+
+  const rat = document.createElement("div");
+  rat.id = "festivalRat";
+  rat.className = "festival-rat";
+  rat.setAttribute("aria-hidden", "true");
+  rat.innerHTML = '<span class="rat-body">🐀</span><span class="rat-sparkle">✦</span>';
+  document.body.appendChild(rat);
+
+  let pointerX = window.innerWidth * 0.55;
+  let pointerY = window.innerHeight * 0.55;
+  let x = Math.max(30, window.innerWidth * 0.08);
+  let y = Math.max(100, window.scrollY + window.innerHeight * 0.18);
+  let targetX = x;
+  let targetY = y;
+  let lastTime = performance.now();
+  let state = "moving";
+  let stateUntil = lastTime + 2600;
+  let facing = 1;
+
+  document.addEventListener("pointermove", e => {
+    pointerX = e.clientX;
+    pointerY = e.clientY + window.scrollY;
+  }, { passive: true });
+
+  function chooseTarget() {
+    const margin = 40;
+    const top = window.scrollY + Math.max(90, margin);
+    const bottom = window.scrollY + window.innerHeight - margin;
+    const left = margin;
+    const right = window.innerWidth - margin;
+    const side = Math.floor(Math.random() * 4);
+    if (side === 0) { targetX = left; targetY = top + Math.random() * Math.max(10, bottom - top); }
+    if (side === 1) { targetX = right; targetY = top + Math.random() * Math.max(10, bottom - top); }
+    if (side === 2) { targetX = left + Math.random() * Math.max(10, right - left); targetY = top; }
+    if (side === 3) { targetX = left + Math.random() * Math.max(10, right - left); targetY = bottom; }
+  }
+
+  chooseTarget();
+
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+
+    if (state === "moving") {
+      const dx = targetX - x;
+      const dy = targetY - y;
+      const distance = Math.hypot(dx, dy);
+      if (distance < 10) {
+        state = "watching";
+        stateUntil = now + 1300 + Math.random() * 1300;
+        rat.classList.add("rat-watching");
+      } else {
+        const speed = Math.min(210, 90 + distance * 0.16);
+        x += (dx / distance) * speed * dt;
+        y += (dy / distance) * speed * dt;
+        if (Math.abs(dx) > 5) facing = dx >= 0 ? 1 : -1;
+      }
+    } else if (state === "watching") {
+      const dx = pointerX - x;
+      if (Math.abs(dx) > 8) facing = dx >= 0 ? 1 : -1;
+      if (now >= stateUntil) {
+        state = "moving";
+        rat.classList.remove("rat-watching");
+        chooseTarget();
+      }
+    }
+
+    const bob = state === "moving" ? Math.sin(now / 115) * 2 : 0;
+    rat.style.transform = `translate3d(${x - 27}px, ${y - window.scrollY - 27 + bob}px, 0) scaleX(${facing})`;
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+
+  window.addEventListener("resize", () => {
+    x = Math.min(x, window.innerWidth - 35);
+    targetX = Math.min(targetX, window.innerWidth - 35);
+  }, { passive: true });
+}
+
+
+
+
+document.addEventListener("DOMContentLoaded", setupFestivalRat);
