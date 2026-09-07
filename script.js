@@ -1,1736 +1,1871 @@
-/*
- * ============================================================
- * VINAYAKA FESTIVAL 2026
- * GOWTHAM SAI ELITE TOWERS
- *
- * Supabase-powered version
- *
- * IMPORTANT:
- * Replace:
- *
- * YOUR_SUPABASE_PROJECT_URL
- * YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY
- *
- * with your actual Supabase values.
- *
- * NEVER put the Supabase SERVICE_ROLE key here.
- * ============================================================
- */
+/* =========================================================
+   VINAYAKA FESTIVAL 2026
+   Gowtham Sai Elite Towers
+
+   Supabase-powered version
+
+   IMPORTANT:
+   Replace the two values below with:
+
+   SUPABASE_URL
+   SUPABASE_PUBLISHABLE_OR_ANON_KEY
+
+   NEVER put service_role/secret key here.
+   ========================================================= */
 
 
-/* ============================================================
+/* =========================================================
    SUPABASE CONFIGURATION
-============================================================ */
+   ========================================================= */
 
-const SUPABASE_URL =
-  "https://pezibfmuogaorcyyhqaj.supabase.co";
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
 
 const SUPABASE_ANON_KEY =
-  "sb_publishable_70bx8FZ74U7Cm1ykDNF-CQ_92f145Bz";
+  "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-let supabaseClient = null;
+/* =========================================================
+   FESTIVAL CONFIGURATION
+   ========================================================= */
 
-let currentUser = null;
-let isAdmin = false;
+const festivalConfig = {
 
-let pujaSlots = [];
-let annadanamSlots = [];
-let annadanamDonors = [];
-let galleryItems = [];
+  title: "Vinayaka Festival 2026",
 
-let currentGalleryIndex = -1;
+  societyName: "Gowtham Sai Elite Towers",
+
+  association: "Residents Welfare Association",
+
+  dates: "14th September – 19th September 2026",
+
+  durationText: "6 Auspicious Days",
+
+  mandapLocation: "Clubhouse Central Mandapam",
+
+  idolDonor: {
+    name: "Praveen & Family",
+    flat: "201"
+  },
+
+  annadanamHost: {
+    name: "Mohan Rao",
+    flat: "102",
+    date: "2026-09-19"
+  }
+
+};
 
 
-/* ============================================================
-   FESTIVAL DATA
-============================================================ */
+/* =========================================================
+   DEFAULT HERO SLIDES
+   Used only when Supabase has no carousel records.
+   ========================================================= */
 
-const scheduleData = [
+const DEFAULT_HERO_SLIDES = [
 
   {
-    day: "Day 01",
-    date: "14 Sept 2026",
-    type: "Puja",
-    title: "Ganpati Sthapana & Kalasa Puja",
-    time: "10:00 AM – 12:30 PM",
-    location: "Clubhouse Central Mandapam",
-    description:
-      "Prana Pratishtha, Vedic chanting, Panchamrutha Abhishekam and evening Maha Aarti.",
-    category: ["puja", "special"]
+    image: "/images/eco_clay_ganesha.jpg",
+
+    tag: "Sacred Idol • Flat 201",
+
+    title: "Eco-Friendly 7ft Clay Ganesha Murti",
+
+    ctaText: "Explore Puja Slots",
+
+    ctaLink: "#puja-annadanam"
   },
 
   {
-    day: "Day 02",
-    date: "15 Sept 2026",
-    type: "Puja",
-    title: "Daily Puja & Evening Maha Aarti",
-    time: "07:30 PM",
-    location: "Central Lawn Mandapam",
-    description:
-      "Daily family sankalpam followed by community Maha Aarti.",
-    category: ["puja"]
+    image: "/images/maha_annadanam_feast.jpg",
+
+    tag: "Saturday, 19 Sept • Flat 102",
+
+    title: "Grand Maha Annadanam Community Feast",
+
+    ctaText: "View Annadanam",
+
+    ctaLink: "#puja-annadanam"
   },
 
   {
-    day: "Day 03",
-    date: "16 Sept 2026",
-    type: "Puja",
-    title: "Ganapathi Homam & Aarti",
-    time: "07:30 PM",
-    location: "Central Lawn Mandapam",
-    description:
-      "Devotional homam and evening Maha Aarti for residents.",
-    category: ["puja"]
-  },
+    image:
+      "https://images.unsplash.com/photo-1604608672516-f1b9c0e1c7c0?auto=format&fit=crop&w=1400&q=85",
 
-  {
-    day: "Day 04",
-    date: "17 Sept 2026",
-    type: "Puja",
-    title: "Gotra Archana & Evening Aarti",
-    time: "07:30 PM",
-    location: "Central Lawn Mandapam",
-    description:
-      "Family Gotra Archana followed by community Maha Aarti.",
-    category: ["puja"]
-  },
+    tag: "Every Evening • 07:30 PM",
 
-  {
-    day: "Day 05",
-    date: "18 Sept 2026",
-    type: "Cultural",
-    title: "Children's Sloka, Rangoli & Art Fair",
-    time: "05:00 PM – 07:30 PM",
-    location: "Multi-Purpose Hall",
-    description:
-      "Children's activities, Rangoli, clay Ganesha art and Bhajan Sandhya.",
-    category: ["cultural", "puja"]
-  },
+    title: "Community Maha Aarti & Gotra Archana",
 
-  {
-    day: "Day 06",
-    date: "19 Sept 2026",
-    type: "Special",
-    title: "Final Maha Puja & Kalasa Udvasana",
-    time: "10:00 AM – 12:30 PM",
-    location: "Clubhouse Central Mandapam",
-    description:
-      "Maha Purnahuti, Kalasa Udvasana and final blessings.",
-    category: ["puja", "special"]
-  },
+    ctaText: "Book Sankalpam",
 
-  {
-    day: "Day 06",
-    date: "19 Sept 2026",
-    type: "Special",
-    title: "Grand Maha Annadanam",
-    time: "12:30 PM – 03:30 PM",
-    location: "Central Banquet Lawn",
-    description:
-      "Community feast for residents, staff, security and devotees.",
-    category: ["special"]
-  },
-
-  {
-    day: "Day 06",
-    date: "19 Sept 2026",
-    type: "Special",
-    title: "Visarjan Shobha Yatra",
-    time: "04:00 PM onwards",
-    location: "Festival Procession",
-    description:
-      "Shobha Yatra, devotional celebrations and eco-friendly immersion.",
-    category: ["special", "puja"]
+    ctaLink: "#puja-annadanam"
   }
 
 ];
 
 
-/* ============================================================
-   INITIALIZATION
-============================================================ */
+/* =========================================================
+   FESTIVAL SCHEDULE
+   ========================================================= */
+
+const scheduleData = [
+
+  {
+    dayNumber: "Day 01",
+
+    date: "14 Sept (Mon)",
+
+    badgeText: "Prana Pratishtha",
+
+    badgeType: "gold",
+
+    title: "Ganpati Sthapana & Kalasa Puja",
+
+    time: "10:00 AM – 12:30 PM • Aarti 07:30 PM",
+
+    location: "Central Clubhouse Mandapam",
+
+    description:
+      "Ceremonial 7ft eco-clay idol installation followed by Vedic chanting, Panchamrutha Abhishekam and evening Maha Aarti.",
+
+    category: "puja special",
+
+    isHighlight: false
+  },
+
+  {
+    dayNumber: "Day 02",
+
+    date: "15 Sept (Tue)",
+
+    badgeText: "Daily Puja",
+
+    badgeType: "saffron",
+
+    title: "Daily Puja & Evening Maha Aarti",
+
+    time: "07:30 PM",
+
+    location: "Central Clubhouse Mandapam",
+
+    description:
+      "Daily family sankalpam, Ganapati Puja and community Maha Aarti.",
+
+    category: "puja",
+
+    isHighlight: false
+  },
+
+  {
+    dayNumber: "Day 03",
+
+    date: "16 Sept (Wed)",
+
+    badgeText: "Daily Puja",
+
+    badgeType: "saffron",
+
+    title: "Ganapathi Homam & Evening Aarti",
+
+    time: "07:30 PM",
+
+    location: "Central Clubhouse Mandapam",
+
+    description:
+      "Sacred Ganapathi Homam followed by family sankalpam and Maha Aarti.",
+
+    category: "puja",
+
+    isHighlight: false
+  },
+
+  {
+    dayNumber: "Day 04",
+
+    date: "17 Sept (Thu)",
+
+    badgeText: "Daily Puja",
+
+    badgeType: "saffron",
+
+    title: "Gotra Archana & Evening Maha Aarti",
+
+    time: "07:30 PM",
+
+    location: "Central Clubhouse Mandapam",
+
+    description:
+      "Family Gotra Archana and community Maha Aarti.",
+
+    category: "puja",
+
+    isHighlight: false
+  },
+
+  {
+    dayNumber: "Day 05",
+
+    date: "18 Sept (Fri)",
+
+    badgeText: "Youth & Cultural",
+
+    badgeType: "gold",
+
+    title: "Children's Sloka, Rangoli & Cultural Evening",
+
+    time: "05:00 PM – 07:30 PM",
+
+    location: "Ground Floor Multi-Purpose Hall",
+
+    description:
+      "Children's clay Ganesha art, Rangoli, Sloka and Bhajan Sandhya followed by Maha Aarti.",
+
+    category: "cultural puja",
+
+    isHighlight: false
+  },
+
+  {
+    dayNumber: "Day 06",
+
+    date: "19 Sept (Sat)",
+
+    badgeText: "Grand Finale Puja",
+
+    badgeType: "gold",
+
+    title: "Final Maha Puja & Kalasa Udvasana",
+
+    time: "10:00 AM – 12:30 PM",
+
+    location: "Clubhouse Central Mandapam",
+
+    description:
+      "Maha Purnahuti, Kalasa Udvasana and Rajopachara Puja.",
+
+    category: "puja special",
+
+    isHighlight: false
+  },
+
+  {
+    dayNumber: "Day 06",
+
+    date: "19 Sept (Sat)",
+
+    badgeText: "Grand Community Feast",
+
+    badgeType: "crimson",
+
+    title: "Grand Maha Annadanam",
+
+    time: "12:30 PM – 03:30 PM",
+
+    location: "Central Banquet Lawn & Dining Tent",
+
+    description:
+      "Traditional Satvik community feast by Mohan Rao, Flat 102, for residents, staff, security and devotees.",
+
+    category: "special",
+
+    isHighlight: true
+  },
+
+  {
+    dayNumber: "Day 06",
+
+    date: "19 Sept (Sat)",
+
+    badgeText: "Grand Finale",
+
+    badgeType: "crimson",
+
+    title: "Visarjan Shobha Yatra",
+
+    time: "04:00 PM Onwards",
+
+    location: "Festival Mandapam & Procession Route",
+
+    description:
+      "Sacred procession and eco-friendly Ganesha immersion ceremony.",
+
+    category: "special puja",
+
+    isHighlight: false
+  }
+
+];
+
+
+/* =========================================================
+   PUJA DATES
+   Exactly 3 families per day.
+   ========================================================= */
+
+const PUJA_DATES = [
+
+  {
+    date: "2026-09-14",
+    label: "14 Sept (Mon)"
+  },
+
+  {
+    date: "2026-09-15",
+    label: "15 Sept (Tue)"
+  },
+
+  {
+    date: "2026-09-16",
+    label: "16 Sept (Wed)"
+  },
+
+  {
+    date: "2026-09-17",
+    label: "17 Sept (Thu)"
+  },
+
+  {
+    date: "2026-09-18",
+    label: "18 Sept (Fri)"
+  },
+
+  {
+    date: "2026-09-19",
+    label: "19 Sept (Sat)"
+  }
+
+];
+
+
+/* =========================================================
+   ANNADANAM DISPLAY ITEMS
+
+   Exactly 3 sponsorship slots in the UI.
+   Multiple donors can support each slot through
+   annadanam_donors.
+   ========================================================= */
+
+const ANNADANAM_ITEMS = [
+
+  "Grand Maha Annadanam Community Feast",
+
+  "Food & Grocery Support",
+
+  "Serving & Dining Support"
+
+];
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let heroSlides = [];
+
+let currentSlideIndex = 0;
+
+let slideshowTimer = null;
+
+let galleryData = [];
+
+let pujaBookings = [];
+
+let annadanamDonors = [];
+
+let currentLightboxItem = null;
+
+let currentPujaRecord = null;
+
+let currentAnnadanamSlot = null;
+
+let isAdmin = false;
+
+let currentUser = null;
+
+
+/* =========================================================
+   INIT
+   ========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
-    setupNavigation();
-    setupScheduleFilters();
-    setupModals();
-    setupForms();
-    setupGalleryPreview();
+    setupMobileNav();
+
+    setupScrollSpy();
+
+    setupModalAccessibility();
 
     renderSchedule();
 
-    if (
-      SUPABASE_URL.startsWith("YOUR_") ||
-      SUPABASE_ANON_KEY.startsWith("YOUR_")
-    ) {
+    setupPujaDateSelect();
 
-      showToast(
-        "Please add your Supabase URL and publishable/anon key in script.js.",
-        "error"
-      );
+    await checkAdminSession();
 
-      document.getElementById("galleryStatus").textContent =
-        "Supabase configuration required.";
+    await loadCarousel();
 
-      return;
-    }
+    await loadGallery();
 
+    await loadPujaBookings();
 
-    try {
-
-      supabaseClient =
-        window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_ANON_KEY
-        );
-
-      await initializeSupabase();
-
-    } catch (error) {
-
-      console.error(error);
-
-      showToast(
-        "Unable to connect to Supabase.",
-        "error"
-      );
-
-    }
+    await loadAnnadanamDonors();
 
   }
 );
 
 
-/* ============================================================
-   SUPABASE INITIALIZATION
-============================================================ */
+/* =========================================================
+   SECURITY / ADMIN
+   ========================================================= */
 
-async function initializeSupabase() {
+async function checkAdminSession() {
 
-  const {
-    data,
-    error
-  } = await supabaseClient.auth.getSession();
+  try {
+
+    const {
+      data: {
+        session
+      }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+
+      setAdminState(false);
+
+      return;
+
+    }
+
+    currentUser = session.user;
+
+    const {
+      data,
+      error
+    } = await supabaseClient.rpc("is_admin");
+
+    if (error) {
+
+      console.error(error);
+
+      setAdminState(false);
+
+      return;
+
+    }
+
+    setAdminState(Boolean(data));
+
+  }
+  catch (error) {
+
+    console.error(
+      "Admin session error:",
+      error
+    );
+
+    setAdminState(false);
+
+  }
+
+}
 
 
-  if (error) {
+function setAdminState(value) {
 
-    console.error(error);
+  isAdmin = value === true;
+
+  const toolbar =
+    document.getElementById(
+      "adminToolbar"
+    );
+
+  const loginBtn =
+    document.getElementById(
+      "adminLoginBtn"
+    );
+
+  const logoutBtn =
+    document.getElementById(
+      "adminLogoutBtn"
+    );
+
+  const mobileBtn =
+    document.getElementById(
+      "mobileAdminBtn"
+    );
+
+  if (toolbar) {
+
+    toolbar.style.display =
+      isAdmin ? "flex" : "none";
+
+  }
+
+  if (loginBtn) {
+
+    loginBtn.style.display =
+      isAdmin ? "none" : "inline-flex";
+
+  }
+
+  if (logoutBtn) {
+
+    logoutBtn.style.display =
+      isAdmin ? "inline-flex" : "none";
+
+  }
+
+  if (mobileBtn) {
+
+    mobileBtn.textContent =
+      isAdmin
+        ? "Admin Logout"
+        : "Admin Login";
+
+    mobileBtn.onclick =
+      isAdmin
+        ? adminLogout
+        : openAdminLoginModal;
+
+  }
+
+  renderGallery();
+
+  renderPujaTable();
+
+  renderAnnadanamTable();
+
+}
+
+
+/* =========================================================
+   ADMIN LOGIN
+   ========================================================= */
+
+window.openAdminLoginModal = function () {
+
+  if (isAdmin) {
+
+    adminLogout();
 
     return;
+
   }
 
+  document
+    .getElementById("adminLoginModal")
+    ?.classList.add("open");
 
-  currentUser =
-    data?.session?.user || null;
+  document.body.classList.add("modal-open");
 
-
-  await refreshAdminState();
-
-  await Promise.all([
-    loadPujaSlots(),
-    loadAnnadanamSlots(),
-    loadGallery(),
-    loadContributionSummary()
-  ]);
+};
 
 
-  supabaseClient.auth.onAuthStateChange(
-    async (_event, session) => {
+window.closeAdminLoginModal = function () {
 
-      currentUser =
-        session?.user || null;
-
-      await refreshAdminState();
-
-    }
+  closeModal(
+    document.getElementById(
+      "adminLoginModal"
+    )
   );
 
-}
+};
 
 
-/* ============================================================
-   ADMIN STATE
-============================================================ */
-
-async function refreshAdminState() {
-
-  isAdmin = false;
-
-
-  if (currentUser) {
-
-    try {
-
-      const {
-        data,
-        error
-      } = await supabaseClient.rpc(
-        "is_admin"
-      );
-
-
-      if (!error) {
-
-        isAdmin = data === true;
-
-      }
-
-    } catch (error) {
-
-      console.error(
-        "Admin check failed:",
-        error
-      );
-
-    }
-
-  }
-
-
-  updateAdminUI();
-
-}
-
-
-/* ============================================================
-   ADMIN UI
-============================================================ */
-
-function updateAdminUI() {
-
-  const adminPanel =
-    document.getElementById("adminPanel");
-
-  const galleryButton =
-    document.getElementById("adminGalleryButton");
-
-  const adminUpload =
-    document.getElementById("adminUploadPhoto");
-
-  const adminWelcome =
-    document.getElementById("adminWelcome");
-
-
-  if (isAdmin) {
-
-    document.body.classList.add(
-      "admin-mode"
-    );
-
-    adminPanel?.classList.remove(
-      "hidden"
-    );
-
-    galleryButton?.classList.remove(
-      "hidden"
-    );
-
-
-    if (adminWelcome) {
-
-      adminWelcome.textContent =
-        `Signed in as ${currentUser.email}`;
-
-    }
-
-  } else {
-
-    document.body.classList.remove(
-      "admin-mode"
-    );
-
-    adminPanel?.classList.add(
-      "hidden"
-    );
-
-    galleryButton?.classList.add(
-      "hidden"
-    );
-
-  }
-
-
-  if (adminUpload) {
-
-    adminUpload.onclick =
-      openGalleryUpload;
-
-  }
-
-
-  document.getElementById(
-    "adminLoginNav"
-  )?.replaceWith(
-    createAdminNavButton()
-  );
-
-}
-
-
-/* ============================================================
-   ADMIN NAV BUTTON
-============================================================ */
-
-function createAdminNavButton() {
-
-  const button =
-    document.createElement("button");
-
-  button.id = "adminLoginNav";
-
-  button.className =
-    "nav-admin-btn";
-
-  button.type = "button";
-
-
-  if (isAdmin) {
-
-    button.textContent =
-      "Admin Panel";
-
-    button.onclick = () => {
-
-      document
-        .getElementById("adminPanel")
-        ?.scrollIntoView({
-          behavior: "smooth"
-        });
-
-    };
-
-  } else {
-
-    button.textContent =
-      "Admin";
-
-    button.onclick =
-      openLoginModal;
-
-  }
-
-
-  return button;
-
-}
-
-
-/* ============================================================
-   LOGIN
-============================================================ */
-
-async function loginAdmin(event) {
+window.adminLogin = async function (event) {
 
   event.preventDefault();
 
-
-  if (!supabaseClient) {
-
-    showToast(
-      "Supabase is not configured.",
-      "error"
-    );
-
-    return;
-  }
-
-
   const email =
     document
-      .getElementById("loginEmail")
+      .getElementById("adminEmail")
       .value
       .trim();
 
-
   const password =
     document
-      .getElementById("loginPassword")
+      .getElementById("adminPassword")
       .value;
 
+  if (!email || !password) {
 
-  const errorElement =
-    document.getElementById(
-      "loginError"
+    showToast(
+      "Please enter your email and password.",
+      "info"
     );
 
+    return;
 
-  errorElement.classList.add(
-    "hidden"
-  );
+  }
 
+  try {
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient.auth
-      .signInWithPassword({
+    showToast(
+      "Signing in...",
+      "info"
+    );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.signInWithPassword({
         email,
         password
       });
 
+    if (error) {
 
-  if (error) {
+      throw error;
+
+    }
+
+    currentUser = data.user;
+
+    const {
+      data: adminResult,
+      error: adminError
+    } =
+      await supabaseClient.rpc(
+        "is_admin"
+      );
+
+    if (adminError) {
+
+      await supabaseClient.auth.signOut();
+
+      throw adminError;
+
+    }
+
+    if (!adminResult) {
+
+      await supabaseClient.auth.signOut();
+
+      setAdminState(false);
+
+      throw new Error(
+        "This account is not registered as a festival administrator."
+      );
+
+    }
+
+    setAdminState(true);
+
+    closeAdminLoginModal();
+
+    showToast(
+      "Admin login successful."
+    );
+
+  }
+  catch (error) {
 
     console.error(error);
 
-    errorElement.textContent =
-      error.message;
-
-    errorElement.classList.remove(
-      "hidden"
-    );
-
-    return;
-  }
-
-
-  currentUser =
-    data.user;
-
-
-  await refreshAdminState();
-
-
-  if (!isAdmin) {
-
-    await supabaseClient.auth.signOut();
-
-    errorElement.textContent =
-      "This account is not registered as a festival administrator.";
-
-    errorElement.classList.remove(
-      "hidden"
-    );
-
-    return;
-  }
-
-
-  closeModal("loginModal");
-
-  document
-    .getElementById("loginForm")
-    ?.reset();
-
-
-  showToast(
-    "Admin login successful."
-  );
-
-
-  document
-    .getElementById("adminPanel")
-    ?.scrollIntoView({
-      behavior: "smooth"
-    });
-
-}
-
-
-/* ============================================================
-   LOGOUT
-============================================================ */
-
-async function logoutAdmin() {
-
-  if (!supabaseClient) return;
-
-
-  const {
-    error
-  } =
-    await supabaseClient.auth.signOut();
-
-
-  if (error) {
-
     showToast(
-      "Unable to logout.",
+      error.message ||
+      "Unable to sign in.",
       "error"
     );
 
-    return;
   }
 
+};
+
+
+window.adminLogout = async function () {
+
+  await supabaseClient.auth.signOut();
 
   currentUser = null;
-  isAdmin = false;
 
-  updateAdminUI();
+  setAdminState(false);
 
   showToast(
     "Admin logged out.",
     "info"
   );
 
+};
+
+
+/* =========================================================
+   SUPABASE STORAGE HELPERS
+   ========================================================= */
+
+const STORAGE_BUCKET =
+  "festival-images";
+
+
+function sanitizeFileName(
+  fileName
+) {
+
+  return fileName
+
+    .toLowerCase()
+
+    .replace(/[^a-z0-9._-]/g, "-")
+
+    .replace(/-+/g, "-");
+
 }
 
 
-/* ============================================================
-   LOAD PUJA
-============================================================ */
+function createStoragePath(
+  folder,
+  file
+) {
 
-async function loadPujaSlots() {
+  const unique =
+    `${Date.now()}-${crypto.randomUUID()}`;
+
+  return `${folder}/${unique}-${sanitizeFileName(file.name)}`;
+
+}
+
+
+function getPublicStorageUrl(
+  storagePath
+) {
 
   const {
-    data,
+    data
+  } =
+    supabaseClient
+      .storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(storagePath);
+
+  return data.publicUrl;
+
+}
+
+
+async function uploadImage(
+  file,
+  folder
+) {
+
+  if (!file) {
+
+    throw new Error(
+      "Please select an image."
+    );
+
+  }
+
+  if (!file.type.startsWith("image/")) {
+
+    throw new Error(
+      "Only image files are allowed."
+    );
+
+  }
+
+  const MAX_SIZE =
+    5 * 1024 * 1024;
+
+  if (file.size > MAX_SIZE) {
+
+    throw new Error(
+      "Image is larger than 5 MB. Please choose a smaller image."
+    );
+
+  }
+
+  const storagePath =
+    createStoragePath(
+      folder,
+      file
+    );
+
+  const {
     error
   } =
     await supabaseClient
-      .from("puja_seva")
-      .select("*")
-      .order("seva_date", {
-        ascending: true
-      })
-      .order("slot_number", {
-        ascending: true
-      });
-
+      .storage
+      .from(STORAGE_BUCKET)
+      .upload(
+        storagePath,
+        file,
+        {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type
+        }
+      );
 
   if (error) {
 
+    throw error;
+
+  }
+
+  return {
+    storagePath,
+    publicUrl:
+      getPublicStorageUrl(
+        storagePath
+      )
+  };
+
+}
+
+
+/* =========================================================
+   CAROUSEL
+   ========================================================= */
+
+async function loadCarousel() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+
+        .from("carousel_slides")
+
+        .select("*")
+
+        .order(
+          "sort_order",
+          {
+            ascending: true
+          }
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
+
+    if (error) {
+
+      console.warn(
+        "Carousel table unavailable:",
+        error
+      );
+
+      heroSlides =
+        clone(DEFAULT_HERO_SLIDES);
+
+      initSlideshow();
+
+      return;
+
+    }
+
+    if (!data || !data.length) {
+
+      heroSlides =
+        clone(DEFAULT_HERO_SLIDES);
+
+      initSlideshow();
+
+      return;
+
+    }
+
+    heroSlides =
+      data.map(
+        row => ({
+          id: row.id,
+
+          image:
+            row.image_url,
+
+          storagePath:
+            row.storage_path,
+
+          tag:
+            row.tag || "",
+
+          title:
+            row.title,
+
+          ctaText:
+            row.cta_text || "Explore",
+
+          ctaLink:
+            row.cta_link || "#schedule"
+        })
+      );
+
+    initSlideshow();
+
+  }
+  catch (error) {
+
     console.error(
-      "Puja load error:",
+      "Unable to load carousel:",
       error
     );
 
-    showToast(
-      "Unable to load Puja Seva.",
-      "error"
-    );
+    heroSlides =
+      clone(DEFAULT_HERO_SLIDES);
 
-    return;
+    initSlideshow();
+
   }
-
-
-  pujaSlots =
-    Array.isArray(data)
-      ? data
-      : [];
-
-
-  renderPujaSlots();
 
 }
 
 
-/* ============================================================
-   RENDER PUJA
-============================================================ */
+function initSlideshow() {
 
-function renderPujaSlots() {
-
-  const tbody =
+  const track =
     document.getElementById(
-      "pujaTableBody"
+      "slideshowTrack"
     );
 
-
-  if (!tbody) return;
-
-
-  const available =
-    pujaSlots.filter(
-      slot => !slot.family_name
+  const dots =
+    document.getElementById(
+      "slideshowDots"
     );
 
+  if (!track || !dots) {
 
-  document.getElementById(
-    "availablePujaCount"
-  ).textContent =
-    available.length;
+    return;
 
+  }
 
-  if (!pujaSlots.length) {
+  clearInterval(
+    slideshowTimer
+  );
 
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" class="empty-table">
-          No Puja Seva slots have been configured yet.
-        </td>
-      </tr>
+  track.innerHTML = "";
+
+  dots.innerHTML = "";
+
+  if (!heroSlides.length) {
+
+    track.innerHTML = `
+
+      <div class="slide active">
+
+        <div
+          style="
+            height:100%;
+            display:grid;
+            place-items:center;
+            color:#fff;
+            padding:30px;
+            text-align:center;
+          ">
+
+          No festival slides available.
+
+        </div>
+
+      </div>
+
     `;
 
     return;
+
   }
 
+  currentSlideIndex =
+    Math.min(
+      currentSlideIndex,
+      heroSlides.length - 1
+    );
 
-  tbody.innerHTML =
-    pujaSlots
-      .map(slot => {
+  heroSlides.forEach(
+    (slide, index) => {
 
-        const booked =
-          Boolean(
-            slot.family_name
-          );
+      const slideDiv =
+        document.createElement(
+          "div"
+        );
 
+      slideDiv.className =
+        `slide ${
+          index === currentSlideIndex
+            ? "active"
+            : ""
+        }`;
 
-        const date =
-          formatDate(
-            slot.seva_date
-          );
+      slideDiv.innerHTML = `
 
+        <img
+          src="${escapeHtml(slide.image)}"
+          alt="${escapeHtml(slide.title)}"
+          loading="${
+            index === 0
+              ? "eager"
+              : "lazy"
+          }">
 
-        const action =
-          booked
-            ? `
-              ${
-                isAdmin
-                  ? `
-                    <button
-                      class="action-btn"
-                      onclick="adminEditPuja('${slot.id}')"
-                    >
-                      Manage
-                    </button>
-                  `
-                  : `
-                    <button
-                      class="action-btn"
-                      disabled
-                    >
-                      Booked
-                    </button>
-                  `
-              }
-            `
-            : `
-              <button
-                class="action-btn"
-                onclick="openPujaBooking('${slot.id}')"
-              >
-                Book Slot
-              </button>
-            `;
+        <div class="slide-overlay">
 
+          <div>
 
-        return `
-          <tr>
-
-            <td>
-              <strong>
-                ${escapeHtml(date)}
-              </strong>
-            </td>
-
-            <td>
-              Slot ${escapeHtml(slot.slot_number)}
-            </td>
-
-            <td>
-              ${
-                booked
-                  ? `
-                    <strong>
-                      ${escapeHtml(slot.family_name)}
-                    </strong>
-
-                    <small>
-                      Flat ${escapeHtml(slot.flat_number || "")}
-                    </small>
-                  `
-                  : `
-                    <span class="badge available">
-                      Available
-                    </span>
-                  `
-              }
-            </td>
-
-            <td>
+            <span class="slide-caption-tag">
               ${escapeHtml(
-                slot.notes ||
-                "Puja Seva"
+                slide.tag ||
+                "Vinayaka Mahotsav 2026"
               )}
-            </td>
+            </span>
 
-            <td>
-              ${
-                booked
-                  ? `
-                    <span class="badge confirmed">
-                      Confirmed
-                    </span>
-                  `
-                  : `
-                    <span class="badge available">
-                      Available
-                    </span>
-                  `
-              }
-            </td>
+            <h2 class="slide-title">
+              ${escapeHtml(
+                slide.title
+              )}
+            </h2>
 
-            <td>
-              ${action}
-            </td>
+          </div>
 
-          </tr>
-        `;
+          <a
+            href="${escapeHtml(
+              slide.ctaLink ||
+              "#schedule"
+            )}"
+            class="btn-primary-action">
 
-      })
-      .join("");
+            ${escapeHtml(
+              slide.ctaText ||
+              "Explore"
+            )}
+
+            <span
+              class="material-symbols-outlined"
+              style="font-size:16px">
+
+              arrow_forward
+
+            </span>
+
+          </a>
+
+        </div>
+
+      `;
+
+      track.appendChild(
+        slideDiv
+      );
+
+
+      const dot =
+        document.createElement(
+          "button"
+        );
+
+      dot.className =
+        `dot ${
+          index === currentSlideIndex
+            ? "active"
+            : ""
+        }`;
+
+      dot.type = "button";
+
+      dot.setAttribute(
+        "aria-label",
+        `Go to slide ${index + 1}`
+      );
+
+      dot.addEventListener(
+        "click",
+        () => {
+
+          goToSlide(index);
+
+        }
+      );
+
+      dots.appendChild(dot);
+
+    }
+  );
+
+
+  const prev =
+    document.getElementById(
+      "slideshowPrev"
+    );
+
+  const next =
+    document.getElementById(
+      "slideshowNext"
+    );
+
+
+  if (prev) {
+
+    prev.onclick = () => {
+
+      prevSlide();
+
+      restartSlideshowTimer();
+
+    };
+
+  }
+
+
+  if (next) {
+
+    next.onclick = () => {
+
+      nextSlide();
+
+      restartSlideshowTimer();
+
+    };
+
+  }
+
+
+  startSlideshowTimer();
 
 }
 
 
-/* ============================================================
-   PUBLIC PUJA BOOKING
-============================================================ */
+function showSlide(index) {
 
-function openPujaBooking(id) {
-
-  const slot =
-    pujaSlots.find(
-      item => item.id === id
+  const slides =
+    document.querySelectorAll(
+      ".slide"
     );
 
-
-  if (!slot) return;
-
-
-  if (slot.family_name) {
-
-    showToast(
-      "This Puja Seva slot is already booked.",
-      "info"
+  const dots =
+    document.querySelectorAll(
+      ".dot"
     );
+
+  if (!slides.length) {
 
     return;
+
   }
 
+  currentSlideIndex =
+    (index + slides.length) %
+    slides.length;
 
-  document.getElementById(
-    "pujaSlotId"
-  ).value = id;
+  slides.forEach(
+    (slide, i) => {
 
+      slide.classList.toggle(
+        "active",
+        i === currentSlideIndex
+      );
 
-  openModal("pujaModal");
+    }
+  );
+
+  dots.forEach(
+    (dot, i) => {
+
+      dot.classList.toggle(
+        "active",
+        i === currentSlideIndex
+      );
+
+    }
+  );
 
 }
 
 
-async function submitPujaBooking(event) {
+function nextSlide() {
 
-  event.preventDefault();
+  showSlide(
+    currentSlideIndex + 1
+  );
 
-
-  const slotId =
-    document.getElementById(
-      "pujaSlotId"
-    ).value;
+}
 
 
-  const flat =
-    document.getElementById(
-      "pujaFlatNumber"
-    ).value.trim();
+function prevSlide() {
+
+  showSlide(
+    currentSlideIndex - 1
+  );
+
+}
 
 
-  const family =
-    document.getElementById(
-      "pujaFamilyName"
-    ).value.trim();
+function goToSlide(index) {
+
+  showSlide(index);
+
+  restartSlideshowTimer();
+
+}
 
 
-  const contact =
-    document.getElementById(
-      "pujaContact"
-    ).value.trim();
+function startSlideshowTimer() {
 
+  clearInterval(
+    slideshowTimer
+  );
 
-  const notes =
-    document.getElementById(
-      "pujaNotes"
-    ).value.trim();
+  if (heroSlides.length > 1) {
 
+    slideshowTimer =
+      setInterval(
+        nextSlide,
+        5000
+      );
 
-  if (!flat || !family) {
-
-    showToast(
-      "Please enter flat number and family name.",
-      "info"
-    );
-
-    return;
   }
 
+}
 
-  const slot =
-    pujaSlots.find(
-      item => item.id === slotId
+
+function restartSlideshowTimer() {
+
+  startSlideshowTimer();
+
+}
+
+
+/* =========================================================
+   CAROUSEL ADMIN
+   ========================================================= */
+
+window.openCarouselModal =
+  function () {
+
+    if (!isAdmin) {
+
+      openAdminLoginModal();
+
+      return;
+
+    }
+
+    document
+      .getElementById(
+        "carouselSlideForm"
+      )
+      ?.reset();
+
+    switchCarouselTab(
+      "add"
     );
 
+    renderCarouselSlidesList();
 
-  if (!slot) {
-
-    showToast(
-      "Puja slot no longer exists.",
-      "error"
+    openModal(
+      document.getElementById(
+        "carouselModal"
+      )
     );
 
-    return;
-  }
+  };
 
 
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("puja_seva")
-      .update({
-        flat_number: flat,
-        family_name: family,
-        contact_number:
-          contact || null,
-        notes:
-          notes || null
-      })
-      .eq("id", slotId)
-      .is("family_name", null);
+window.closeCarouselModal =
+  function () {
+
+    closeModal(
+      document.getElementById(
+        "carouselModal"
+      )
+    );
+
+  };
 
 
-  if (error) {
+window.switchCarouselTab =
+  function (tab) {
 
-    console.error(error);
+    const addButton =
+      document.getElementById(
+        "tabBtnAddSlide"
+      );
 
-    if (
-      error.code === "23505"
-    ) {
+    const listButton =
+      document.getElementById(
+        "tabBtnListSlides"
+      );
+
+    const addContent =
+      document.getElementById(
+        "tabAddSlideContent"
+      );
+
+    const listContent =
+      document.getElementById(
+        "tabListSlidesContent"
+      );
+
+    const adding =
+      tab === "add";
+
+    addButton?.classList.toggle(
+      "active",
+      adding
+    );
+
+    listButton?.classList.toggle(
+      "active",
+      !adding
+    );
+
+    if (addContent) {
+
+      addContent.style.display =
+        adding
+          ? "block"
+          : "none";
+
+    }
+
+    if (listContent) {
+
+      listContent.style.display =
+        adding
+          ? "none"
+          : "block";
+
+    }
+
+    if (!adding) {
+
+      renderCarouselSlidesList();
+
+    }
+
+  };
+
+
+window.handleCarouselSlideUpload =
+  async function (event) {
+
+    event.preventDefault();
+
+    if (!isAdmin || !currentUser) {
 
       showToast(
-        "This slot was just booked by another family.",
+        "Admin login is required to upload carousel images.",
         "error"
       );
 
-    } else {
+      return;
+
+    }
+
+    const file =
+      document
+        .getElementById(
+          "carouselFileInput"
+        )
+        .files[0];
+
+    const title =
+      document
+        .getElementById(
+          "carouselTitleInput"
+        )
+        .value
+        .trim();
+
+    const tag =
+      document
+        .getElementById(
+          "carouselTagInput"
+        )
+        .value
+        .trim();
+
+    const ctaText =
+      document
+        .getElementById(
+          "carouselCtaTextInput"
+        )
+        .value
+        .trim() ||
+      "Explore Schedule";
+
+    const ctaLink =
+      document
+        .getElementById(
+          "carouselCtaLinkInput"
+        )
+        .value
+        .trim() ||
+      "#schedule";
+
+
+    if (!file || !title) {
 
       showToast(
-        error.message,
+        "Please select an image and enter a title.",
+        "info"
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      showToast(
+        "Uploading carousel image...",
+        "info"
+      );
+
+
+      const uploaded =
+        await uploadImage(
+          file,
+          "carousel"
+        );
+
+
+      const {
+        data: existing
+      } =
+        await supabaseClient
+          .from(
+            "carousel_slides"
+          )
+          .select("sort_order")
+          .order(
+            "sort_order",
+            {
+              ascending: false
+            }
+          )
+          .limit(1);
+
+
+      const nextOrder =
+        existing &&
+        existing.length
+          ? Number(
+              existing[0].sort_order
+            ) + 1
+          : 1;
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from(
+            "carousel_slides"
+          )
+          .insert({
+
+            image_url:
+              uploaded.publicUrl,
+
+            storage_path:
+              uploaded.storagePath,
+
+            title,
+
+            tag,
+
+            cta_text:
+              ctaText,
+
+            cta_link:
+              ctaLink,
+
+            sort_order:
+              nextOrder,
+
+            uploaded_by:
+              currentUser.id
+
+          });
+
+
+      if (error) {
+
+        await deleteStorageFile(
+          uploaded.storagePath
+        );
+
+        throw error;
+
+      }
+
+
+      await loadCarousel();
+
+      document
+        .getElementById(
+          "carouselSlideForm"
+        )
+        ?.reset();
+
+      showToast(
+        "Carousel image uploaded successfully."
+      );
+
+    }
+    catch (error) {
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        "Carousel upload failed.",
         "error"
       );
 
     }
 
+  };
+
+
+async function renderCarouselSlidesList() {
+
+  const container =
+    document.getElementById(
+      "carouselSlidesList"
+    );
+
+  const count =
+    document.getElementById(
+      "carouselSlideCount"
+    );
+
+  if (!container) {
+
     return;
+
   }
-
-
-  closeModal("pujaModal");
-
-  document
-    .getElementById("pujaForm")
-    ?.reset();
-
-
-  showToast(
-    "Puja Seva registration confirmed."
-  );
-
-
-  await loadPujaSlots();
-
-}
-
-
-/* ============================================================
-   ADMIN PUJA
-============================================================ */
-
-async function openAdminPujaManager() {
 
   if (!isAdmin) {
 
-    showToast(
-      "Administrator access required.",
-      "error"
-    );
+    container.innerHTML = "";
 
     return;
-  }
-
-
-  renderAdminPujaList();
-
-  openModal(
-    "adminPujaModal"
-  );
-
-}
-
-
-function renderAdminPujaList() {
-
-  const container =
-    document.getElementById(
-      "adminPujaList"
-    );
-
-
-  if (!container) return;
-
-
-  container.innerHTML =
-    pujaSlots.map(slot => {
-
-      const booked =
-        Boolean(
-          slot.family_name
-        );
-
-
-      return `
-        <div class="admin-list-item">
-
-          <div>
-
-            <strong>
-              ${escapeHtml(
-                formatDate(
-                  slot.seva_date
-                )
-              )}
-              · Slot ${escapeHtml(
-                slot.slot_number
-              )}
-            </strong>
-
-            <small>
-              ${
-                booked
-                  ? `Flat ${escapeHtml(
-                      slot.flat_number || ""
-                    )}
-                    ·
-                    ${escapeHtml(
-                      slot.family_name
-                    )}`
-                  : "Available"
-              }
-            </small>
-
-          </div>
-
-          <div class="admin-list-actions">
-
-            <button
-              class="small-btn edit"
-              onclick="adminEditPuja('${slot.id}')"
-            >
-              ${booked ? "Edit" : "Assign"}
-            </button>
-
-            ${
-              booked
-                ? `
-                  <button
-                    class="small-btn delete"
-                    onclick="adminClearPuja('${slot.id}')"
-                  >
-                    Clear
-                  </button>
-                `
-                : ""
-            }
-
-          </div>
-
-        </div>
-      `;
-
-    })
-    .join("");
-
-}
-
-
-function adminEditPuja(id) {
-
-  if (!isAdmin) return;
-
-
-  const slot =
-    pujaSlots.find(
-      item => item.id === id
-    );
-
-
-  if (!slot) return;
-
-
-  document.getElementById(
-    "pujaSlotId"
-  ).value = id;
-
-
-  document.getElementById(
-    "pujaFlatNumber"
-  ).value =
-    slot.flat_number || "";
-
-
-  document.getElementById(
-    "pujaFamilyName"
-  ).value =
-    slot.family_name || "";
-
-
-  document.getElementById(
-    "pujaContact"
-  ).value =
-    slot.contact_number || "";
-
-
-  document.getElementById(
-    "pujaNotes"
-  ).value =
-    slot.notes || "";
-
-
-  closeModal(
-    "adminPujaModal"
-  );
-
-
-  openModal(
-    "pujaModal"
-  );
-
-}
-
-
-async function adminClearPuja(id) {
-
-  if (!isAdmin) return;
-
-
-  if (
-    !confirm(
-      "Make this Puja Seva slot available again?"
-    )
-  ) {
-    return;
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("puja_seva")
-      .update({
-        flat_number: null,
-        family_name: null,
-        contact_number: null,
-        notes: null
-      })
-      .eq("id", id);
-
-
-  if (error) {
-
-    showToast(
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
-
-  showToast(
-    "Puja slot is now available.",
-    "info"
-  );
-
-
-  await loadPujaSlots();
-
-  renderAdminPujaList();
-
-}
-
-
-/* ============================================================
-   ANNADANAM SLOTS
-============================================================ */
-
-async function loadAnnadanamSlots() {
-
-  const {
-    data: slots,
-    error
-  } =
-    await supabaseClient
-      .from("annadanam_slots")
-      .select("*")
-      .order("slot_number", {
-        ascending: true
-      });
-
-
-  if (error) {
-
-    console.error(
-      "Annadanam slots error:",
-      error
-    );
-
-    showToast(
-      "Unable to load Annadanam slots.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  annadanamSlots =
-    Array.isArray(slots)
-      ? slots.slice(0, 3)
-      : [];
-
-
-  if (!annadanamSlots.length) {
-
-    renderAnnadanam();
-
-    return;
-  }
-
-
-  const slotIds =
-    annadanamSlots.map(
-      slot => slot.id
-    );
-
-
-  const {
-    data: donors,
-    error: donorError
-  } =
-    await supabaseClient
-      .from("annadanam_donors")
-      .select("*")
-      .in("slot_id", slotIds)
-      .order("created_at", {
-        ascending: true
-      });
-
-
-  if (donorError) {
-
-    console.error(
-      "Annadanam donors error:",
-      donorError
-    );
-
-    annadanamDonors = [];
-
-  } else {
-
-    annadanamDonors =
-      Array.isArray(donors)
-        ? donors
-        : [];
 
   }
 
-
-  renderAnnadanam();
-
-}
-
-
-/* ============================================================
-   RENDER ANNADANAM
-============================================================ */
-
-function renderAnnadanam() {
-
-  const container =
-    document.getElementById(
-      "annadanamContainer"
-    );
-
-
-  if (!container) return;
-
-
-  if (!annadanamSlots.length) {
-
-    container.innerHTML = `
-      <div class="empty-table">
-        Annadanam slots have not been configured yet.
-      </div>
-    `;
-
-    return;
-  }
-
-
-  container.innerHTML =
-    annadanamSlots.map(slot => {
-
-      const donors =
-        annadanamDonors.filter(
-          donor =>
-            donor.slot_id === slot.id
-        );
-
-
-      const description =
-        slot.description ||
-        `Annadanam Slot ${slot.slot_number}`;
-
-
-      return `
-        <article class="annadanam-card">
-
-          <div class="annadanam-card-header">
-
-            <span class="annadanam-number">
-              ${escapeHtml(
-                slot.slot_number
-              )}
-            </span>
-
-            <span class="badge available">
-              ${donors.length}
-              ${donors.length === 1
-                ? "family"
-                : "families"}
-            </span>
-
-          </div>
-
-
-          <h3>
-            Annadanam Slot
-            ${escapeHtml(
-              slot.slot_number
-            )}
-          </h3>
-
-
-          <p>
-            ${escapeHtml(
-              description
-            )}
-          </p>
-
-
-          <div class="donor-list">
-
-            ${
-              donors.length
-                ? donors.map(
-                    donor => `
-                      <div class="donor-item">
-
-                        <strong>
-                          ${escapeHtml(
-                            donor.family_name
-                          )}
-                        </strong>
-
-                        <small>
-                          Flat ${escapeHtml(
-                            donor.flat_number
-                          )}
-                        </small>
-
-                      </div>
-                    `
-                  ).join("")
-                : `
-                  <div class="empty-donor">
-                    No families registered yet.
-                  </div>
-                `
-            }
-
-          </div>
-
-
-          <button
-            class="btn btn-primary btn-full"
-            onclick="openAnnadanamBooking('${slot.id}')"
-          >
-            <span class="material-symbols-outlined">
-              volunteer_activism
-            </span>
-
-            Join This Slot
-          </button>
-
-        </article>
-      `;
-
-    })
-    .join("");
-
-}
-
-
-/* ============================================================
-   ANNADANAM BOOKING
-============================================================ */
-
-function openAnnadanamBooking(id) {
-
-  const slot =
-    annadanamSlots.find(
-      item => item.id === id
-    );
-
-
-  if (!slot) return;
-
-
-  document.getElementById(
-    "annadanamSlotId"
-  ).value = id;
-
-
-  document.getElementById(
-    "annadanamModalDescription"
-  ).textContent =
-    slot.description ||
-    `You are joining Annadanam Slot ${slot.slot_number}.`;
-
-
-  openModal(
-    "annadanamModal"
-  );
-
-}
-
-
-async function submitAnnadanam(event) {
-
-  event.preventDefault();
-
-
-  const slotId =
-    document.getElementById(
-      "annadanamSlotId"
-    ).value;
-
-
-  const flat =
-    document.getElementById(
-      "annadanamFlatNumber"
-    ).value.trim();
-
-
-  const family =
-    document.getElementById(
-      "annadanamFamilyName"
-    ).value.trim();
-
-
-  const contact =
-    document.getElementById(
-      "annadanamContact"
-    ).value.trim();
-
-
-  const notes =
-    document.getElementById(
-      "annadanamNotes"
-    ).value.trim();
-
-
-  if (!flat || !family) {
-
-    showToast(
-      "Please enter flat number and family name.",
-      "info"
-    );
-
-    return;
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("annadanam_donors")
-      .insert({
-        slot_id: slotId,
-        flat_number: flat,
-        family_name: family,
-        contact_number:
-          contact || null,
-        notes:
-          notes || null
-      });
-
-
-  if (error) {
-
-    console.error(error);
-
-    showToast(
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
-
-  closeModal(
-    "annadanamModal"
-  );
-
-
-  document
-    .getElementById(
-      "annadanamForm"
-    )
-    ?.reset();
-
-
-  showToast(
-    "Annadanam participation registered."
-  );
-
-
-  await loadAnnadanamSlots();
-
-}
-
-
-/* ============================================================
-   ADMIN ANNADANAM
-============================================================ */
-
-function openAdminAnnadanamManager() {
-
-  if (!isAdmin) {
-
-    showToast(
-      "Administrator access required.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  renderAdminAnnadanamList();
-
-  openModal(
-    "adminAnnadanamModal"
-  );
-
-}
-
-
-function renderAdminAnnadanamList() {
-
-  const container =
-    document.getElementById(
-      "adminAnnadanamList"
-    );
-
-
-  if (!container) return;
-
-
-  container.innerHTML =
-    annadanamSlots.map(slot => {
-
-      const donors =
-        annadanamDonors.filter(
-          donor =>
-            donor.slot_id === slot.id
-        );
-
-
-      return `
-        <div class="admin-list-item">
-
-          <div>
-
-            <strong>
-              Annadanam Slot
-              ${escapeHtml(
-                slot.slot_number
-              )}
-            </strong>
-
-            <small>
-              ${
-                donors.length
-              }
-              registered family/families
-            </small>
-
-          </div>
-
-          <div class="admin-list-actions">
-
-            ${
-              donors.map(
-                donor => `
-                  <button
-                    class="small-btn delete"
-                    onclick="adminDeleteAnnadanamDonor('${donor.id}')"
-                  >
-                    Remove
-                    ${escapeHtml(
-                      donor.family_name
-                    )}
-                  </button>
-                `
-              ).join("")
-            }
-
-          </div>
-
-        </div>
-      `;
-
-    })
-    .join("");
-
-}
-
-
-async function adminDeleteAnnadanamDonor(
-  donorId
-) {
-
-  if (!isAdmin) return;
-
-
-  if (
-    !confirm(
-      "Remove this Annadanam registration?"
-    )
-  ) {
-    return;
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("annadanam_donors")
-      .delete()
-      .eq("id", donorId);
-
-
-  if (error) {
-
-    showToast(
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
-
-  showToast(
-    "Annadanam registration removed.",
-    "info"
-  );
-
-
-  await loadAnnadanamSlots();
-
-  renderAdminAnnadanamList();
-
-}
-
-
-/* ============================================================
-   GALLERY
-============================================================ */
-
-async function loadGallery() {
 
   const {
     data,
     error
   } =
     await supabaseClient
-      .from("gallery")
+
+      .from(
+        "carousel_slides"
+      )
+
       .select("*")
-      .order("created_at", {
-        ascending: false
-      });
+
+      .order(
+        "sort_order",
+        {
+          ascending: true
+        }
+      );
 
 
   if (error) {
 
-    console.error(
-      "Gallery error:",
-      error
-    );
+    container.innerHTML = `
 
-    document.getElementById(
-      "galleryStatus"
-    ).textContent =
-      "Unable to load gallery.";
+      <p>
+        Unable to load carousel slides.
+      </p>
+
+    `;
 
     return;
+
   }
 
 
-  galleryItems =
-    Array.isArray(data)
-      ? data
-      : [];
+  if (count) {
+
+    count.textContent =
+      data?.length || 0;
+
+  }
 
 
-  renderGallery();
+  if (!data?.length) {
+
+    container.innerHTML = `
+
+      <p
+        style="
+          text-align:center;
+          color:var(--muted);
+          padding:25px;
+        ">
+
+        No uploaded hero slides yet.
+
+      </p>
+
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    data.map(
+      slide => `
+
+        <div class="carousel-slide-item">
+
+          <img
+            class="carousel-slide-thumb"
+            src="${escapeHtml(
+              slide.image_url
+            )}"
+            alt="">
+
+          <div>
+
+            <div class="carousel-slide-title">
+
+              ${escapeHtml(
+                slide.title
+              )}
+
+            </div>
+
+            <div class="carousel-slide-tag">
+
+              ${escapeHtml(
+                slide.tag ||
+                "Festival slide"
+              )}
+
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            class="btn-remove-slide"
+            onclick="removeCarouselSlide('${slide.id}')">
+
+            <span
+              class="material-symbols-outlined"
+              style="font-size:15px">
+
+              delete
+
+            </span>
+
+            Remove
+
+          </button>
+
+        </div>
+
+      `
+    ).join("");
 
 }
 
 
-/* ============================================================
-   GALLERY URL
-============================================================ */
+window.removeCarouselSlide =
+  async function (id) {
 
-function getGalleryUrl(
-  storagePath
-) {
+    if (!isAdmin) {
 
-  if (!storagePath) {
-    return "";
-  }
+      return;
+
+    }
+
+    const slide =
+      heroSlides.find(
+        item =>
+          item.id === id
+      );
+
+    if (!slide) {
+
+      return;
+
+    }
+
+    if (
+      !confirm(
+        `Remove "${slide.title}" from the hero carousel?`
+      )
+    ) {
+
+      return;
+
+    }
 
 
-  const {
-    data
-  } =
-    supabaseClient.storage
-      .from("festival-images")
-      .getPublicUrl(
-        storagePath
+    try {
+
+      const {
+        error
+      } =
+        await supabaseClient
+
+          .from(
+            "carousel_slides"
+          )
+
+          .delete()
+
+          .eq(
+            "id",
+            id
+          );
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      if (slide.storagePath) {
+
+        await deleteStorageFile(
+          slide.storagePath
+        );
+
+      }
+
+
+      await loadCarousel();
+
+      await renderCarouselSlidesList();
+
+      showToast(
+        "Hero slide removed.",
+        "info"
+      );
+
+    }
+    catch (error) {
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        "Unable to remove slide.",
+        "error"
+      );
+
+    }
+
+  };
+
+
+/* =========================================================
+   GALLERY
+   ========================================================= */
+
+async function loadGallery() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+
+        .from("gallery")
+
+        .select("*")
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    galleryData =
+      (data || []).map(
+        row => ({
+
+          id:
+            row.id,
+
+          image:
+            row.storage_path
+              ? getPublicStorageUrl(
+                  row.storage_path
+                )
+              : row.image_url ||
+                "",
+
+          storagePath:
+            row.storage_path,
+
+          title:
+            row.caption ||
+            row.file_name ||
+            "Festival Photo",
+
+          tag:
+            row.category ||
+            "Festival",
+
+          alt:
+            row.caption ||
+            row.file_name ||
+            "Festival Photo"
+
+        })
       );
 
 
-  return data?.publicUrl || "";
+    renderGallery();
+
+  }
+  catch (error) {
+
+    console.error(
+      "Gallery load error:",
+      error
+    );
+
+    galleryData = [];
+
+    renderGallery();
+
+    showToast(
+      "Unable to load gallery from Supabase.",
+      "error"
+    );
+
+  }
 
 }
 
-
-/* ============================================================
-   RENDER GALLERY
-============================================================ */
 
 function renderGallery() {
 
@@ -1739,449 +1874,424 @@ function renderGallery() {
       "galleryGrid"
     );
 
-
-  const status =
-    document.getElementById(
-      "galleryStatus"
-    );
-
-
-  if (!grid) return;
-
-
-  if (!galleryItems.length) {
-
-    grid.innerHTML = `
-      <div
-        style="
-          grid-column:1/-1;
-          padding:50px;
-          text-align:center;
-          color:rgba(255,255,255,.6);
-        "
-      >
-        <div style="font-size:45px;">
-          📷
-        </div>
-
-        <h3>
-          No festival photos yet
-        </h3>
-
-        <p>
-          Photos uploaded by the administrator
-          will appear here.
-        </p>
-      </div>
-    `;
-
-
-    if (status) {
-
-      status.textContent =
-        "Shared gallery • No photos yet";
-
-    }
-
+  if (!grid) {
 
     return;
+
   }
 
 
-  if (status) {
+  if (!galleryData.length) {
 
-    status.textContent =
-      `${galleryItems.length} shared festival photo${
-        galleryItems.length === 1
-          ? ""
-          : "s"
-      }`;
+    grid.innerHTML = `
+
+      <div
+        style="
+          grid-column:1/-1;
+          text-align:center;
+          padding:45px 20px;
+          border:1px dashed rgba(255,255,255,.25);
+          border-radius:18px;
+          color:#cdbdb5;
+        ">
+
+        <span
+          class="material-symbols-outlined"
+          style="font-size:44px">
+
+          photo_library
+
+        </span>
+
+        <h3
+          style="
+            font-family:var(--font-display);
+          ">
+
+          No photos yet
+
+        </h3>
+
+        <p>
+          Festival photos will appear here.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
 
   }
 
 
   grid.innerHTML =
-    galleryItems
-      .map(
-        (item, index) => {
+    galleryData.map(
+      (item, index) => `
 
-          const imageUrl =
-            getGalleryUrl(
-              item.storage_path
-            );
+        <article
+          class="gallery-card"
+          role="button"
+          tabindex="0"
+          aria-label="View ${escapeHtml(item.title)}"
+          onclick="openLightbox(${index})"
+          onkeydown="galleryKeydown(event,${index})">
 
+          ${
+            isAdmin
+              ? `
 
-          return `
-            <article
-              class="gallery-card"
-              onclick="openGalleryImage(${index})"
-            >
+                <div class="gallery-card-actions">
 
-              ${
-                isAdmin
-                  ? `
-                    <button
-                      class="gallery-delete-btn"
-                      onclick="deleteGalleryImage(event, '${item.id}')"
-                      aria-label="Delete image"
-                    >
-                      ×
-                    </button>
-                  `
-                  : ""
-              }
+                  <button
+                    type="button"
+                    class="btn-gallery-delete"
+                    onclick="deleteGalleryPhoto(event,${index})"
+                    aria-label="Remove photo">
 
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
 
-              <img
-                src="${escapeHtml(
-                  imageUrl
-                )}"
-                alt="${escapeHtml(
-                  item.caption ||
-                  "Festival photo"
-                )}"
-                loading="lazy"
-              >
+                  </button>
 
+                </div>
 
-              <div class="gallery-overlay">
-
-                <strong>
-                  ${escapeHtml(
-                    item.caption ||
-                    "Festival Moment"
-                  )}
-                </strong>
-
-                <small>
-                  ${formatDateTime(
-                    item.created_at
-                  )}
-                </small>
-
-              </div>
-
-            </article>
-          `;
-
-        }
-      )
-      .join("");
-
-}
-
-
-/* ============================================================
-   GALLERY UPLOAD
-============================================================ */
-
-function openGalleryUpload() {
-
-  if (!isAdmin) {
-
-    showToast(
-      "Only the administrator can upload images.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  document
-    .getElementById(
-      "galleryUploadForm"
-    )
-    ?.reset();
-
-
-  document
-    .getElementById(
-      "imagePreview"
-    )
-    ?.classList.add(
-      "hidden"
-    );
-
-
-  openModal(
-    "galleryUploadModal"
-  );
-
-}
-
-
-async function uploadGalleryImage(
-  event
-) {
-
-  event.preventDefault();
-
-
-  if (!isAdmin || !currentUser) {
-
-    showToast(
-      "Administrator login required.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  const file =
-    document.getElementById(
-      "galleryFile"
-    ).files[0];
-
-
-  const caption =
-    document.getElementById(
-      "galleryCaption"
-    ).value.trim();
-
-
-  if (!file) {
-
-    showToast(
-      "Please select an image.",
-      "info"
-    );
-
-    return;
-  }
-
-
-  if (!file.type.startsWith("image/")) {
-
-    showToast(
-      "Only image files are allowed.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  const maxSize =
-    10 * 1024 * 1024;
-
-
-  if (file.size > maxSize) {
-
-    showToast(
-      "Image must be smaller than 10 MB.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  const safeName =
-    sanitizeFileName(
-      file.name
-    );
-
-
-  const uniqueName =
-    `${crypto.randomUUID()}-${safeName}`;
-
-
-  try {
-
-    showToast(
-      "Uploading image...",
-      "info"
-    );
-
-
-    const {
-      error: uploadError
-    } =
-      await supabaseClient.storage
-        .from("festival-images")
-        .upload(
-          uniqueName,
-          file,
-          {
-            cacheControl: "3600",
-            upsert: false,
-            contentType: file.type
+              `
+              : ""
           }
+
+          <img
+            src="${escapeHtml(item.image)}"
+            alt="${escapeHtml(item.alt)}"
+            loading="lazy">
+
+          <div class="gallery-overlay">
+
+            <span class="gallery-tag">
+              ${escapeHtml(item.tag)}
+            </span>
+
+            <h4 class="gallery-title">
+              ${escapeHtml(item.title)}
+            </h4>
+
+          </div>
+
+        </article>
+
+      `
+    ).join("");
+
+}
+
+
+window.openPhotoUploadModal =
+  function () {
+
+    if (!isAdmin) {
+
+      openAdminLoginModal();
+
+      return;
+
+    }
+
+    document
+      .getElementById(
+        "photoUploadModal"
+      )
+      ?.classList.add("open");
+
+    document.body.classList.add(
+      "modal-open"
+    );
+
+  };
+
+
+window.closePhotoUploadModal =
+  function () {
+
+    closeModal(
+      document.getElementById(
+        "photoUploadModal"
+      )
+    );
+
+  };
+
+
+window.handlePhotoUpload =
+  async function (event) {
+
+    event.preventDefault();
+
+    if (!isAdmin || !currentUser) {
+
+      showToast(
+        "Admin login is required.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const file =
+      document
+        .getElementById(
+          "photoFileInput"
+        )
+        .files[0];
+
+    const title =
+      document
+        .getElementById(
+          "photoTitleInput"
+        )
+        .value
+        .trim();
+
+    const tag =
+      document
+        .getElementById(
+          "photoTagSelect"
+        )
+        .value;
+
+
+    if (!file || !title) {
+
+      showToast(
+        "Please select an image and enter a title.",
+        "info"
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      showToast(
+        "Uploading photo...",
+        "info"
+      );
+
+
+      const uploaded =
+        await uploadImage(
+          file,
+          "gallery"
         );
 
 
-    if (uploadError) {
+      const {
+        error
+      } =
+        await supabaseClient
 
-      throw uploadError;
+          .from("gallery")
+
+          .insert({
+
+            file_name:
+              file.name,
+
+            storage_path:
+              uploaded.storagePath,
+
+            caption:
+              title,
+
+            uploaded_by:
+              currentUser.id
+
+          });
+
+
+      if (error) {
+
+        await deleteStorageFile(
+          uploaded.storagePath
+        );
+
+        throw error;
+
+      }
+
+
+      await loadGallery();
+
+      closePhotoUploadModal();
+
+      document
+        .getElementById(
+          "photoFileInput"
+        )
+        .value = "";
+
+      document
+        .getElementById(
+          "photoTitleInput"
+        )
+        .value = "";
+
+      showToast(
+        "Festival photo uploaded successfully."
+      );
 
     }
+    catch (error) {
 
+      console.error(error);
 
-    const {
-      error: dbError
-    } =
-      await supabaseClient
-        .from("gallery")
-        .insert({
-          file_name: file.name,
-          storage_path: uniqueName,
-          caption:
-            caption ||
-            "Festival Moment",
-          uploaded_by:
-            currentUser.id
-        });
-
-
-    if (dbError) {
-
-      /*
-       * If database insertion fails,
-       * remove the uploaded file to avoid
-       * leaving an orphaned storage object.
-       */
-
-      await supabaseClient.storage
-        .from("festival-images")
-        .remove([
-          uniqueName
-        ]);
-
-
-      throw dbError;
-
-    }
-
-
-    closeModal(
-      "galleryUploadModal"
-    );
-
-
-    showToast(
-      "Festival photo uploaded successfully."
-    );
-
-
-    await loadGallery();
-
-  } catch (error) {
-
-    console.error(
-      "Gallery upload error:",
-      error
-    );
-
-
-    showToast(
-      error.message ||
-      "Image upload failed.",
-      "error"
-    );
-
-  }
-
-}
-
-
-/* ============================================================
-   DELETE GALLERY IMAGE
-============================================================ */
-
-async function deleteGalleryImage(
-  event,
-  id
-) {
-
-  event?.stopPropagation();
-
-
-  if (!isAdmin) {
-
-    showToast(
-      "Only the administrator can delete images.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  const item =
-    galleryItems.find(
-      gallery =>
-        gallery.id === id
-    );
-
-
-  if (!item) return;
-
-
-  if (
-    !confirm(
-      "Delete this festival photo permanently?"
-    )
-  ) {
-    return;
-  }
-
-
-  try {
-
-    const {
-      error: storageError
-    } =
-      await supabaseClient.storage
-        .from("festival-images")
-        .remove([
-          item.storage_path
-        ]);
-
-
-    if (storageError) {
-
-      console.warn(
-        "Storage delete warning:",
-        storageError
+      showToast(
+        error.message ||
+        "Photo upload failed.",
+        "error"
       );
 
     }
 
-
-    const {
-      error: dbError
-    } =
-      await supabaseClient
-        .from("gallery")
-        .delete()
-        .eq("id", id);
+  };
 
 
-    if (dbError) {
+window.deleteGalleryPhoto =
+  async function (event, index) {
 
-      throw dbError;
+    event?.stopPropagation();
+
+    event?.preventDefault();
+
+    if (!isAdmin) {
+
+      showToast(
+        "Admin login is required.",
+        "error"
+      );
+
+      return;
 
     }
 
 
-    showToast(
-      "Festival photo deleted.",
-      "info"
-    );
+    const item =
+      galleryData[index];
+
+    if (!item) {
+
+      return;
+
+    }
 
 
-    await loadGallery();
+    if (
+      !confirm(
+        `Remove "${item.title}" from the gallery?`
+      )
+    ) {
 
-  } catch (error) {
+      return;
 
-    console.error(error);
+    }
 
-    showToast(
-      error.message ||
-      "Unable to delete photo.",
-      "error"
+
+    try {
+
+      if (item.id) {
+
+        const {
+          error
+        } =
+          await supabaseClient
+
+            .from("gallery")
+
+            .delete()
+
+            .eq(
+              "id",
+              item.id
+            );
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+      }
+
+
+      if (item.storagePath) {
+
+        await deleteStorageFile(
+          item.storagePath
+        );
+
+      }
+
+
+      await loadGallery();
+
+      closeLightbox();
+
+      showToast(
+        "Photo removed.",
+        "info"
+      );
+
+    }
+    catch (error) {
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        "Unable to remove photo.",
+        "error"
+      );
+
+    }
+
+  };
+
+
+async function deleteStorageFile(
+  storagePath
+) {
+
+  if (!storagePath) {
+
+    return;
+
+  }
+
+  const {
+    error
+  } =
+    await supabaseClient
+
+      .storage
+
+      .from(
+        STORAGE_BUCKET
+      )
+
+      .remove([
+        storagePath
+      ]);
+
+  if (error) {
+
+    console.warn(
+      "Storage deletion warning:",
+      error
     );
 
   }
@@ -2189,104 +2299,173 @@ async function deleteGalleryImage(
 }
 
 
-/* ============================================================
+/* =========================================================
    LIGHTBOX
-============================================================ */
+   ========================================================= */
 
-function openGalleryImage(index) {
+window.galleryKeydown =
+  function (
+    event,
+    index
+  ) {
 
-  const item =
-    galleryItems[index];
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+
+      event.preventDefault();
+
+      openLightbox(index);
+
+    }
+
+  };
 
 
-  if (!item) return;
+window.openLightbox =
+  function (index) {
+
+    const item =
+      galleryData[index];
+
+    if (!item) {
+
+      return;
+
+    }
+
+    currentLightboxItem =
+      item;
+
+    const modal =
+      document.getElementById(
+        "galleryModal"
+      );
+
+    const image =
+      document.getElementById(
+        "modalImg"
+      );
+
+    const title =
+      document.getElementById(
+        "modalTitle"
+      );
+
+    const deleteButton =
+      document.getElementById(
+        "deleteLightboxBtn"
+      );
 
 
-  currentGalleryIndex =
-    index;
+    image.src =
+      item.image;
+
+    image.alt =
+      item.alt ||
+      item.title;
+
+    title.textContent =
+      item.title;
 
 
-  const imageUrl =
-    getGalleryUrl(
-      item.storage_path
+    if (deleteButton) {
+
+      deleteButton.style.display =
+        isAdmin
+          ? "inline-flex"
+          : "none";
+
+    }
+
+
+    openModal(modal);
+
+  };
+
+
+window.closeLightbox =
+  function () {
+
+    closeModal(
+      document.getElementById(
+        "galleryModal"
+      )
     );
 
+    currentLightboxItem =
+      null;
 
-  document.getElementById(
-    "lightboxImage"
-  ).src =
-    imageUrl;
-
-
-  document.getElementById(
-    "lightboxImage"
-  ).alt =
-    item.caption ||
-    "Festival photo";
+  };
 
 
-  document.getElementById(
-    "lightboxTitle"
-  ).textContent =
-    item.caption ||
-    "Festival Moment";
+window.deleteCurrentLightboxPhoto =
+  async function () {
+
+    if (!currentLightboxItem) {
+
+      return;
+
+    }
 
 
-  document.getElementById(
-    "lightboxDate"
-  ).textContent =
-    formatDateTime(
-      item.created_at
-    );
+    const index =
+      galleryData.findIndex(
+        item =>
+          item.id ===
+          currentLightboxItem.id
+      );
 
 
-  const deleteButton =
+    if (index >= 0) {
+
+      await deleteGalleryPhoto(
+        null,
+        index
+      );
+
+    }
+
+  };
+
+
+/* =========================================================
+   PUJA SEVA
+   ========================================================= */
+
+function setupPujaDateSelect() {
+
+  const select =
     document.getElementById(
-      "lightboxDelete"
+      "slotDateInput"
     );
 
+  if (!select) {
 
-  if (isAdmin) {
-
-    deleteButton.classList.remove(
-      "hidden"
-    );
-
-    deleteButton.onclick =
-      () => {
-
-        deleteGalleryImage(
-          null,
-          item.id
-        );
-
-        closeModal(
-          "lightboxModal"
-        );
-
-      };
-
-  } else {
-
-    deleteButton.classList.add(
-      "hidden"
-    );
+    return;
 
   }
 
 
-  openModal(
-    "lightboxModal"
-  );
+  select.innerHTML =
+    PUJA_DATES.map(
+      day => `
+
+        <option
+          value="${day.date}">
+
+          ${day.label}
+
+        </option>
+
+      `
+    ).join("");
 
 }
 
 
-/* ============================================================
-   CONTRIBUTION SUMMARY
-============================================================ */
-
-async function loadContributionSummary() {
+async function loadPujaBookings() {
 
   try {
 
@@ -2294,77 +2473,55 @@ async function loadContributionSummary() {
       data,
       error
     } =
-      await supabaseClient.rpc(
-        "get_contribution_summary"
-      );
+      await supabaseClient
+
+        .from("puja_seva")
+
+        .select("*")
+
+        .order(
+          "seva_date",
+          {
+            ascending: true
+          }
+        )
+
+        .order(
+          "slot_number",
+          {
+            ascending: true
+          }
+        );
 
 
     if (error) {
 
-      console.warn(
-        "Contribution summary:",
-        error
-      );
-
-      return;
-    }
-
-
-    if (!data) return;
-
-
-    /*
-     * The website intentionally displays
-     * only aggregate information.
-     */
-
-    if (
-      typeof data === "object" &&
-      !Array.isArray(data)
-    ) {
-
-      const contributorCount =
-        data.contributor_count ??
-        data.total_contributors ??
-        data.contributors;
-
-
-      const flatCount =
-        data.flat_count ??
-        data.total_flats ??
-        data.participating_flats;
-
-
-      if (
-        contributorCount !== undefined
-      ) {
-
-        document.getElementById(
-          "statContributors"
-        ).textContent =
-          contributorCount;
-
-      }
-
-
-      if (
-        flatCount !== undefined
-      ) {
-
-        document.getElementById(
-          "statFlats"
-        ).textContent =
-          flatCount;
-
-      }
+      throw error;
 
     }
 
-  } catch (error) {
 
-    console.warn(
-      "Summary unavailable:",
+    pujaBookings =
+      data || [];
+
+
+    renderPujaTable();
+
+  }
+  catch (error) {
+
+    console.error(
+      "Puja load error:",
       error
+    );
+
+    pujaBookings = [];
+
+    renderPujaTable();
+
+    showToast(
+      "Unable to load Puja Seva bookings.",
+      "error"
     );
 
   }
@@ -2372,9 +2529,1214 @@ async function loadContributionSummary() {
 }
 
 
-/* ============================================================
+function renderPujaTable() {
+
+  const tbody =
+    document.getElementById(
+      "yajamanTableBody"
+    );
+
+  if (!tbody) {
+
+    return;
+
+  }
+
+
+  let rows = [];
+
+  let availableCount = 0;
+
+
+  PUJA_DATES.forEach(
+    day => {
+
+      for (
+        let slotNumber = 1;
+        slotNumber <= 3;
+        slotNumber++
+      ) {
+
+        const booking =
+          pujaBookings.find(
+            item =>
+              item.seva_date ===
+                day.date &&
+              Number(
+                item.slot_number
+              ) === slotNumber
+          );
+
+
+        if (booking) {
+
+          rows.push({
+
+            day,
+
+            slotNumber,
+
+            booking
+
+          });
+
+        }
+        else {
+
+          availableCount++;
+
+          rows.push({
+
+            day,
+
+            slotNumber,
+
+            booking: null
+
+          });
+
+        }
+
+      }
+
+    }
+  );
+
+
+  const count =
+    document.getElementById(
+      "availableSlotCount"
+    );
+
+  if (count) {
+
+    count.textContent =
+      availableCount;
+
+  }
+
+
+  tbody.innerHTML =
+    rows.map(
+      row => {
+
+        if (row.booking) {
+
+          const b =
+            row.booking;
+
+          return `
+
+            <tr>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    row.day.label
+                  )}
+                </strong>
+              </td>
+
+              <td>
+                Slot ${row.slotNumber}
+              </td>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    b.flat_number
+                  )}
+                </strong>
+              </td>
+
+              <td>
+
+                <strong>
+                  ${escapeHtml(
+                    b.family_name
+                  )}
+                </strong>
+
+                ${
+                  b.notes
+                    ? `
+                      <small
+                        style="
+                          display:block;
+                          color:var(--muted);
+                          font-size:.65rem;
+                        ">
+
+                        ${escapeHtml(
+                          b.notes
+                        )}
+
+                      </small>
+                    `
+                    : ""
+                }
+
+              </td>
+
+              <td>
+
+                ${escapeHtml(
+                  b.notes ||
+                  "Puja Seva"
+                )}
+
+                <span class="badge-confirmed">
+                  Confirmed
+                </span>
+
+              </td>
+
+              <td>
+
+                ${
+                  isAdmin
+                    ? `
+
+                      <button
+                        class="btn-slot-action btn-slot-edit"
+                        onclick="openPujaEdit('${b.id}')">
+
+                        <span
+                          class="material-symbols-outlined"
+                          style="font-size:14px">
+
+                          edit
+
+                        </span>
+
+                        Update
+
+                      </button>
+
+                    `
+                    : `
+
+                      <span class="badge-confirmed">
+                        Booked
+                      </span>
+
+                    `
+                }
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+
+
+        return `
+
+          <tr class="row-vacant">
+
+            <td>
+
+              <strong>
+                ${escapeHtml(
+                  row.day.label
+                )}
+              </strong>
+
+            </td>
+
+            <td>
+              Slot ${row.slotNumber}
+            </td>
+
+            <td>—</td>
+
+            <td>
+
+              <span class="badge-vacant">
+                Available
+              </span>
+
+            </td>
+
+            <td>
+              Puja Seva
+            </td>
+
+            <td>
+
+              <button
+                class="btn-slot-action btn-slot-book"
+                onclick="openPujaBooking('${row.day.date}',${row.slotNumber})">
+
+                <span
+                  class="material-symbols-outlined"
+                  style="font-size:14px">
+
+                  add_circle
+
+                </span>
+
+                Book Slot
+
+              </button>
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+window.openPujaBooking =
+  function (
+    date,
+    slotNumber
+  ) {
+
+    currentPujaRecord =
+      null;
+
+    document
+      .getElementById(
+        "slotModalTitle"
+      )
+      .textContent =
+      "Book Puja Seva";
+
+
+    document
+      .getElementById(
+        "slotIdInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "slotDateInput"
+      )
+      .value =
+      date;
+
+
+    document
+      .getElementById(
+        "slotNumberInput"
+      )
+      .value =
+      String(slotNumber);
+
+
+    document
+      .getElementById(
+        "flatNumberInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "familyYajamanInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "sevaPreferenceInput"
+      )
+      .value =
+      "Puja Seva";
+
+
+    document
+      .getElementById(
+        "gotramInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "clearSlotBtn"
+      )
+      .style.display =
+      "none";
+
+
+    openModal(
+      document.getElementById(
+        "slotModal"
+      )
+    );
+
+  };
+
+
+window.openPujaEdit =
+  async function (id) {
+
+    if (!isAdmin) {
+
+      openAdminLoginModal();
+
+      return;
+
+    }
+
+
+    const booking =
+      pujaBookings.find(
+        item =>
+          item.id === id
+      );
+
+    if (!booking) {
+
+      return;
+
+    }
+
+
+    currentPujaRecord =
+      booking;
+
+
+    document
+      .getElementById(
+        "slotModalTitle"
+      )
+      .textContent =
+      "Update Puja Seva";
+
+
+    document
+      .getElementById(
+        "slotIdInput"
+      )
+      .value =
+      booking.id;
+
+
+    document
+      .getElementById(
+        "slotDateInput"
+      )
+      .value =
+      booking.seva_date;
+
+
+    document
+      .getElementById(
+        "slotNumberInput"
+      )
+      .value =
+      String(
+        booking.slot_number
+      );
+
+
+    document
+      .getElementById(
+        "flatNumberInput"
+      )
+      .value =
+      booking.flat_number ||
+      "";
+
+
+    document
+      .getElementById(
+        "familyYajamanInput"
+      )
+      .value =
+      booking.family_name ||
+      "";
+
+
+    document
+      .getElementById(
+        "sevaPreferenceInput"
+      )
+      .value =
+      booking.notes ||
+      "Puja Seva";
+
+
+    document
+      .getElementById(
+        "gotramInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "clearSlotBtn"
+      )
+      .style.display =
+      "inline-flex";
+
+
+    openModal(
+      document.getElementById(
+        "slotModal"
+      )
+    );
+
+  };
+
+
+window.saveSlotDetails =
+  async function (event) {
+
+    event.preventDefault();
+
+
+    const date =
+      document
+        .getElementById(
+          "slotDateInput"
+        )
+        .value;
+
+    const slotNumber =
+      Number(
+        document
+          .getElementById(
+            "slotNumberInput"
+          )
+          .value
+      );
+
+    const flat =
+      document
+        .getElementById(
+          "flatNumberInput"
+        )
+        .value
+        .trim();
+
+    const family =
+      document
+        .getElementById(
+          "familyYajamanInput"
+        )
+        .value
+        .trim();
+
+    const seva =
+      document
+        .getElementById(
+          "sevaPreferenceInput"
+        )
+        .value
+        .trim();
+
+    const gotram =
+      document
+        .getElementById(
+          "gotramInput"
+        )
+        .value
+        .trim();
+
+
+    if (!date || !flat || !family) {
+
+      showToast(
+        "Please enter date, flat number and family name.",
+        "info"
+      );
+
+      return;
+
+    }
+
+
+    const payload = {
+
+      seva_date:
+        date,
+
+      slot_number:
+        slotNumber,
+
+      flat_number:
+        flat,
+
+      family_name:
+        family,
+
+      notes:
+        [
+          seva,
+          gotram
+            ? `Gotram: ${gotram}`
+            : ""
+        ]
+        .filter(Boolean)
+        .join(" • ")
+
+    };
+
+
+    try {
+
+      if (
+        currentPujaRecord &&
+        currentPujaRecord.id
+      ) {
+
+        if (!isAdmin) {
+
+          showToast(
+            "Only the admin can update an existing booking.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+
+            .from("puja_seva")
+
+            .update(payload)
+
+            .eq(
+              "id",
+              currentPujaRecord.id
+            );
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        showToast(
+          "Puja Seva booking updated."
+        );
+
+      }
+      else {
+
+        const {
+          error
+        } =
+          await supabaseClient
+
+            .from("puja_seva")
+
+            .insert(payload);
+
+
+        if (error) {
+
+          if (
+            error.code === "23505"
+          ) {
+
+            showToast(
+              "This Puja slot has already been booked. Please choose another slot.",
+              "error"
+            );
+
+            return;
+
+          }
+
+          throw error;
+
+        }
+
+
+        showToast(
+          "Puja Seva slot booked successfully."
+        );
+
+      }
+
+
+      closeSlotModal();
+
+      await loadPujaBookings();
+
+    }
+    catch (error) {
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        "Unable to save Puja booking.",
+        "error"
+      );
+
+    }
+
+  };
+
+
+window.clearSlotBooking =
+  async function () {
+
+    if (
+      !isAdmin ||
+      !currentPujaRecord
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      !confirm(
+        "Mark this Puja slot as vacant?"
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    try {
+
+      const {
+        error
+      } =
+        await supabaseClient
+
+          .from("puja_seva")
+
+          .delete()
+
+          .eq(
+            "id",
+            currentPujaRecord.id
+          );
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      closeSlotModal();
+
+      await loadPujaBookings();
+
+      showToast(
+        "Puja slot is now available.",
+        "info"
+      );
+
+    }
+    catch (error) {
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        "Unable to clear slot.",
+        "error"
+      );
+
+    }
+
+  };
+
+
+window.closeSlotModal =
+  function () {
+
+    closeModal(
+      document.getElementById(
+        "slotModal"
+      )
+    );
+
+    currentPujaRecord =
+      null;
+
+  };
+
+
+/* =========================================================
+   ANNADANAM
+   ========================================================= */
+
+async function loadAnnadanamDonors() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+
+        .from(
+          "annadanam_donors"
+        )
+
+        .select(
+          `
+            id,
+            flat_number,
+            family_name,
+            contact_number,
+            notes,
+            slot_id,
+            created_at,
+            annadanam_slots (
+              slot_number
+            )
+          `
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    annadanamDonors =
+      data || [];
+
+
+    renderAnnadanamTable();
+
+  }
+  catch (error) {
+
+    console.error(
+      "Annadanam load error:",
+      error
+    );
+
+    annadanamDonors = [];
+
+    renderAnnadanamTable();
+
+  }
+
+}
+
+
+function renderAnnadanamTable() {
+
+  const tbody =
+    document.getElementById(
+      "annadanamTableBody"
+    );
+
+  if (!tbody) {
+
+    return;
+
+  }
+
+
+  const grouped =
+    ANNADANAM_ITEMS.map(
+      (
+        item,
+        index
+      ) => {
+
+        const slotNumber =
+          index + 1;
+
+        const donors =
+          annadanamDonors.filter(
+            donor =>
+              Number(
+                donor
+                  .annadanam_slots
+                  ?.slot_number
+              ) === slotNumber
+          );
+
+
+        return {
+          item,
+          slotNumber,
+          donors
+        };
+
+      }
+    );
+
+
+  tbody.innerHTML =
+    grouped.map(
+      group => {
+
+        const donorText =
+          group.donors.length
+            ? group.donors
+                .map(
+                  donor =>
+                    `${escapeHtml(
+                      donor.family_name
+                    )} · Flat ${escapeHtml(
+                      donor.flat_number
+                    )}`
+                )
+                .join("<br>")
+            : `
+              <span class="badge-vacant">
+                Open for Support
+              </span>
+            `;
+
+
+        const action =
+          `
+            <button
+              class="btn-slot-action btn-slot-book"
+              onclick="openAnnadanamModal('${group.slotNumber}')">
+
+              <span
+                class="material-symbols-outlined"
+                style="font-size:14px">
+
+                volunteer_activism
+
+              </span>
+
+              Support
+
+            </button>
+          `;
+
+
+        return `
+
+          <tr>
+
+            <td>
+
+              ${
+                group.donors.length
+                  ? `
+                    <strong>
+                      ${donorText}
+                    </strong>
+                  `
+                  : `
+                    <span
+                      style="
+                        font-weight:800;
+                      ">
+
+                      Available
+
+                    </span>
+                  `
+              }
+
+            </td>
+
+            <td>
+
+              ${
+                group.donors.length
+                  ? group.donors
+                      .map(
+                        donor =>
+                          escapeHtml(
+                            donor.flat_number
+                          )
+                      )
+                      .join("<br>")
+                  : "—"
+              }
+
+            </td>
+
+            <td>
+
+              <strong>
+                ${escapeHtml(
+                  group.item
+                )}
+              </strong>
+
+              <small
+                style="
+                  display:block;
+                  color:var(--muted);
+                  margin-top:3px;
+                ">
+
+                Slot ${group.slotNumber}
+
+              </small>
+
+            </td>
+
+            <td>
+
+              ${action}
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+window.openAnnadanamModal =
+  async function (
+    slotNumber
+  ) {
+
+    currentAnnadanamSlot =
+      Number(slotNumber);
+
+
+    document
+      .getElementById(
+        "annadanamSlotIdInput"
+      )
+      .value =
+      String(slotNumber);
+
+
+    document
+      .getElementById(
+        "annadanamFlatInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "annadanamDonorInput"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "annadanamNotesInput"
+      )
+      .value = "";
+
+
+    openModal(
+      document.getElementById(
+        "annadanamModal"
+      )
+    );
+
+  };
+
+
+window.saveAnnadanamSponsorship =
+  async function (event) {
+
+    event.preventDefault();
+
+
+    const slotNumber =
+      Number(
+        document
+          .getElementById(
+            "annadanamSlotIdInput"
+          )
+          .value
+      );
+
+    const flat =
+      document
+        .getElementById(
+          "annadanamFlatInput"
+        )
+        .value
+        .trim();
+
+    const donor =
+      document
+        .getElementById(
+          "annadanamDonorInput"
+        )
+        .value
+        .trim();
+
+    const notes =
+      document
+        .getElementById(
+          "annadanamNotesInput"
+        )
+        .value
+        .trim();
+
+
+    if (
+      !slotNumber ||
+      !flat ||
+      !donor
+    ) {
+
+      showToast(
+        "Please enter flat number and sponsor name.",
+        "info"
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      const {
+        data: slot,
+        error: slotError
+      } =
+        await supabaseClient
+
+          .from(
+            "annadanam_slots"
+          )
+
+          .select("id")
+
+          .eq(
+            "slot_number",
+            slotNumber
+          )
+
+          .maybeSingle();
+
+
+      if (slotError) {
+
+        throw slotError;
+
+      }
+
+
+      if (!slot) {
+
+        throw new Error(
+          "Annadanam slot is not available."
+        );
+
+      }
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+
+          .from(
+            "annadanam_donors"
+          )
+
+          .insert({
+
+            slot_id:
+              slot.id,
+
+            flat_number:
+              flat,
+
+            family_name:
+              donor,
+
+            notes:
+              notes || null
+
+          });
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      closeAnnadanamModal();
+
+      await loadAnnadanamDonors();
+
+      showToast(
+        "Annadanam support registered successfully."
+      );
+
+    }
+    catch (error) {
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        "Unable to register Annadanam support.",
+        "error"
+      );
+
+    }
+
+  };
+
+
+window.closeAnnadanamModal =
+  function () {
+
+    closeModal(
+      document.getElementById(
+        "annadanamModal"
+      )
+    );
+
+    currentAnnadanamSlot =
+      null;
+
+  };
+
+
+/* =========================================================
    SCHEDULE
-============================================================ */
+   ========================================================= */
 
 function renderSchedule(
   filter = "all"
@@ -2382,11 +3744,14 @@ function renderSchedule(
 
   const container =
     document.getElementById(
-      "scheduleContainer"
+      "scheduleCardsContainer"
     );
 
+  if (!container) {
 
-  if (!container) return;
+    return;
+
+  }
 
 
   const filtered =
@@ -2401,152 +3766,213 @@ function renderSchedule(
 
   container.innerHTML =
     filtered.map(
-      item => `
-        <article
-          class="schedule-card ${
-            item.type === "Special"
-              ? "highlight"
-              : ""
-          }"
-        >
+      item => {
 
-          <div class="schedule-card-top">
-
-            <span class="day-badge">
-              ${escapeHtml(
-                item.day
-              )}
-              ·
-              ${escapeHtml(
-                item.date
-              )}
-            </span>
-
-            <span class="schedule-type">
-              ${escapeHtml(
-                item.type
-              )}
-            </span>
-
-          </div>
+        const badgeClass =
+          item.badgeType === "crimson"
+            ? "badge-day-crimson"
+            : item.badgeType === "saffron"
+              ? "badge-day-saffron"
+              : "badge-day-gold";
 
 
-          <h3>
-            ${escapeHtml(
-              item.title
-            )}
-          </h3>
+        return `
 
+          <article
+            class="
+              schedule-card
+              ${
+                item.isHighlight
+                  ? "highlight-card"
+                  : ""
+              }
+            ">
 
-          <div class="schedule-meta">
+            <div
+              class="${
+                item.isHighlight
+                  ? "card-accent-bar"
+                  : "gold-accent-bar"
+              }"
+              style="
+                position:absolute;
+                top:0;
+                left:0;
+              ">
+            </div>
 
-            <div>
+            <div class="schedule-card-header">
 
-              <span class="material-symbols-outlined">
-                schedule
+              <span
+                class="
+                  schedule-day-badge
+                  ${badgeClass}
+                ">
+
+                ${escapeHtml(
+                  item.dayNumber
+                )}
+                •
+                ${escapeHtml(
+                  item.date
+                )}
+
               </span>
 
-              ${escapeHtml(
-                item.time
-              )}
+              <span class="schedule-tag">
+
+                ${escapeHtml(
+                  item.badgeText
+                )}
+
+              </span>
 
             </div>
 
-
-            <div>
-
-              <span class="material-symbols-outlined">
-                location_on
-              </span>
+            <h3 class="schedule-card-title">
 
               ${escapeHtml(
-                item.location
+                item.title
               )}
+
+            </h3>
+
+            <div class="schedule-meta">
+
+              <div class="meta-item">
+
+                <span
+                  class="material-symbols-outlined">
+
+                  schedule
+
+                </span>
+
+                <strong>
+
+                  ${escapeHtml(
+                    item.time
+                  )}
+
+                </strong>
+
+              </div>
+
+
+              <div class="meta-item">
+
+                <span
+                  class="material-symbols-outlined">
+
+                  location_on
+
+                </span>
+
+                <span>
+
+                  ${escapeHtml(
+                    item.location
+                  )}
+
+                </span>
+
+              </div>
 
             </div>
 
-          </div>
+            <p class="schedule-card-desc">
 
+              ${escapeHtml(
+                item.description
+              )}
 
-          <p>
-            ${escapeHtml(
-              item.description
-            )}
-          </p>
+            </p>
 
-        </article>
-      `
-    )
-    .join("");
+          </article>
+
+        `;
+
+      }
+    ).join("");
 
 }
 
 
-function setupScheduleFilters() {
+window.filterSchedule =
+  function (category) {
 
-  document
-    .querySelectorAll(
-      ".schedule-filter"
-    )
-    .forEach(button => {
+    document
+      .querySelectorAll(
+        ".schedule-filter-btn"
+      )
+      .forEach(
+        button => {
 
-      button.addEventListener(
-        "click",
-        () => {
-
-          document
-            .querySelectorAll(
-              ".schedule-filter"
-            )
-            .forEach(
-              item =>
-                item.classList.remove(
-                  "active"
-                )
-            );
-
-
-          button.classList.add(
-            "active"
-          );
-
-
-          renderSchedule(
-            button.dataset.filter
+          button.classList.toggle(
+            "active",
+            button.dataset.filter ===
+              category
           );
 
         }
       );
 
-    });
+    renderSchedule(
+      category
+    );
 
-}
+  };
 
 
-/* ============================================================
+/* =========================================================
    NAVIGATION
-============================================================ */
+   ========================================================= */
 
-function setupNavigation() {
+function setupMobileNav() {
 
-  const menuButton =
+  const toggle =
     document.getElementById(
       "mobileMenuBtn"
     );
-
 
   const drawer =
     document.getElementById(
       "mobileDrawer"
     );
 
+  const icon =
+    document.getElementById(
+      "menuIcon"
+    );
 
-  menuButton?.addEventListener(
+  if (!toggle || !drawer) {
+
+    return;
+
+  }
+
+
+  toggle.addEventListener(
     "click",
     () => {
 
-      drawer?.classList.toggle(
-        "open"
+      const open =
+        drawer.classList.toggle(
+          "open"
+        );
+
+      if (icon) {
+
+        icon.textContent =
+          open
+            ? "close"
+            : "menu";
+
+      }
+
+      toggle.setAttribute(
+        "aria-expanded",
+        String(open)
       );
 
     }
@@ -2554,255 +3980,206 @@ function setupNavigation() {
 
 
   drawer
-    ?.querySelectorAll("a")
-    .forEach(link => {
+    .querySelectorAll("a")
+    .forEach(
+      link => {
 
-      link.addEventListener(
-        "click",
-        () => {
+        link.addEventListener(
+          "click",
+          () => {
 
-          drawer.classList.remove(
-            "open"
-          );
+            drawer.classList.remove(
+              "open"
+            );
 
-        }
-      );
+            if (icon) {
 
-    });
+              icon.textContent =
+                "menu";
 
+            }
 
-  document.getElementById(
-    "adminLoginNav"
-  )?.addEventListener(
-    "click",
-    openLoginModal
-  );
+            toggle.setAttribute(
+              "aria-expanded",
+              "false"
+            );
 
-
-  document.getElementById(
-    "mobileAdminLogin"
-  )?.addEventListener(
-    "click",
-    () => {
-
-      drawer?.classList.remove(
-        "open"
-      );
-
-      if (isAdmin) {
-
-        document
-          .getElementById(
-            "adminPanel"
-          )
-          ?.scrollIntoView({
-            behavior: "smooth"
-          });
-
-      } else {
-
-        openLoginModal();
+          }
+        );
 
       }
-
-    }
-  );
+    );
 
 }
 
 
-/* ============================================================
-   FORMS
-============================================================ */
+function setupScrollSpy() {
 
-function setupForms() {
+  const sections =
+    [
+      ...document.querySelectorAll(
+        "section[id]"
+      )
+    ];
 
-  document.getElementById(
-    "loginForm"
-  )?.addEventListener(
-    "submit",
-    loginAdmin
-  );
-
-
-  document.getElementById(
-    "pujaForm"
-  )?.addEventListener(
-    "submit",
-    submitPujaBooking
-  );
+  const links =
+    [
+      ...document.querySelectorAll(
+        ".desktop-nav .nav-link"
+      )
+    ];
 
 
-  document.getElementById(
-    "annadanamForm"
-  )?.addEventListener(
-    "submit",
-    submitAnnadanam
-  );
+  if (
+    !sections.length ||
+    !links.length
+  ) {
+
+    return;
+
+  }
 
 
-  document.getElementById(
-    "galleryUploadForm"
-  )?.addEventListener(
-    "submit",
-    uploadGalleryImage
-  );
+  const observer =
+    new IntersectionObserver(
+      entries => {
 
+        entries.forEach(
+          entry => {
 
-  document.getElementById(
-    "adminLogout"
-  )?.addEventListener(
-    "click",
-    logoutAdmin
-  );
+            if (
+              !entry.isIntersecting
+            ) {
 
+              return;
 
-  document.getElementById(
-    "adminManagePuja"
-  )?.addEventListener(
-    "click",
-    openAdminPujaManager
-  );
+            }
 
+            links.forEach(
+              link => {
 
-  document.getElementById(
-    "adminManageAnnadanam"
-  )?.addEventListener(
-    "click",
-    openAdminAnnadanamManager
-  );
+                link.classList.toggle(
+                  "active",
+                  link.getAttribute(
+                    "href"
+                  ) ===
+                    `#${entry.target.id}`
+                );
 
+              }
+            );
 
-  document.getElementById(
-    "adminGalleryButton"
-  )?.addEventListener(
-    "click",
-    openGalleryUpload
-  );
+          }
+        );
 
-}
+      },
+      {
+        rootMargin:
+          "-25% 0px -65% 0px",
 
-
-/* ============================================================
-   GALLERY PREVIEW
-============================================================ */
-
-function setupGalleryPreview() {
-
-  const input =
-    document.getElementById(
-      "galleryFile"
+        threshold: 0
+      }
     );
 
 
-  const preview =
-    document.getElementById(
-      "imagePreview"
-    );
-
-
-  input?.addEventListener(
-    "change",
-    () => {
-
-      const file =
-        input.files?.[0];
-
-
-      if (!file) {
-
-        preview.classList.add(
-          "hidden"
-        );
-
-        preview.innerHTML =
-          "";
-
-        return;
-      }
-
-
-      if (
-        !file.type.startsWith(
-          "image/"
-        )
-      ) {
-
-        showToast(
-          "Please select an image file.",
-          "error"
-        );
-
-        input.value = "";
-
-        return;
-      }
-
-
-      const url =
-        URL.createObjectURL(
-          file
-        );
-
-
-      preview.innerHTML = `
-        <img
-          src="${url}"
-          alt="Image preview"
-        >
-      `;
-
-
-      preview.classList.remove(
-        "hidden"
-      );
-
-    }
+  sections.forEach(
+    section =>
+      observer.observe(
+        section
+      )
   );
 
 }
 
 
-/* ============================================================
-   MODALS
-============================================================ */
+/* =========================================================
+   MODAL HELPERS
+   ========================================================= */
 
-function setupModals() {
+function openModal(modal) {
 
-  document
-    .querySelectorAll(
-      "[data-close-modal]"
+  if (!modal) {
+
+    return;
+
+  }
+
+  modal.classList.add(
+    "open"
+  );
+
+  document.body.classList.add(
+    "modal-open"
+  );
+
+}
+
+
+function closeModal(modal) {
+
+  if (!modal) {
+
+    return;
+
+  }
+
+  modal.classList.remove(
+    "open"
+  );
+
+  if (
+    !document.querySelector(
+      ".modal.open"
     )
-    .forEach(button => {
+  ) {
 
-      button.addEventListener(
-        "click",
-        () => {
+    document.body.classList.remove(
+      "modal-open"
+    );
 
-          closeModal(
-            button.dataset.closeModal
-          );
+  }
 
-        }
-      );
-
-    });
+}
 
 
-  document
-    .querySelectorAll(".modal")
-    .forEach(modal => {
+function setupModalAccessibility() {
 
-      modal.addEventListener(
-        "click",
-        event => {
+  document.addEventListener(
+    "click",
+    event => {
+
+      const modals = [
+
+        "adminLoginModal",
+
+        "galleryModal",
+
+        "slotModal",
+
+        "annadanamModal",
+
+        "photoUploadModal",
+
+        "carouselModal"
+
+      ];
+
+
+      modals.forEach(
+        id => {
+
+          const modal =
+            document.getElementById(
+              id
+            );
 
           if (
-            event.target === modal
+            event.target ===
+            modal
           ) {
 
             closeModal(
-              modal.id
+              modal
             );
 
           }
@@ -2810,7 +4187,8 @@ function setupModals() {
         }
       );
 
-    });
+    }
+  );
 
 
   document.addEventListener(
@@ -2818,19 +4196,26 @@ function setupModals() {
     event => {
 
       if (
-        event.key === "Escape"
+        event.key !==
+        "Escape"
       ) {
 
-        document
-          .querySelectorAll(
-            ".modal.open"
-          )
-          .forEach(
-            modal =>
-              closeModal(
-                modal.id
-              )
-          );
+        return;
+
+      }
+
+
+      const open =
+        document.querySelector(
+          ".modal.open"
+        );
+
+
+      if (open) {
+
+        closeModal(
+          open
+        );
 
       }
 
@@ -2840,63 +4225,9 @@ function setupModals() {
 }
 
 
-function openModal(id) {
-
-  document
-    .getElementById(id)
-    ?.classList.add(
-      "open"
-    );
-
-}
-
-
-function closeModal(id) {
-
-  document
-    .getElementById(id)
-    ?.classList.remove(
-      "open"
-    );
-
-}
-
-
-function openLoginModal() {
-
-  if (isAdmin) {
-
-    document
-      .getElementById(
-        "adminPanel"
-      )
-      ?.scrollIntoView({
-        behavior: "smooth"
-      });
-
-    return;
-  }
-
-
-  document
-    .getElementById(
-      "loginError"
-    )
-    ?.classList.add(
-      "hidden"
-    );
-
-
-  openModal(
-    "loginModal"
-  );
-
-}
-
-
-/* ============================================================
+/* =========================================================
    UTILITIES
-============================================================ */
+   ========================================================= */
 
 function escapeHtml(
   value = ""
@@ -2905,117 +4236,28 @@ function escapeHtml(
   return String(value)
     .replace(
       /[&<>"']/g,
-      character => ({
+      char => ({
+
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': "&quot;",
         "'": "&#039;"
-      })[character]
+
+      }[char])
     );
 
 }
 
 
-function sanitizeFileName(
-  filename
-) {
+function clone(value) {
 
-  return filename
-    .toLowerCase()
-    .replace(
-      /[^a-z0-9._-]/g,
-      "-"
-    )
-    .replace(
-      /-+/g,
-      "-"
-    );
-
-}
-
-
-function formatDate(
-  dateString
-) {
-
-  if (!dateString) {
-    return "";
-  }
-
-
-  const date =
-    new Date(
-      `${dateString}T00:00:00`
-    );
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return dateString;
-
-  }
-
-
-  return date.toLocaleDateString(
-    "en-IN",
-    {
-      day: "2-digit",
-      month: "short",
-      year: "numeric"
-    }
+  return JSON.parse(
+    JSON.stringify(value)
   );
 
 }
 
-
-function formatDateTime(
-  dateString
-) {
-
-  if (!dateString) {
-    return "";
-  }
-
-
-  const date =
-    new Date(
-      dateString
-    );
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return "";
-
-  }
-
-
-  return date.toLocaleString(
-    "en-IN",
-    {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    }
-  );
-
-}
-
-
-/* ============================================================
-   TOAST
-============================================================ */
 
 function showToast(
   message,
@@ -3027,8 +4269,19 @@ function showToast(
       "toastContainer"
     );
 
+  if (!container) {
 
-  if (!container) return;
+    return;
+
+  }
+
+
+  const icon =
+    type === "success"
+      ? "check_circle"
+      : type === "error"
+        ? "error"
+        : "info";
 
 
   const toast =
@@ -3036,13 +4289,24 @@ function showToast(
       "div"
     );
 
-
   toast.className =
     `toast ${type}`;
 
 
-  toast.textContent =
-    message;
+  toast.innerHTML = `
+
+    <span
+      class="material-symbols-outlined">
+
+      ${icon}
+
+    </span>
+
+    <span>
+      ${escapeHtml(message)}
+    </span>
+
+  `;
 
 
   container.appendChild(
@@ -3060,48 +4324,56 @@ function showToast(
         "translateY(10px)";
 
       toast.style.transition =
-        ".25s";
+        "all .25s ease";
+
 
       setTimeout(
-        () =>
-          toast.remove(),
+        () => toast.remove(),
         250
       );
 
     },
-    3200
+    3500
   );
 
 }
 
 
-/* ============================================================
-   GLOBAL FUNCTIONS
-============================================================ */
+/* =========================================================
+   SUPABASE AUTH LISTENER
+   ========================================================= */
 
-window.openPujaBooking =
-  openPujaBooking;
+supabaseClient.auth.onAuthStateChange(
+  async (
+    event,
+    session
+  ) => {
 
-window.adminEditPuja =
-  adminEditPuja;
+    if (session) {
 
-window.adminClearPuja =
-  adminClearPuja;
+      currentUser =
+        session.user;
 
-window.openAnnadanamBooking =
-  openAnnadanamBooking;
+      if (
+        event ===
+        "SIGNED_IN"
+      ) {
 
-window.adminDeleteAnnadanamDonor =
-  adminDeleteAnnadanamDonor;
+        await checkAdminSession();
 
-window.openGalleryImage =
-  openGalleryImage;
+      }
 
-window.deleteGalleryImage =
-  deleteGalleryImage;
+    }
+    else {
 
-window.openLoginModal =
-  openLoginModal;
+      currentUser =
+        null;
 
-window.openGalleryUpload =
-  openGalleryUpload;
+      setAdminState(
+        false
+      );
+
+    }
+
+  }
+);
