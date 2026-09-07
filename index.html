@@ -14,7 +14,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,0" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=20260907-4">
+  <link rel="stylesheet" href="style.css?v=20260907-6">
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -416,8 +416,11 @@
 
     <div
       class="honour-card honour-card-idol"
-      role="group"
-      aria-label="Idol Donor">
+      role="button"
+      tabindex="0"
+      aria-label="Idol Donor — celebrate"
+      onclick="celebrateHonourCard(this)"
+      onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); celebrateHonourCard(this); }">
 
       <span class="honour-card-shine" aria-hidden="true"></span>
       <span class="honour-card-orbit" aria-hidden="true"></span>
@@ -436,7 +439,7 @@
     <button
       class="honour-card honour-card-annadanam"
       type="button"
-      onclick="document.getElementById('puja-annadanam')?.scrollIntoView({behavior:'smooth'})"
+      onclick="celebrateHonourCard(this); setTimeout(() => document.getElementById('puja-annadanam')?.scrollIntoView({behavior:'smooth'}), 180)"
       aria-label="View Saturday Annadanam details">
 
       <span class="honour-card-shine" aria-hidden="true"></span>
@@ -1311,7 +1314,7 @@
 </div>
 
 
-<script src="script.js?v=20260907-5"></script>
+<script src="script.js?v=20260907-6"></script>
 
 </body>
 </html>

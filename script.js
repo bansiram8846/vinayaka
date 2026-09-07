@@ -4293,32 +4293,30 @@ supabaseClient.auth.onAuthStateChange(
    FESTIVAL EFFECTS
    ========================================================= */
 
+let templeBellAudio = null;
 window.ringTempleBell = function () {
   const button = document.getElementById("templeBellBtn");
-  if (!button) return;
-  button.classList.remove("bell-ringing");
-  void button.offsetWidth;
-  button.classList.add("bell-ringing");
-  setTimeout(() => button.classList.remove("bell-ringing"), 850);
+  if (button) {
+    button.classList.remove("bell-ringing");
+    void button.offsetWidth;
+    button.classList.add("bell-ringing");
+    setTimeout(() => button.classList.remove("bell-ringing"), 850);
+  }
 
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) {
-      const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(540, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 1.1);
-      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.15);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 1.2);
-      osc.addEventListener("ended", () => ctx.close());
+    if (!templeBellAudio) {
+      templeBellAudio = new Audio("temple-bell-10s.wav");
+      templeBellAudio.preload = "auto";
+      templeBellAudio.volume = 0.9;
     }
-  } catch (_) {}
+    templeBellAudio.currentTime = 0;
+    const playPromise = templeBellAudio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(err => console.warn("Temple bell playback blocked", err));
+    }
+  } catch (err) {
+    console.warn("Temple bell sound unavailable", err);
+  }
 };
 
 window.scatterFlowers = function () {
@@ -4343,6 +4341,69 @@ window.scatterFlowers = function () {
     layer.appendChild(el);
     setTimeout(() => el.remove(), 6500);
   }
+};
+
+/* =========================================================
+   HONOUR CARD CELEBRATION EFFECT
+   ========================================================= */
+function playApplause() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const duration = 1.35;
+    const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * duration), ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / ctx.sampleRate;
+      const envelope = Math.min(1, t * 12) * Math.max(0, 1 - t / duration);
+      const clapPulse = Math.pow(Math.max(0, Math.sin(t * Math.PI * 11)), 7);
+      data[i] = (Math.random() * 2 - 1) * envelope * (0.12 + clapPulse * 0.62);
+    }
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    source.buffer = buffer;
+    filter.type = "bandpass";
+    filter.frequency.value = 1800;
+    filter.Q.value = 0.7;
+    gain.gain.value = 0.75;
+    source.connect(filter).connect(gain).connect(ctx.destination);
+    source.start();
+    source.onended = () => ctx.close().catch(() => {});
+  } catch (_) {}
+}
+
+window.celebrateHonourCard = function (card) {
+  if (!card) return;
+  playApplause();
+  card.classList.remove("honour-celebrate");
+  void card.offsetWidth;
+  card.classList.add("honour-celebrate");
+  setTimeout(() => card.classList.remove("honour-celebrate"), 1100);
+
+  const rect = card.getBoundingClientRect();
+  const layer = document.createElement("div");
+  layer.className = "star-explosion";
+  layer.setAttribute("aria-hidden", "true");
+  const stars = ["✦", "★", "✧", "✦", "★", "✧", "✦", "★", "✧", "✦", "★", "✧"];
+  stars.forEach((symbol, i) => {
+    const star = document.createElement("span");
+    star.className = "exploding-star";
+    star.textContent = symbol;
+    const angle = (Math.PI * 2 * i / stars.length) + (Math.random() - .5) * .35;
+    const distance = 70 + Math.random() * 120;
+    star.style.left = `${rect.left + rect.width / 2}px`;
+    star.style.top = `${rect.top + rect.height / 2}px`;
+    star.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
+    star.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
+    star.style.setProperty("--rot", `${-220 + Math.random() * 440}deg`);
+    star.style.setProperty("--delay", `${Math.random() * 80}ms`);
+    star.style.setProperty("--scale", `${0.7 + Math.random() * 1.1}`);
+    layer.appendChild(star);
+  });
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 1250);
 };
 
 /* =========================================================
