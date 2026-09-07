@@ -3,14 +3,18 @@
  * Vinayaka Festival 2026
  * Gowtham Sai Elite Towers
  *
- * Premium Interactive Festival Portal
+ * Interactive Festival Portal
+ * Dynamic Slot Management
+ * Gallery Management
+ * Hero Carousel Management
+ * LocalStorage Persistence
  * =========================================================
  */
 
 "use strict";
 
 /* =========================================================
-   FESTIVAL CONFIGURATION
+   1. FESTIVAL CONFIGURATION
    ========================================================= */
 
 const festivalConfig = {
@@ -47,18 +51,18 @@ const festivalConfig = {
 };
 
 /* =========================================================
-   STORAGE KEYS
+   2. STORAGE KEYS
    ========================================================= */
 
 const STORAGE_KEYS = {
-  heroSlides: "vinayaka_2026_hero_slides",
-  yajamanSlots: "vinayaka_2026_yajaman_slots",
-  annadanamDonors: "vinayaka_2026_annadanam_donors",
+  hero: "vinayaka_2026_hero_slides",
+  yajaman: "vinayaka_2026_yajaman_slots",
+  annadanam: "vinayaka_2026_annadanam_donors",
   gallery: "vinayaka_2026_gallery_moments"
 };
 
 /* =========================================================
-   DEFAULT HERO SLIDES
+   3. DEFAULT HERO SLIDES
    ========================================================= */
 
 const DEFAULT_HERO_SLIDES = [
@@ -98,610 +102,649 @@ const DEFAULT_HERO_SLIDES = [
 ];
 
 /* =========================================================
-   DEFAULT SCHEDULE
+   4. DEFAULT SCHEDULE
    ========================================================= */
 
 const scheduleData = [
   {
-    day: "Day 01",
-    date: "14 September 2026",
-    weekday: "Monday",
-    title: "Prana Pratishtha, Ganpati Sthapana & Kalasa Puja",
-    time: "10:00 AM – 12:30 PM",
-    evening: "Maha Aarti at 07:30 PM",
+    dayNumber: "Day 01",
+    date: "14 Sept (Mon)",
+    badgeText: "Prana Pratishtha",
+    badgeType: "gold",
+    title: "Ganpati Sthapana & Kalasa Puja",
+    time: "10:00 AM – 12:30 PM (Evening Aarti: 07:30 PM)",
     location: "Central Clubhouse Mandapam",
-    category: "puja day1",
-    description: "Sacred installation of the eco-friendly clay Ganesha idol.",
-    highlight: true
+    description:
+      "Ceremonial 7ft eco-clay idol installation (donated by Praveen - Flat 201) around 10:00 AM followed by Vedic chanting, Panchamrutha Abhishekam, and evening Maha Aarti at 7:30 PM.",
+    category: "puja special",
+    isHighlight: false
   },
 
   {
-    day: "Day 02",
-    date: "15 September 2026",
-    weekday: "Tuesday",
+    dayNumber: "Days 02 – 04",
+    date: "15–17 Sept",
+    badgeText: "Daily Puja Ritual",
+    badgeType: "saffron",
     title: "Daily Puja & Evening Maha Aarti",
-    time: "07:30 PM",
-    evening: "",
+    time: "Every Day at 07:30 PM",
     location: "Tower Central Lawn Mandapam",
-    category: "puja aarti",
-    description: "Community puja, sankalpam and Maha Aarti."
+    description:
+      "Daily Vedic sankalpam recited for registered resident families, followed by society evening Maha Aarti & Gotra Archana at 07:30 PM.",
+    category: "puja",
+    isHighlight: false
   },
 
   {
-    day: "Day 03",
-    date: "16 September 2026",
-    weekday: "Wednesday",
-    title: "Daily Puja & Evening Maha Aarti",
-    time: "07:30 PM",
-    evening: "",
-    location: "Tower Central Lawn Mandapam",
-    category: "puja aarti",
-    description: "Daily Ganapati puja and community Maha Aarti."
+    dayNumber: "Day 05",
+    date: "18 Sept (Fri)",
+    badgeText: "Youth & Cultural",
+    badgeType: "gold",
+    title: "Children's Sloka, Rangoli & Daily Aarti",
+    time: "05:00 PM – 07:30 PM (Aarti at 07:30 PM)",
+    location: "Ground Floor Multi-Purpose Hall",
+    description:
+      "Kids clay Ganesha art competition, Rangoli contest, and Bhajan Sandhya followed by society evening Maha Aarti at 7:30 PM sharp.",
+    category: "cultural puja",
+    isHighlight: false
   },
 
   {
-    day: "Day 04",
-    date: "17 September 2026",
-    weekday: "Thursday",
-    title: "Daily Puja & Evening Maha Aarti",
-    time: "07:30 PM",
-    evening: "",
-    location: "Tower Central Lawn Mandapam",
-    category: "puja aarti",
-    description: "Daily Ganapati puja and community Maha Aarti."
-  },
-
-  {
-    day: "Day 05",
-    date: "18 September 2026",
-    weekday: "Friday",
-    title: "Children’s Sloka, Rangoli & Daily Aarti",
-    time: "05:00 PM – 07:30 PM",
-    evening: "Maha Aarti at 07:30 PM",
-    location: "Central Community Area",
-    category: "children cultural aarti",
-    description: "A joyful evening featuring children’s cultural activities."
-  },
-
-  {
-    day: "Day 06",
-    date: "19 September 2026",
-    weekday: "Saturday",
+    dayNumber: "Day 06",
+    date: "19 Sept (Sat) Morning",
+    badgeText: "Grand Finale Puja",
+    badgeType: "gold",
     title: "Final Maha Puja & Kalasa Udvasana",
     time: "10:00 AM – 12:30 PM",
-    evening: "",
-    location: "Central Clubhouse Mandapam",
-    category: "puja day6",
-    description: "Final sacred puja followed by Kalasa Udvasana."
+    location: "Clubhouse Central Mandapam",
+    description:
+      "Maha Purnahuti, Kalasa Udvasana, Rajopachara Puja, and final blessings before the grand community Annadanam feast.",
+    category: "puja special",
+    isHighlight: false
   },
 
   {
-    day: "Day 06",
-    date: "19 September 2026",
-    weekday: "Saturday",
-    title: "Grand Maha Annadanam",
+    dayNumber: "Day 06",
+    date: "19 Sept (Sat) Afternoon",
+    badgeText: "Grand Community Feast",
+    badgeType: "crimson",
+    title: "Grand Maha Annadanam Community Feast",
     time: "12:30 PM – 03:30 PM",
-    evening: "",
-    location: "Community Dining Area",
-    category: "annadanam day6",
-    description: "Grand community feast hosted by Flat 101.",
-    highlight: true
+    location: "Central Banquet Lawn & Dining Tent",
+    description:
+      "Grand festive traditional Satvik banana leaf banquet feast booked and hosted by Mohan Rao & Family (Flat 101) for all tower families, housekeeping staff, security guards, and devotees.",
+    category: "special",
+    isHighlight: true
   },
 
   {
-    day: "Day 06",
-    date: "19 September 2026",
-    weekday: "Saturday",
+    dayNumber: "Day 06",
+    date: "19 Sept (Sat) Evening",
+    badgeText: "Grand Finale",
+    badgeType: "crimson",
     title: "Visarjan Shobha Yatra & Laddu Auction",
-    time: "04:00 PM onwards",
-    evening: "",
-    location: "Apartment Premises & Procession Route",
-    category: "visarjan cultural day6",
-    description: "Festive procession, Visarjan and Laddu Auction."
+    time: "04:00 PM Onwards",
+    location: "Mandapam to Hussain Sagar Immersion Point",
+    description:
+      "Sacred 21-Kg Laddu auction, Dappu vadyam & garba procession across our tower gates, concluding with ceremonial eco-immersion.",
+    category: "special puja",
+    isHighlight: false
   }
 ];
 
 /* =========================================================
-   DEFAULT YAJAMAN SLOTS
+   5. DEFAULT YAJAMAN SLOTS
    ========================================================= */
 
 const DEFAULT_YAJAMAN_SLOTS = [
   {
-    day: "Day 01",
-    date: "14 Sept",
-    time: "10:00 AM",
+    slot: "Day 01 (14 Sept) 10:00 AM",
     flat: "201",
     family: "Praveen & Family",
-    puja: "Prana Pratishtha & Sthapana Puja",
+    seva: "Prana Pratishtha & Sthapana Puja",
     gotram: "Kasyapa Gotram",
-    status: "Confirmed (Sitting)",
-    urgent: false
+    statusBadge: "Confirmed (Sitting)",
+    isVacant: false
   },
 
   {
-    day: "Day 01",
-    date: "14 Sept",
-    time: "07:30 PM",
-    flat: "",
-    family: "",
-    puja: "Day 01 Evening Maha Aarti",
+    slot: "Day 01 (14 Sept) 07:30 PM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Day 01 Evening Maha Aarti",
     gotram: "",
-    status: "ONLY 1 SLOT LEFT",
-    urgent: true
+    statusBadge: "ONLY 1 SLOT LEFT",
+    isVacant: true,
+    isUrgent: true
   },
 
   {
-    day: "Day 02",
-    date: "15 Sept",
-    time: "07:30 PM",
-    flat: "",
-    family: "",
-    puja: "Daily Maha Aarti",
+    slot: "Day 02 (15 Sept) 07:30 PM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Daily Puja & Evening Aarti",
     gotram: "",
-    status: "Open",
-    urgent: false
+    statusBadge: "VACANT / AVAILABLE",
+    isVacant: true
   },
 
   {
-    day: "Day 03",
-    date: "16 Sept",
-    time: "07:30 PM",
-    flat: "",
-    family: "",
-    puja: "Daily Maha Aarti",
+    slot: "Day 03 (16 Sept) 07:30 PM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Ganapathi Homam & Aarti",
     gotram: "",
-    status: "Open",
-    urgent: false
+    statusBadge: "VACANT / AVAILABLE",
+    isVacant: true
   },
 
   {
-    day: "Day 04",
-    date: "17 Sept",
-    time: "07:30 PM",
-    flat: "",
-    family: "",
-    puja: "Daily Maha Aarti",
+    slot: "Day 04 (17 Sept) 07:30 PM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Gotra Archana & Evening Aarti",
     gotram: "",
-    status: "Open",
-    urgent: false
+    statusBadge: "VACANT / AVAILABLE",
+    isVacant: true
   },
 
   {
-    day: "Day 05",
-    date: "18 Sept",
-    time: "07:30 PM",
-    flat: "",
-    family: "",
-    puja: "Daily Maha Aarti",
+    slot: "Day 05 (18 Sept) 07:30 PM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Special Modak Archana & Aarti",
     gotram: "",
-    status: "Open",
-    urgent: false
+    statusBadge: "VACANT / AVAILABLE",
+    isVacant: true
   },
 
   {
-    day: "Day 06",
-    date: "19 Sept",
-    time: "10:00 AM",
-    flat: "",
-    family: "",
-    puja: "Final Maha Puja & Kalasa Udvasana",
+    slot: "Day 06 (19 Sept) 10:00 AM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Final Maha Puja & Kalasa Udvasana",
     gotram: "",
-    status: "Open",
-    urgent: false
+    statusBadge: "VACANT / AVAILABLE",
+    isVacant: true
   },
 
   {
-    day: "Day 06",
-    date: "19 Sept",
-    time: "07:30 PM",
-    flat: "",
-    family: "",
-    puja: "Visarjan Aarti",
+    slot: "Day 06 (19 Sept) 07:30 PM",
+    flat: "—",
+    family: "Available for Booking",
+    seva: "Visarjan Shobha Yatra Aarti",
     gotram: "",
-    status: "Open",
-    urgent: false
+    statusBadge: "VACANT / AVAILABLE",
+    isVacant: true
   }
 ];
 
 /* =========================================================
-   DEFAULT ANNADANAM DONORS
+   6. DEFAULT ANNADANAM
    ========================================================= */
 
 const DEFAULT_ANNADANAM_DONORS = [
   {
     donor: "Mohan Rao & Family",
     flat: "101",
-    item: "Grand Maha Annadanam Community Feast",
-    date: "Saturday, 19th September",
-    status: "CONFIRMED HOST"
+    item: "Grand Maha Annadanam Community Feast (Saturday 19th Sept)",
+    value: "CONFIRMED HOST",
+    isVacant: false
   },
 
   {
-    donor: "",
-    flat: "",
-    item: "Rice & Dal Kit",
-    date: "",
-    status: "Open"
+    donor: "Available for Sponsorship",
+    flat: "OPEN",
+    item: "Sona Masoori Rice & Dal Kit (5 Bags)",
+    value: "SLOT OPEN",
+    isVacant: true
   },
 
   {
-    donor: "",
-    flat: "",
-    item: "Ghee & Dry Fruits",
-    date: "",
-    status: "Open"
+    donor: "Available for Sponsorship",
+    flat: "OPEN",
+    item: "Pure Desi Cow Ghee & Dry Fruits Kit",
+    value: "SLOT OPEN",
+    isVacant: true
   },
 
   {
-    donor: "",
-    flat: "",
-    item: "Vegetables & Grocery",
-    date: "",
-    status: "Open"
+    donor: "Available for Sponsorship",
+    flat: "OPEN",
+    item: "Fresh Cooking Vegetables & Grocery Kit",
+    value: "SLOT OPEN",
+    isVacant: true
   },
 
   {
-    donor: "",
-    flat: "",
-    item: "Banana Leaf Plates & Mineral Water",
-    date: "",
-    status: "Open"
+    donor: "Available for Sponsorship",
+    flat: "OPEN",
+    item: "Eco-Friendly Banana Leaf Dining Plates & Mineral Water",
+    value: "SLOT OPEN",
+    isVacant: true
   }
 ];
 
 /* =========================================================
-   DEFAULT GALLERY
+   7. DEFAULT GALLERY
    ========================================================= */
 
-const DEFAULT_GALLERY = [
+const DEFAULT_GALLERY_DATA = [
   {
     image: "/images/eco_clay_ganesha.jpg",
-    tag: "Sacred Idol",
-    title: "Eco-Friendly Clay Ganesha"
+    tag: "Sacred Idol (Flat 201)",
+    title: "Eco-Friendly 7ft Clay Ganesha Murti",
+    alt: "Sacred 7ft eco-friendly clay Ganesha idol with floral garlands donated by Praveen (Flat 201)"
   },
 
   {
     image: "/images/maha_annadanam_feast.jpg",
-    tag: "Annadanam",
-    title: "Grand Community Feast"
+    tag: "Annadanam (Flat 101)",
+    title: "Grand Maha Annadanam Feast Setup",
+    alt: "Traditional Satvik community feast on banana leaf hosted by Mohan Rao & Family (Flat 101)"
   },
 
   {
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCllnUoaC6qrMkEK_moydxUlHbu-hdkkmC1nO1XoWFeECkypipJ7vdadlpoF155p915hIFAD0hU7ughXi8qy-VxWTAi2vBrVh3NFPQ343I9vygxPgkaNIkq0iXsRba1B5FCfZh1ExnnzXp0uHooPGmz4hN7ylQ7_E3hV6IX2s6cFQkAzF0lSyTibPC78K-sglbYsctQ8UeLXB9OYhmnDUcA8EQPt1gm9JjFDP1ya9XUmPHOWTGbfgNy",
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDH7ps91U7ZGZ3vO0BiDCoTpARrEvQRkRHsN5gs5dnmHMIJIr9V2xAv7pYbAsSOV0JoXdO6qudjJ84Mic6moZk_INo_hJumvz_TlWppbGfx1ZAfxOZoCQpaTUshbP5ePWcD5a9s324FMjeQs-L2L0wafw2uqNcOV2a1cSrGtQxIxMYbB5JME4FKyJg6sdAofOdpfxIaPjadve0QIQL9PsspxPzVJrWaod-ciflez312eeRTOnGj9Z2C",
     tag: "Decorations",
-    title: "Festive Mandap Decorations"
-  },
-
-  {
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuD7WXI5MOp9_13R2TiRHCyAAeavOCdMOrgfpn83lXH-9Wd07EsNXU56aca_sVSM6Ia6AD7UNfKGm6TmIINptT6BODrgr3NRkSWQg53pJKvwOCDtfYCA5zQwTtw7W0d5iyfuNXB-Rrn-V7FJTjzuww-XNSXntWOLqEdqDvvrQmDHmvyQNjV0Uy_6a6TaamPBcx1_fuSlpZIauqGSF_izG3DMWp5EQwyZPAqxCwwUrntxaFtz88mwqe0b",
-    tag: "Maha Aarti",
-    title: "Community Maha Aarti"
+    title: "Sacred Mandapam & Marigold Toran",
+    alt: "Decorated festive Ganesha mandapam with warm golden brass diya lamps and marigold garlands"
   },
 
   {
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCllnUoaC6qrMkEK_moydxUlHbu-hdkkmC1nO1XoWFeECkypipJ7vdadlpoF155p915hIFAD0hU7ughXi8qy-VxWTAi2vBrVh3NFPQ343I9vygxPgkaNIkq0iXsRba1B5FCfZh1ExnnzXp0uHooPGmz4hN7ylQ7_E3hV6IX2s6cFQkAzF0lSyTibPC78K-sglbYsctQ8UeLXB9OYhmnDUcA8EQPt1gm9JjFDP1ya9XUmPHOWTGbfgNy",
-    tag: "Children",
-    title: "Children’s Sloka & Rangoli"
+    tag: "Aarti",
+    title: "Evening Maha Aarti & Devotional Hymns",
+    alt: "Residents gathering for evening Maha Aarti with glowing brass lamps and devotional hymns"
   },
 
   {
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuD7WXI5MOp9_13R2TiRHCyAAeavOCdMOrgfpn83lXH-9Wd07EsNXU56aca_sVSM6Ia6AD7UNfKGm6TmIINptT6BODrgr3NRkSWQg53pJKvwOCDtfYCA5zQwTtw7W0d5iyfuNXB-Rrn-V7FJTjzuww-XNSXntWOLqEdqDvvrQmDHmvyQNjV0Uy_6a6TaamPBcx1_fuSlpZIauqGSF_izG3DMWp5EQwyZPAqxCwwUrntxaFtz88mwqe0b",
-    tag: "Festival Food",
-    title: "Modakam & Prasadam"
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCXaPj0XdhZSSOYNmeic47VXfwKfHOL4AAUhdYI1fNpK6PfCLUeFaQ5SA8Y03okuCNdt6nMPyoCk3MTSneLAaGDnI8O7mo2lbiLCBPzhjZqcIIQ1OkgmMdMZ60Am5qkWWWE5aVKtzZYsdL7_PnlA2fqhKwYRi4h-Zmc3tZo-5E324c4G3wcO482jUPcJ-WTOo_tnGlaBBmkXymabqlse_H36h-TRSRTIwhQoq8AHJXC7Eu7riVo7WTF",
+    tag: "Cultural",
+    title: "Children's Rangoli & Art Fair",
+    alt: "Society children participating in colorful Rangoli competition creating intricate floral mandalas"
   },
 
   {
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCllnUoaC6qrMkEK_moydxUlHbu-hdkkmC1nO1XoWFeECkypipJ7vdadlpoF155p915hIFAD0hU7ughXi8qy-VxWTAi2vBrVh3NFPQ343I9vygxPgkaNIkq0iXsRba1B5FCfZh1ExnnzXp0uHooPGmz4hN7ylQ7_E3hV6IX2s6cFQkAzF0lSyTibPC78K-sglbYsctQ8UeLXB9OYhmnDUcA8EQPt1gm9JjFDP1ya9XUmPHOWTGbfgNy",
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBPXg1eyUq-5ZghaKs92wu8mze2jzIe_Lat7tPCa3FbM1RVwk7fp3T2EF5Rh7MbAP2-jmr0pk0SuKmsxavT_j3EwxzCM9hrZ53kMJalE38RauujZ7KlDuHdV_9VgXCJ030jNIN8-AxmNtyFeg0GpOJFh3a6uZ438ift9OLLrfaHmjD-nSG_pXrvz50LOHyl_wIt_0M2dERe46sMGturl7gt6P-Mg8_PU3hFH3nqbPZQ9IXfIQIpvpxj",
+    tag: "Prasadam",
+    title: "108 Modakam Naivedyam Preparation",
+    alt: "Traditional Indian sweet modaks and golden laddus arranged on sacred platters with jasmine flowers"
+  },
+
+  {
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCuk0Kv_u8AituR5DWMzMvKsLRRS1PLZ1OYFxf9gp08WJXNIHU3IINBpl0muuQdz8ObQw7uIA0vrI_qILSBBzyUPJWzw8i78JsJHfSawtljWXsymI0t3lr8Dkz8LNSxLnH9q4B1fQg_I-A-TmGnCwTAphvUP7cJ403iGtlYUPAhg_PqIdUCnUgAEy3F6mpIuUZbUvH-F_U2famN09kLjUkVlWxE49-iQ_SU60kYtSzQJ5gW25OxMxUo",
     tag: "Visarjan",
-    title: "Visarjan Shobha Yatra"
+    title: "Shobha Yatra & Eco-Immersion",
+    alt: "Grand Visarjan procession of eco-friendly clay Ganesha idol with music and flower shower"
   }
 ];
 
 /* =========================================================
-   GENERIC STORAGE HELPERS
+   8. APPLICATION STATE
    ========================================================= */
 
-function readStorage(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
+let heroSlides = loadArray(STORAGE_KEYS.hero, DEFAULT_HERO_SLIDES);
+let yajamanSlots = loadArray(STORAGE_KEYS.yajaman, DEFAULT_YAJAMAN_SLOTS);
+let annadanamDonors = loadArray(
+  STORAGE_KEYS.annadanam,
+  DEFAULT_ANNADANAM_DONORS
+);
+let galleryData = loadArray(STORAGE_KEYS.gallery, DEFAULT_GALLERY_DATA);
 
-    if (!raw) {
-      return structuredCloneSafe(fallback);
+let currentSlideIndex = 0;
+let slideshowTimer = null;
+let activeLightboxIndex = null;
+
+let uploadedPhotoDataUrl = null;
+let uploadedCarouselPhotoDataUrl = null;
+
+/* =========================================================
+   9. STORAGE HELPERS
+   ========================================================= */
+
+function loadArray(key, fallback) {
+  try {
+    const saved = localStorage.getItem(key);
+
+    if (!saved) {
+      return [...fallback];
     }
 
-    const parsed = JSON.parse(raw);
+    const parsed = JSON.parse(saved);
 
-    return parsed;
+    return Array.isArray(parsed) ? parsed : [...fallback];
   } catch (error) {
-    console.warn(`Unable to read localStorage key "${key}"`, error);
-    return structuredCloneSafe(fallback);
+    console.warn(`Unable to load localStorage key: ${key}`, error);
+    return [...fallback];
   }
 }
 
-function writeStorage(key, value) {
+function saveStorage(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
     return true;
   } catch (error) {
-    console.error(`Unable to save localStorage key "${key}"`, error);
+    console.warn(`Unable to save localStorage key: ${key}`, error);
 
     showToast(
-      "Storage limit reached. Try using smaller images.",
-      "error"
+      "Browser storage is full or unavailable. Changes may not persist.",
+      "info"
     );
 
     return false;
   }
 }
 
-function structuredCloneSafe(value) {
-  return JSON.parse(JSON.stringify(value));
+function saveHeroSlidesToStorage() {
+  return saveStorage(STORAGE_KEYS.hero, heroSlides);
+}
+
+function saveYajamanSlotsToStorage() {
+  return saveStorage(STORAGE_KEYS.yajaman, yajamanSlots);
+}
+
+function saveAnnadanamDonorsToStorage() {
+  return saveStorage(STORAGE_KEYS.annadanam, annadanamDonors);
+}
+
+function saveGalleryDataToStorage() {
+  return saveStorage(STORAGE_KEYS.gallery, galleryData);
 }
 
 /* =========================================================
-   SAFE DOM HELPERS
+   10. DOM HELPERS
    ========================================================= */
-
-function createElement(tag, className, text = "") {
-  const element = document.createElement(tag);
-
-  if (className) {
-    element.className = className;
-  }
-
-  if (text !== "") {
-    element.textContent = text;
-  }
-
-  return element;
-}
 
 function getElement(id) {
   return document.getElementById(id);
 }
 
+function escapeHTML(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function setBodyModalState(isOpen) {
+  document.body.classList.toggle("modal-open", isOpen);
+}
+
 /* =========================================================
-   HERO CAROUSEL STATE
+   11. TOAST
    ========================================================= */
 
-let heroSlides = readStorage(
-  STORAGE_KEYS.heroSlides,
-  DEFAULT_HERO_SLIDES
-);
+function showToast(message, type = "success") {
+  let container = getElement("toastContainer");
 
-let currentSlideIndex = 0;
-let slideshowTimer = null;
-let slideshowPaused = false;
-let slideshowInitialized = false;
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toastContainer";
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+
+  toast.className = `toast ${type}`;
+
+  const icon = type === "success"
+    ? "check_circle"
+    : "info";
+
+  toast.innerHTML = `
+    <span class="material-symbols-outlined" style="font-size:20px;">
+      ${icon}
+    </span>
+    <span>${escapeHTML(message)}</span>
+  `;
+
+  container.appendChild(toast);
+
+  window.setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(10px)";
+    toast.style.transition = "all 0.3s ease";
+
+    window.setTimeout(() => {
+      toast.remove();
+    }, 300);
+
+  }, 3500);
+}
 
 /* =========================================================
-   HERO CAROUSEL
+   12. INITIALIZATION
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  initSlideshow();
+
+  renderSchedule();
+
+  renderYajamanSlots();
+
+  renderAnnadanamDonors();
+
+  renderGallery();
+
+  setupMobileNav();
+
+  setupScrollSpy();
+
+  setupModalAccessibility();
+
+  setupKeyboardShortcuts();
+
+  setupImageFallbacks();
+
+});
+
+/* =========================================================
+   13. HERO SLIDESHOW
    ========================================================= */
 
 function initSlideshow() {
+
   const track = getElement("slideshowTrack");
   const dotsContainer = getElement("slideshowDots");
-  const prevButton = getElement("slideshowPrev");
-  const nextButton = getElement("slideshowNext");
 
-  if (!track) {
+  if (!track || !dotsContainer) {
     return;
   }
 
-  /* Prevent duplicate timers */
-  clearSlideshowTimer();
-
-  /* Normalize slides */
-  if (!Array.isArray(heroSlides) || heroSlides.length === 0) {
-    heroSlides = structuredCloneSafe(DEFAULT_HERO_SLIDES);
-  }
-
-  if (currentSlideIndex >= heroSlides.length) {
-    currentSlideIndex = 0;
-  }
+  stopSlideshowTimer();
 
   track.innerHTML = "";
+  dotsContainer.innerHTML = "";
 
-  if (dotsContainer) {
-    dotsContainer.innerHTML = "";
+  if (heroSlides.length === 0) {
+    track.innerHTML = `
+      <div class="slide active">
+        <div style="
+          width:100%;
+          height:100%;
+          display:grid;
+          place-items:center;
+          background:#3b281c;
+          color:white;
+          padding:30px;
+          text-align:center;
+        ">
+          <div>
+            <span class="material-symbols-outlined" style="font-size:60px;">
+              image
+            </span>
+            <h2 style="color:white;font-family:var(--font-display);">
+              No Festival Slides
+            </h2>
+            <p>
+              Add a new slide from the carousel management panel.
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return;
   }
+
+  currentSlideIndex = Math.min(
+    currentSlideIndex,
+    heroSlides.length - 1
+  );
 
   heroSlides.forEach((slide, index) => {
-    const slideElement = createElement(
-      "div",
-      `slide${index === currentSlideIndex ? " active" : ""}`
+
+    const slideDiv = document.createElement("div");
+
+    slideDiv.className =
+      `slide ${index === currentSlideIndex ? "active" : ""}`;
+
+    slideDiv.innerHTML = `
+      <img
+        src="${escapeHTML(slide.image)}"
+        alt="${escapeHTML(slide.title)}"
+        loading="${index === 0 ? "eager" : "lazy"}"
+      />
+
+      <div class="slide-overlay">
+
+        <div class="slide-text">
+
+          <span class="slide-caption-tag">
+            ${escapeHTML(slide.tag)}
+          </span>
+
+          <h2 class="slide-title">
+            ${escapeHTML(slide.title)}
+          </h2>
+
+        </div>
+
+        <div class="slide-actions">
+
+          <a
+            href="${escapeHTML(slide.ctaLink || "#schedule")}"
+            class="btn-primary-action"
+          >
+            <span>${escapeHTML(slide.ctaText || "Explore")}</span>
+
+            <span
+              class="material-symbols-outlined"
+              style="font-size:16px;"
+            >
+              arrow_forward
+            </span>
+          </a>
+
+        </div>
+
+      </div>
+    `;
+
+    track.appendChild(slideDiv);
+
+    const dot = document.createElement("button");
+
+    dot.type = "button";
+    dot.className =
+      `dot ${index === currentSlideIndex ? "active" : ""}`;
+
+    dot.setAttribute(
+      "aria-label",
+      `Go to slide ${index + 1}`
     );
 
-    slideElement.setAttribute("aria-hidden", index === currentSlideIndex ? "false" : "true");
-
-    const image = document.createElement("img");
-
-    image.src = slide.image;
-    image.alt = slide.title || "Vinayaka Festival image";
-
-    image.loading = index === 0 ? "eager" : "lazy";
-    image.decoding = "async";
-
-    if (index === 0) {
-      image.fetchPriority = "high";
-    }
-
-    image.draggable = false;
-
-    image.addEventListener("error", () => {
-      image.style.background = "linear-gradient(135deg,#5d0007,#d97706)";
-      image.removeAttribute("src");
+    dot.addEventListener("click", () => {
+      goToSlide(index);
     });
 
-    const overlay = createElement("div", "slide-overlay");
-
-    const textContainer = createElement("div", "slide-text");
-
-    const tag = createElement(
-      "span",
-      "slide-caption-tag",
-      slide.tag || ""
-    );
-
-    const title = createElement(
-      "h2",
-      "slide-title",
-      slide.title || ""
-    );
-
-    textContainer.append(tag, title);
-
-    const actions = createElement("div", "slide-actions");
-
-    const link = document.createElement("a");
-
-    link.className = "btn-primary-action";
-    link.href = slide.ctaLink || "#";
-    link.setAttribute("aria-label", slide.ctaText || "Explore");
-
-    const linkText = createElement(
-      "span",
-      "",
-      slide.ctaText || "Explore"
-    );
-
-    const arrow = createElement(
-      "span",
-      "material-symbols-outlined",
-      "arrow_forward"
-    );
-
-    arrow.setAttribute("aria-hidden", "true");
-
-    link.append(linkText, arrow);
-    actions.appendChild(link);
-
-    overlay.append(textContainer, actions);
-
-    slideElement.append(image, overlay);
-
-    track.appendChild(slideElement);
-
-    if (dotsContainer) {
-      const dot = document.createElement("button");
-
-      dot.type = "button";
-      dot.className =
-        index === currentSlideIndex ? "active" : "";
-
-      dot.setAttribute(
-        "aria-label",
-        `Go to slide ${index + 1}`
-      );
-
-      dot.setAttribute(
-        "aria-current",
-        index === currentSlideIndex ? "true" : "false"
-      );
-
-      dot.addEventListener("click", () => {
-        goToSlide(index);
-      });
-
-      dotsContainer.appendChild(dot);
-    }
+    dotsContainer.appendChild(dot);
   });
 
-  /*
-   * Use onclick rather than addEventListener so that
-   * repeated carousel initialization never creates
-   * duplicate handlers.
-   */
-  if (prevButton) {
-    prevButton.onclick = prevSlide;
-  }
+  setupSlideshowButtons();
 
-  if (nextButton) {
-    nextButton.onclick = nextSlide;
-  }
-
-  setupSlideshowTouch(track);
-
-  setupSlideshowHover();
-
-  updateSlideshowAccessibility();
-
-  slideshowInitialized = true;
+  setupSlideshowSwipe();
 
   startSlideshowTimer();
 }
 
-function showSlide(index) {
-  const slides = document.querySelectorAll(
-    "#slideshowTrack .slide"
-  );
+function setupSlideshowButtons() {
 
-  const dots = document.querySelectorAll(
-    "#slideshowDots button"
-  );
+  const prevBtn = getElement("slideshowPrev");
+  const nextBtn = getElement("slideshowNext");
+
+  if (prevBtn && !prevBtn.dataset.bound) {
+
+    prevBtn.dataset.bound = "true";
+
+    prevBtn.addEventListener("click", () => {
+      prevSlide();
+      restartSlideshowTimer();
+    });
+  }
+
+  if (nextBtn && !nextBtn.dataset.bound) {
+
+    nextBtn.dataset.bound = "true";
+
+    nextBtn.addEventListener("click", () => {
+      nextSlide();
+      restartSlideshowTimer();
+    });
+  }
+}
+
+function showSlide(index) {
+
+  const slides = document.querySelectorAll(".slide");
+  const dots = document.querySelectorAll(".dot");
 
   if (!slides.length) {
     return;
   }
 
   currentSlideIndex =
-    (index + heroSlides.length) % heroSlides.length;
+    (index + slides.length) % slides.length;
 
-  slides.forEach((slide, i) => {
-    const active = i === currentSlideIndex;
-
-    slide.classList.toggle("active", active);
-
-    slide.setAttribute(
-      "aria-hidden",
-      active ? "false" : "true"
+  slides.forEach((slide, idx) => {
+    slide.classList.toggle(
+      "active",
+      idx === currentSlideIndex
     );
   });
 
-  dots.forEach((dot, i) => {
-    const active = i === currentSlideIndex;
-
-    dot.classList.toggle("active", active);
-
-    dot.setAttribute(
-      "aria-current",
-      active ? "true" : "false"
-    );
-  });
-
-  updateSlideshowAccessibility();
-}
-
-function updateSlideshowAccessibility() {
-  const slides = document.querySelectorAll(
-    "#slideshowTrack .slide"
-  );
-
-  slides.forEach((slide, index) => {
-    slide.setAttribute(
-      "aria-hidden",
-      index === currentSlideIndex ? "false" : "true"
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle(
+      "active",
+      idx === currentSlideIndex
     );
   });
 }
 
 function nextSlide() {
-  if (!heroSlides.length) return;
+  if (heroSlides.length <= 1) return;
 
   showSlide(currentSlideIndex + 1);
-  restartSlideshowTimer();
 }
 
 function prevSlide() {
-  if (!heroSlides.length) return;
+  if (heroSlides.length <= 1) return;
 
   showSlide(currentSlideIndex - 1);
-  restartSlideshowTimer();
 }
 
 function goToSlide(index) {
@@ -710,62 +753,56 @@ function goToSlide(index) {
 }
 
 function startSlideshowTimer() {
-  clearSlideshowTimer();
 
-  if (
-    heroSlides.length <= 1 ||
-    slideshowPaused ||
-    prefersReducedMotion()
-  ) {
+  stopSlideshowTimer();
+
+  if (heroSlides.length <= 1) {
     return;
   }
 
   slideshowTimer = window.setInterval(() => {
-    if (!slideshowPaused && !document.hidden) {
-      showSlide(currentSlideIndex + 1);
-    }
+    nextSlide();
   }, 5000);
 }
 
-function restartSlideshowTimer() {
-  clearSlideshowTimer();
-  startSlideshowTimer();
-}
+function stopSlideshowTimer() {
 
-function clearSlideshowTimer() {
   if (slideshowTimer) {
-    clearInterval(slideshowTimer);
+    window.clearInterval(slideshowTimer);
     slideshowTimer = null;
   }
 }
 
-function prefersReducedMotion() {
-  return window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
+function restartSlideshowTimer() {
+  startSlideshowTimer();
 }
 
 /* =========================================================
-   CAROUSEL TOUCH / SWIPE
+   14. SLIDESHOW SWIPE SUPPORT
    ========================================================= */
 
-let touchStartX = 0;
-let touchStartY = 0;
+function setupSlideshowSwipe() {
 
-function setupSlideshowTouch(track) {
-  if (!track || track.dataset.touchReady === "true") {
+  const track = getElement("slideshowTrack");
+
+  if (!track || track.dataset.swipeBound) {
     return;
   }
 
-  track.dataset.touchReady = "true";
+  track.dataset.swipeBound = "true";
+
+  let startX = 0;
+  let startY = 0;
 
   track.addEventListener(
     "touchstart",
     event => {
+
       const touch = event.changedTouches[0];
 
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
+      startX = touch.clientX;
+      startY = touch.clientY;
+
     },
     { passive: true }
   );
@@ -773,121 +810,69 @@ function setupSlideshowTouch(track) {
   track.addEventListener(
     "touchend",
     event => {
+
       const touch = event.changedTouches[0];
 
-      const deltaX = touch.clientX - touchStartX;
-      const deltaY = touch.clientY - touchStartY;
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
 
-      if (
-        Math.abs(deltaX) > 45 &&
-        Math.abs(deltaX) > Math.abs(deltaY)
-      ) {
-        if (deltaX < 0) {
-          nextSlide();
-        } else {
-          prevSlide();
-        }
+      if (Math.abs(deltaX) < 50) {
+        return;
       }
+
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) {
+        return;
+      }
+
+      if (deltaX < 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+
+      restartSlideshowTimer();
+
     },
     { passive: true }
   );
 }
 
 /* =========================================================
-   CAROUSEL HOVER / FOCUS
+   15. PAUSE HERO ON HOVER
    ========================================================= */
 
-function setupSlideshowHover() {
-  const container = document.querySelector(
-    ".hero-slideshow-container"
-  );
+document.addEventListener("mouseenter", event => {
 
-  if (!container || container.dataset.hoverReady === "true") {
-    return;
+  if (
+    event.target &&
+    event.target.closest &&
+    event.target.closest(".hero")
+  ) {
+    stopSlideshowTimer();
   }
 
-  container.dataset.hoverReady = "true";
+}, true);
 
-  container.addEventListener("mouseenter", () => {
-    slideshowPaused = true;
-    clearSlideshowTimer();
-  });
+document.addEventListener("mouseleave", event => {
 
-  container.addEventListener("mouseleave", () => {
-    slideshowPaused = false;
+  if (
+    event.target &&
+    event.target.closest &&
+    event.target.closest(".hero")
+  ) {
     startSlideshowTimer();
-  });
+  }
 
-  container.addEventListener("focusin", () => {
-    slideshowPaused = true;
-    clearSlideshowTimer();
-  });
-
-  container.addEventListener("focusout", event => {
-    if (!container.contains(event.relatedTarget)) {
-      slideshowPaused = false;
-      startSlideshowTimer();
-    }
-  });
-}
+}, true);
 
 /* =========================================================
-   KEYBOARD CAROUSEL CONTROLS
-   ========================================================= */
-
-function setupCarouselKeyboard() {
-  document.addEventListener("keydown", event => {
-    const modal = getElement("carouselModal");
-
-    if (modal && isModalVisible(modal)) {
-      return;
-    }
-
-    const target = event.target;
-
-    if (
-      target &&
-      (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.tagName === "SELECT"
-      )
-    ) {
-      return;
-    }
-
-    if (event.key === "ArrowLeft") {
-      prevSlide();
-    }
-
-    if (event.key === "ArrowRight") {
-      nextSlide();
-    }
-  });
-}
-
-/* =========================================================
-   PAGE VISIBILITY
-   ========================================================= */
-
-function setupPageVisibility() {
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      clearSlideshowTimer();
-    } else {
-      startSlideshowTimer();
-    }
-  });
-}
-
-/* =========================================================
-   SCHEDULE
+   16. SCHEDULE
    ========================================================= */
 
 function renderSchedule(filter = "all") {
-  const container = getElement(
-    "scheduleCardsContainer"
-  );
+
+  const container =
+    getElement("scheduleCardsContainer");
 
   if (!container) {
     return;
@@ -895,171 +880,160 @@ function renderSchedule(filter = "all") {
 
   container.innerHTML = "";
 
-  const normalizedFilter = String(filter)
-    .toLowerCase()
-    .trim();
+  const filteredItems = scheduleData.filter(item => {
 
-  const filtered =
-    normalizedFilter === "all"
-      ? scheduleData
-      : scheduleData.filter(item =>
-          String(item.category)
-            .toLowerCase()
-            .includes(normalizedFilter)
-        );
+    if (filter === "all") {
+      return true;
+    }
 
-  if (!filtered.length) {
-    const empty = createElement(
-      "div",
-      "empty-state"
-    );
+    return item.category.includes(filter);
+  });
 
-    empty.style.gridColumn = "1 / -1";
+  if (filteredItems.length === 0) {
 
-    const icon = createElement(
-      "span",
-      "material-symbols-outlined",
-      "event_busy"
-    );
+    container.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:45px 20px;
+        color:var(--color-text-sub);
+      ">
+        <span
+          class="material-symbols-outlined"
+          style="font-size:48px;"
+        >
+          event_busy
+        </span>
 
-    const title = createElement(
-      "strong",
-      "",
-      "No events found"
-    );
+        <h3 style="
+          margin:10px 0 5px;
+          font-family:var(--font-display);
+        ">
+          No events found
+        </h3>
 
-    const text = createElement(
-      "p",
-      "",
-      "Try selecting another schedule category."
-    );
-
-    empty.append(icon, title, text);
-
-    container.appendChild(empty);
+        <p>
+          There are no events in this category.
+        </p>
+      </div>
+    `;
 
     return;
   }
 
-  filtered.forEach(item => {
-    const card = createElement(
-      "article",
-      `schedule-card${item.highlight ? " highlighted" : ""}`
-    );
+  filteredItems.forEach(item => {
 
-    const day = createElement(
-      "div",
-      "schedule-day",
-      `${item.day} • ${item.weekday}`
-    );
+    const card =
+      document.createElement("div");
 
-    const title = createElement(
-      "h3",
-      "",
-      item.title
-    );
+    card.className =
+      `schedule-card ${
+        item.isHighlight ? "highlight-card" : ""
+      }`;
 
-    const date = createElement(
-      "p",
-      "",
-      item.date
-    );
+    const badgeClass =
+      item.badgeType === "crimson"
+        ? "badge-day-crimson"
+        : item.badgeType === "saffron"
+          ? "badge-day-saffron"
+          : "badge-day-gold";
 
-    const description = createElement(
-      "p",
-      "",
-      item.description
-    );
+    card.innerHTML = `
+      <div
+        class="${
+          item.isHighlight
+            ? "card-accent-bar"
+            : "gold-accent-bar"
+        }"
+        style="
+          position:absolute;
+          top:0;
+          left:0;
+        "
+      ></div>
 
-    const time = createElement(
-      "div",
-      "schedule-time"
-    );
+      <div class="schedule-card-header">
 
-    const timeIcon = createElement(
-      "span",
-      "material-symbols-outlined",
-      "schedule"
-    );
+        <span class="schedule-day-badge ${badgeClass}">
+          ${escapeHTML(item.dayNumber)}
+          •
+          ${escapeHTML(item.date)}
+        </span>
 
-    const timeText = createElement(
-      "span",
-      "",
-      item.time
-    );
+        <span class="schedule-tag">
+          ${escapeHTML(item.badgeText)}
+        </span>
 
-    time.append(timeIcon, timeText);
+      </div>
 
-    const location = createElement(
-      "p",
-      "",
-      `📍 ${item.location}`
-    );
+      <h3 class="schedule-card-title">
+        ${escapeHTML(item.title)}
+      </h3>
 
-    card.append(
-      day,
-      title,
-      date,
-      description,
-      time,
-      location
-    );
+      <div class="schedule-meta">
 
-    if (item.evening) {
-      const evening = createElement(
-        "p",
-        "",
-        item.evening
-      );
+        <div class="meta-item">
 
-      card.appendChild(evening);
-    }
+          <span class="material-symbols-outlined">
+            schedule
+          </span>
+
+          <strong>
+            ${escapeHTML(item.time)}
+          </strong>
+
+        </div>
+
+        <div class="meta-item">
+
+          <span class="material-symbols-outlined">
+            pin_drop
+          </span>
+
+          <span>
+            ${escapeHTML(item.location)}
+          </span>
+
+        </div>
+
+      </div>
+
+      <p class="schedule-card-desc">
+        ${escapeHTML(item.description)}
+      </p>
+    `;
 
     container.appendChild(card);
   });
 }
 
-/* =========================================================
-   SCHEDULE FILTERS
-   ========================================================= */
+window.filterSchedule = function(category) {
 
-function setupScheduleFilters() {
-  const filterButtons = document.querySelectorAll(
-    "[data-schedule-filter]"
-  );
+  const buttons =
+    document.querySelectorAll(
+      ".schedule-filter-btn"
+    );
 
-  filterButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      const filter =
-        button.dataset.scheduleFilter || "all";
+  buttons.forEach(button => {
 
-      filterButtons.forEach(btn => {
-        btn.classList.toggle(
-          "active",
-          btn === button
-        );
-      });
+    button.classList.toggle(
+      "active",
+      button.getAttribute("data-filter") === category
+    );
 
-      renderSchedule(filter);
-    });
   });
-}
+
+  renderSchedule(category);
+};
 
 /* =========================================================
-   YAJAMAN SLOTS
+   17. YAJAMAN TABLE
    ========================================================= */
-
-let yajamanSlots = readStorage(
-  STORAGE_KEYS.yajamanSlots,
-  DEFAULT_YAJAMAN_SLOTS
-);
-
-let currentSlotIndex = null;
 
 function renderYajamanSlots() {
-  const tbody = getElement(
-    "yajamanTableBody"
-  );
+
+  const tbody =
+    getElement("yajamanTableBody");
 
   if (!tbody) {
     return;
@@ -1068,206 +1042,490 @@ function renderYajamanSlots() {
   tbody.innerHTML = "";
 
   yajamanSlots.forEach((slot, index) => {
-    const row = document.createElement("tr");
 
-    const cells = [
-      `${slot.day} • ${slot.date}`,
-      slot.time,
-      slot.flat || "—",
-      slot.family || "Open Slot",
-      slot.puja,
-      slot.gotram || "—"
-    ];
+    const tr =
+      document.createElement("tr");
 
-    cells.forEach(value => {
-      const td = createElement("td", "", value);
-      row.appendChild(td);
-    });
+    if (slot.isVacant) {
 
-    const statusTd = document.createElement("td");
+      tr.className = "row-vacant";
 
-    const statusClass =
-      slot.status === "Confirmed (Sitting)"
-        ? "status-confirmed"
-        : slot.urgent
-        ? "status-urgent"
-        : "status-open";
+      const statusHtml = slot.isUrgent
+        ? `
+          <span
+            class="badge-day-crimson"
+            style="
+              font-size:0.72rem;
+              font-weight:700;
+            "
+          >
+            ${escapeHTML(slot.statusBadge)}
+          </span>
+        `
+        : `
+          <span class="badge-vacant">
+            ${escapeHTML(
+              slot.statusBadge ||
+              "VACANT / AVAILABLE"
+            )}
+          </span>
+        `;
 
-    const status = createElement(
-      "span",
-      `status-badge ${statusClass}`,
-      slot.status || "Open"
-    );
+      tr.innerHTML = `
+        <td style="
+          font-weight:700;
+          color:var(--color-primary);
+        ">
+          ${escapeHTML(slot.slot)}
+        </td>
 
-    statusTd.appendChild(status);
+        <td style="
+          font-weight:700;
+          color:var(--color-text-sub);
+        ">
+          ${escapeHTML(slot.flat)}
+        </td>
 
-    const actionTd = document.createElement("td");
+        <td style="
+          font-weight:600;
+          color:var(--color-text-sub);
+          font-style:italic;
+        ">
+          ${escapeHTML(slot.family)}
+        </td>
 
-    const button = createElement(
-      "button",
-      "slot-action",
-      slot.family
-        ? "View / Update"
-        : "Book Slot"
-    );
+        <td>
 
-    button.type = "button";
+          <div style="
+            display:flex;
+            align-items:center;
+            gap:6px;
+            flex-wrap:wrap;
+          ">
 
-    button.addEventListener("click", () => {
-      openSlotModal(index);
-    });
+            <span style="
+              font-size:0.82rem;
+              font-weight:600;
+            ">
+              ${escapeHTML(slot.seva)}
+            </span>
 
-    actionTd.appendChild(button);
+            ${statusHtml}
 
-    row.append(statusTd, actionTd);
+          </div>
 
-    tbody.appendChild(row);
+        </td>
+
+        <td style="text-align:center;">
+
+          <button
+            type="button"
+            class="btn-slot-action btn-slot-book"
+            onclick="openSlotModal(${index})"
+          >
+
+            <span
+              class="material-symbols-outlined"
+              style="font-size:14px;"
+            >
+              add_circle
+            </span>
+
+            <span>Book Slot</span>
+
+          </button>
+
+        </td>
+      `;
+
+    } else {
+
+      tr.innerHTML = `
+        <td style="
+          font-weight:700;
+          color:var(--color-primary);
+        ">
+          ${escapeHTML(slot.slot)}
+        </td>
+
+        <td style="
+          font-weight:800;
+          color:var(--color-primary);
+          font-size:0.95rem;
+        ">
+          ${escapeHTML(slot.flat)}
+        </td>
+
+        <td>
+
+          <div style="
+            font-weight:700;
+            color:var(--color-text-main);
+          ">
+            ${escapeHTML(slot.family)}
+          </div>
+
+          ${
+            slot.gotram
+              ? `
+                <div style="
+                  font-size:0.75rem;
+                  color:var(--color-text-sub);
+                ">
+                  ${escapeHTML(slot.gotram)}
+                </div>
+              `
+              : ""
+          }
+
+        </td>
+
+        <td>
+
+          <div style="
+            display:flex;
+            align-items:center;
+            gap:6px;
+            flex-wrap:wrap;
+          ">
+
+            <span style="
+              font-size:0.82rem;
+              font-weight:600;
+            ">
+              ${escapeHTML(slot.seva)}
+            </span>
+
+            <span
+              class="badge-confirmed"
+            >
+              ${escapeHTML(slot.statusBadge)}
+            </span>
+
+          </div>
+
+        </td>
+
+        <td style="text-align:center;">
+
+          <button
+            type="button"
+            class="btn-slot-action btn-slot-edit"
+            onclick="openSlotModal(${index})"
+          >
+
+            <span
+              class="material-symbols-outlined"
+              style="font-size:14px;"
+            >
+              edit
+            </span>
+
+            <span>Update</span>
+
+          </button>
+
+        </td>
+      `;
+    }
+
+    tbody.appendChild(tr);
   });
 }
 
-function openSlotModal(index) {
-  currentSlotIndex = index;
+/* =========================================================
+   18. YAJAMAN MODAL
+   ========================================================= */
+
+window.openSlotModal = function(index = null) {
 
   const modal = getElement("slotModal");
+  const slotSelect = getElement("slotSelect");
+  const flatInput = getElement("flatNumberInput");
+  const familyInput = getElement("familyYajamanInput");
+  const sevaInput = getElement("sevaPreferenceInput");
+  const gotramInput = getElement("gotramInput");
+  const indexInput = getElement("slotIndexInput");
+
+  if (!modal || !slotSelect) {
+    return;
+  }
+
+  slotSelect.innerHTML = "";
+
+  yajamanSlots.forEach((slot, idx) => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = idx;
+
+    option.textContent =
+      `${slot.slot} — ${
+        slot.isVacant
+          ? "Available"
+          : `Flat ${slot.flat} (${slot.family})`
+      }`;
+
+    slotSelect.appendChild(option);
+  });
+
+  const firstVacantIndex =
+    yajamanSlots.findIndex(slot => slot.isVacant);
+
+  const selectedIndex =
+    index !== null
+      ? index
+      : firstVacantIndex >= 0
+        ? firstVacantIndex
+        : 0;
+
+  slotSelect.value = selectedIndex;
+
+  indexInput.value = selectedIndex;
+
+  populateSlotForm(selectedIndex);
+
+  modal.classList.add("open");
+
+  setBodyModalState(true);
+
+  setTimeout(() => {
+    flatInput?.focus();
+  }, 150);
+};
+
+function populateSlotForm(index) {
+
+  const flatInput =
+    getElement("flatNumberInput");
+
+  const familyInput =
+    getElement("familyYajamanInput");
+
+  const sevaInput =
+    getElement("sevaPreferenceInput");
+
+  const gotramInput =
+    getElement("gotramInput");
+
+  const currentSlot =
+    yajamanSlots[index];
+
+  if (!currentSlot) {
+    return;
+  }
+
+  if (!currentSlot.isVacant) {
+
+    flatInput.value =
+      currentSlot.flat !== "—"
+        ? currentSlot.flat
+        : "";
+
+    familyInput.value =
+      currentSlot.family !==
+      "Available for Booking"
+        ? currentSlot.family
+        : "";
+
+  } else {
+
+    flatInput.value = "";
+    familyInput.value = "";
+
+  }
+
+  sevaInput.value =
+    currentSlot.seva || "";
+
+  gotramInput.value =
+    currentSlot.gotram || "";
+}
+
+window.closeSlotModal = function() {
+
+  const modal =
+    getElement("slotModal");
 
   if (!modal) {
     return;
   }
 
-  const slot = yajamanSlots[index];
+  modal.classList.remove("open");
 
-  setFieldValue(
-    "slotFamily",
-    slot?.family || ""
-  );
+  setBodyModalState(false);
+};
 
-  setFieldValue(
-    "slotFlat",
-    slot?.flat || ""
-  );
+window.onSlotSelectionChange =
+  function(newIdx) {
 
-  setFieldValue(
-    "slotGotram",
-    slot?.gotram || ""
-  );
+    const indexInput =
+      getElement("slotIndexInput");
 
-  setFieldValue(
-    "slotPuja",
-    slot?.puja || ""
-  );
+    const idx =
+      Number.parseInt(newIdx, 10);
 
-  setModalVisible(modal, true);
-}
-
-function closeSlotModal() {
-  closeModalById("slotModal");
-  currentSlotIndex = null;
-}
-
-function onSlotSelectionChange() {
-  const flat = getFieldValue("slotFlat");
-
-  if (flat) {
-    const family = getElement("slotFamily");
-
-    if (family && !family.value) {
-      family.focus();
+    if (Number.isNaN(idx)) {
+      return;
     }
-  }
-}
 
-function saveSlotDetails() {
+    indexInput.value = idx;
+
+    populateSlotForm(idx);
+  };
+
+window.saveSlotDetails = function(event) {
+
+  event.preventDefault();
+
+  const indexInput =
+    getElement("slotIndexInput");
+
+  const flatInput =
+    getElement("flatNumberInput");
+
+  const familyInput =
+    getElement("familyYajamanInput");
+
+  const sevaInput =
+    getElement("sevaPreferenceInput");
+
+  const gotramInput =
+    getElement("gotramInput");
+
+  const idx =
+    Number.parseInt(indexInput.value, 10);
+
   if (
-    currentSlotIndex === null ||
-    !yajamanSlots[currentSlotIndex]
+    Number.isNaN(idx) ||
+    !yajamanSlots[idx]
   ) {
     return;
   }
 
-  const slot = yajamanSlots[currentSlotIndex];
+  const flatVal =
+    flatInput.value.trim();
 
-  slot.family = getFieldValue("slotFamily").trim();
-  slot.flat = getFieldValue("slotFlat").trim();
-  slot.gotram = getFieldValue("slotGotram").trim();
+  const familyVal =
+    familyInput.value.trim();
 
-  if (slot.family && slot.flat) {
-    slot.status = "Confirmed";
-    slot.urgent = false;
-  } else {
-    slot.status =
-      currentSlotIndex === 1
-        ? "ONLY 1 SLOT LEFT"
-        : "Open";
+  const sevaVal =
+    sevaInput.value.trim();
 
-    slot.urgent = currentSlotIndex === 1;
-  }
+  const gotramVal =
+    gotramInput.value.trim();
 
-  if (
-    writeStorage(
-      STORAGE_KEYS.yajamanSlots,
-      yajamanSlots
-    )
-  ) {
-    renderYajamanSlots();
-
-    closeSlotModal();
+  if (!flatVal || !familyVal) {
 
     showToast(
-      slot.family
-        ? `${slot.family} booking saved successfully.`
-        : "Slot updated successfully."
+      "Please enter the Flat Number and Family Name.",
+      "info"
     );
-  }
-}
 
-function clearSlotBooking() {
-  if (
-    currentSlotIndex === null ||
-    !yajamanSlots[currentSlotIndex]
-  ) {
     return;
   }
 
-  const slot = yajamanSlots[currentSlotIndex];
+  if (!sevaVal) {
 
-  slot.family = "";
-  slot.flat = "";
-  slot.gotram = "";
+    showToast(
+      "Please enter the Seva preference.",
+      "info"
+    );
 
-  slot.status =
-    currentSlotIndex === 1
-      ? "ONLY 1 SLOT LEFT"
-      : "Open";
+    return;
+  }
 
-  slot.urgent = currentSlotIndex === 1;
+  yajamanSlots[idx] = {
+    ...yajamanSlots[idx],
 
-  writeStorage(
-    STORAGE_KEYS.yajamanSlots,
-    yajamanSlots
-  );
+    flat: flatVal,
+    family: familyVal,
+    seva: sevaVal,
+    gotram: gotramVal,
+
+    statusBadge: "Confirmed",
+
+    isVacant: false,
+
+    isUrgent: false
+  };
+
+  saveYajamanSlotsToStorage();
 
   renderYajamanSlots();
 
   closeSlotModal();
 
-  showToast("Slot released successfully.");
-}
+  showToast(
+    `Puja Sankalpam booked for Flat ${flatVal} (${familyVal})!`,
+    "success"
+  );
+};
+
+window.clearSlotBooking = function() {
+
+  const indexInput =
+    getElement("slotIndexInput");
+
+  const idx =
+    Number.parseInt(indexInput.value, 10);
+
+  if (
+    Number.isNaN(idx) ||
+    !yajamanSlots[idx]
+  ) {
+    return;
+  }
+
+  const slot =
+    yajamanSlots[idx];
+
+  if (!confirm(
+    `Release the booking for "${slot.slot}"?`
+  )) {
+    return;
+  }
+
+  yajamanSlots[idx] = {
+    ...slot,
+
+    flat: "—",
+
+    family: "Available for Booking",
+
+    gotram: "",
+
+    statusBadge:
+      idx === 1
+        ? "ONLY 1 SLOT LEFT"
+        : "VACANT / AVAILABLE",
+
+    isVacant: true,
+
+    isUrgent: idx === 1
+  };
+
+  saveYajamanSlotsToStorage();
+
+  renderYajamanSlots();
+
+  closeSlotModal();
+
+  showToast(
+    "Slot has been marked as vacant.",
+    "info"
+  );
+};
 
 /* =========================================================
-   ANNADANAM
+   19. ANNADANAM
    ========================================================= */
 
-let annadanamDonors = readStorage(
-  STORAGE_KEYS.annadanamDonors,
-  DEFAULT_ANNADANAM_DONORS
-);
-
-let currentAnnadanamIndex = null;
-
 function renderAnnadanamDonors() {
-  const tbody = getElement(
-    "annadanamTableBody"
-  );
+
+  const tbody =
+    getElement("annadanamTableBody");
 
   if (!tbody) {
     return;
@@ -1276,195 +1534,386 @@ function renderAnnadanamDonors() {
   tbody.innerHTML = "";
 
   annadanamDonors.forEach((donor, index) => {
-    const row = document.createElement("tr");
 
-    const values = [
-      donor.item,
-      donor.donor || "Open Sponsorship",
-      donor.flat || "—",
-      donor.date || "Festival Day",
-      donor.status
-    ];
+    const tr =
+      document.createElement("tr");
 
-    values.forEach((value, valueIndex) => {
-      const td = createElement(
-        "td",
-        "",
-        value
-      );
+    if (donor.isVacant) {
 
-      if (valueIndex === 4) {
-        const statusClass =
-          donor.status === "CONFIRMED HOST"
-            ? "status-confirmed"
-            : "status-open";
+      tr.className = "row-vacant";
 
-        td.innerHTML = "";
+      tr.innerHTML = `
+        <td style="
+          font-weight:600;
+          color:var(--color-text-sub);
+          font-style:italic;
+        ">
+          ${escapeHTML(donor.donor)}
+        </td>
 
-        const badge = createElement(
-          "span",
-          `status-badge ${statusClass}`,
-          donor.status
-        );
+        <td style="
+          font-weight:700;
+          color:var(--color-text-sub);
+        ">
+          ${escapeHTML(donor.flat)}
+        </td>
 
-        td.appendChild(badge);
-      }
+        <td style="
+          font-weight:600;
+          color:var(--color-text-main);
+        ">
+          ${escapeHTML(donor.item)}
+        </td>
 
-      row.appendChild(td);
-    });
+        <td style="text-align:right;">
 
-    const actionTd = document.createElement("td");
+          <button
+            type="button"
+            class="btn-slot-action btn-slot-book"
+            onclick="openAnnadanamModal(${index})"
+          >
 
-    const button = createElement(
-      "button",
-      "table-action",
-      donor.donor
-        ? "View / Update"
-        : "Sponsor"
-    );
+            <span
+              class="material-symbols-outlined"
+              style="font-size:14px;"
+            >
+              volunteer_activism
+            </span>
 
-    button.type = "button";
+            <span>Sponsor</span>
 
-    button.addEventListener("click", () => {
-      openAnnadanamModal(index);
-    });
+          </button>
 
-    actionTd.appendChild(button);
+        </td>
+      `;
 
-    row.appendChild(actionTd);
+    } else {
 
-    tbody.appendChild(row);
+      tr.innerHTML = `
+        <td style="
+          font-weight:700;
+          color:var(--color-text-main);
+        ">
+          ${escapeHTML(donor.donor)}
+        </td>
+
+        <td style="
+          font-weight:800;
+          color:var(--color-secondary);
+          font-size:0.95rem;
+        ">
+          ${escapeHTML(donor.flat)}
+        </td>
+
+        <td style="
+          font-weight:600;
+          color:var(--color-text-main);
+        ">
+          ${escapeHTML(donor.item)}
+        </td>
+
+        <td style="text-align:right;">
+
+          <div style="
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+          ">
+
+            <span
+              class="badge-confirmed"
+              style="
+                background:#fff3e0;
+                color:#b43e00;
+                border:1px solid #ffcc80;
+                font-weight:800;
+                font-size:0.75rem;
+              "
+            >
+              ${escapeHTML(donor.value)}
+            </span>
+
+            <button
+              type="button"
+              class="btn-slot-action btn-slot-edit"
+              onclick="openAnnadanamModal(${index})"
+              aria-label="Edit sponsorship"
+            >
+
+              <span
+                class="material-symbols-outlined"
+                style="font-size:13px;"
+              >
+                edit
+              </span>
+
+            </button>
+
+          </div>
+
+        </td>
+      `;
+    }
+
+    tbody.appendChild(tr);
   });
 }
 
-function openAnnadanamModal(index) {
-  currentAnnadanamIndex = index;
+/* =========================================================
+   20. ANNADANAM MODAL
+   ========================================================= */
 
-  const modal = getElement(
-    "annadanamModal"
-  );
+window.openAnnadanamModal =
+  function(index = null) {
 
-  if (!modal) {
-    return;
-  }
+    const modal =
+      getElement("annadanamModal");
+
+    const select =
+      getElement("annadanamItemSelect");
+
+    const indexInput =
+      getElement("annadanamIndexInput");
+
+    if (!modal || !select) {
+      return;
+    }
+
+    select.innerHTML = "";
+
+    annadanamDonors.forEach(
+      (donor, idx) => {
+
+        const option =
+          document.createElement("option");
+
+        option.value = idx;
+
+        option.textContent =
+          `${donor.item} — ${
+            donor.isVacant
+              ? "Available"
+              : `Flat ${donor.flat} (${donor.donor})`
+          }`;
+
+        select.appendChild(option);
+      }
+    );
+
+    const firstVacantIndex =
+      annadanamDonors.findIndex(
+        donor => donor.isVacant
+      );
+
+    const selectedIndex =
+      index !== null
+        ? index
+        : firstVacantIndex >= 0
+          ? firstVacantIndex
+          : 0;
+
+    select.value = selectedIndex;
+
+    indexInput.value = selectedIndex;
+
+    populateAnnadanamForm(selectedIndex);
+
+    modal.classList.add("open");
+
+    setBodyModalState(true);
+
+    setTimeout(() => {
+      getElement("annadanamFlatInput")?.focus();
+    }, 150);
+  };
+
+function populateAnnadanamForm(index) {
+
+  const flatInput =
+    getElement("annadanamFlatInput");
+
+  const donorInput =
+    getElement("annadanamDonorInput");
 
   const donor =
     annadanamDonors[index];
 
-  setFieldValue(
-    "annadanamDonor",
-    donor?.donor || ""
-  );
-
-  setFieldValue(
-    "annadanamFlat",
-    donor?.flat || ""
-  );
-
-  setModalVisible(modal, true);
-}
-
-function closeAnnadanamModal() {
-  closeModalById("annadanamModal");
-  currentAnnadanamIndex = null;
-}
-
-function onAnnadanamSelectionChange() {
-  const donor = getFieldValue(
-    "annadanamDonor"
-  );
-
-  if (donor) {
-    const flat = getElement(
-      "annadanamFlat"
-    );
-
-    if (flat && !flat.value) {
-      flat.focus();
-    }
-  }
-}
-
-function saveAnnadanamSponsorship() {
-  if (
-    currentAnnadanamIndex === null ||
-    !annadanamDonors[currentAnnadanamIndex]
-  ) {
+  if (!donor) {
     return;
   }
 
-  const donor =
-    annadanamDonors[currentAnnadanamIndex];
+  if (!donor.isVacant) {
 
-  donor.donor =
-    getFieldValue("annadanamDonor").trim();
+    flatInput.value =
+      donor.flat !== "OPEN"
+        ? donor.flat
+        : "";
 
-  donor.flat =
-    getFieldValue("annadanamFlat").trim();
+    donorInput.value =
+      donor.donor !==
+      "Available for Sponsorship"
+        ? donor.donor
+        : "";
 
-  donor.status =
-    donor.donor
-      ? "CONFIRMED"
-      : "Open";
+  } else {
 
-  if (
-    writeStorage(
-      STORAGE_KEYS.annadanamDonors,
-      annadanamDonors
-    )
-  ) {
+    flatInput.value = "";
+
+    donorInput.value = "";
+  }
+}
+
+window.closeAnnadanamModal =
+  function() {
+
+    const modal =
+      getElement("annadanamModal");
+
+    if (!modal) {
+      return;
+    }
+
+    modal.classList.remove("open");
+
+    setBodyModalState(false);
+  };
+
+window.onAnnadanamSelectionChange =
+  function(newIdx) {
+
+    const indexInput =
+      getElement("annadanamIndexInput");
+
+    const idx =
+      Number.parseInt(newIdx, 10);
+
+    if (Number.isNaN(idx)) {
+      return;
+    }
+
+    indexInput.value = idx;
+
+    populateAnnadanamForm(idx);
+  };
+
+window.saveAnnadanamSponsorship =
+  function(event) {
+
+    event.preventDefault();
+
+    const indexInput =
+      getElement("annadanamIndexInput");
+
+    const flatInput =
+      getElement("annadanamFlatInput");
+
+    const donorInput =
+      getElement("annadanamDonorInput");
+
+    const idx =
+      Number.parseInt(indexInput.value, 10);
+
+    if (
+      Number.isNaN(idx) ||
+      !annadanamDonors[idx]
+    ) {
+      return;
+    }
+
+    const flatVal =
+      flatInput.value.trim();
+
+    const donorVal =
+      donorInput.value.trim();
+
+    if (!flatVal || !donorVal) {
+
+      showToast(
+        "Please enter the Flat Number and Donor Name.",
+        "info"
+      );
+
+      return;
+    }
+
+    annadanamDonors[idx] = {
+      ...annadanamDonors[idx],
+
+      flat: flatVal,
+
+      donor: donorVal,
+
+      value: "CONFIRMED",
+
+      isVacant: false
+    };
+
+    saveAnnadanamDonorsToStorage();
+
     renderAnnadanamDonors();
 
     closeAnnadanamModal();
 
     showToast(
-      donor.donor
-        ? `${donor.donor} sponsorship saved.`
-        : "Sponsorship updated."
+      `Sponsorship confirmed for Flat ${flatVal} (${donorVal})!`,
+      "success"
     );
-  }
-}
+  };
 
-function clearAnnadanamSponsorship() {
-  if (
-    currentAnnadanamIndex === null ||
-    !annadanamDonors[currentAnnadanamIndex]
-  ) {
-    return;
-  }
+window.clearAnnadanamSponsorship =
+  function() {
 
-  const donor =
-    annadanamDonors[currentAnnadanamIndex];
+    const indexInput =
+      getElement("annadanamIndexInput");
 
-  donor.donor = "";
-  donor.flat = "";
-  donor.status = "Open";
+    const idx =
+      Number.parseInt(indexInput.value, 10);
 
-  writeStorage(
-    STORAGE_KEYS.annadanamDonors,
-    annadanamDonors
-  );
+    if (
+      Number.isNaN(idx) ||
+      !annadanamDonors[idx]
+    ) {
+      return;
+    }
 
-  renderAnnadanamDonors();
+    if (!confirm(
+      "Release this Annadanam sponsorship slot?"
+    )) {
+      return;
+    }
 
-  closeAnnadanamModal();
+    annadanamDonors[idx] = {
+      ...annadanamDonors[idx],
 
-  showToast("Annadanam sponsorship released.");
-}
+      flat: "OPEN",
+
+      donor: "Available for Sponsorship",
+
+      value: "SLOT OPEN",
+
+      isVacant: true
+    };
+
+    saveAnnadanamDonorsToStorage();
+
+    renderAnnadanamDonors();
+
+    closeAnnadanamModal();
+
+    showToast(
+      "Item marked as open for voluntary sponsorship.",
+      "info"
+    );
+  };
 
 /* =========================================================
-   GALLERY
+   21. GALLERY
    ========================================================= */
 
-let galleryMoments = readStorage(
-  STORAGE_KEYS.gallery,
-  DEFAULT_GALLERY
-);
-
-let currentLightboxIndex = null;
-
 function renderGallery() {
-  const grid = getElement("galleryGrid");
+
+  const grid =
+    getElement("galleryGrid");
 
   if (!grid) {
     return;
@@ -1472,349 +1921,375 @@ function renderGallery() {
 
   grid.innerHTML = "";
 
-  if (!galleryMoments.length) {
-    const empty = createElement(
-      "div",
-      "empty-state"
-    );
+  if (galleryData.length === 0) {
 
-    empty.style.gridColumn = "1 / -1";
+    grid.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:3rem 1rem;
+        background:var(--color-surface-low);
+        border:2px dashed var(--color-border);
+        border-radius:16px;
+      ">
 
-    const icon = createElement(
-      "span",
-      "material-symbols-outlined",
-      "photo_library"
-    );
+        <span
+          class="material-symbols-outlined"
+          style="
+            font-size:48px;
+            color:var(--color-text-sub);
+          "
+        >
+          photo_library
+        </span>
 
-    const title = createElement(
-      "strong",
-      "",
-      "No festival photos yet"
-    );
+        <h4 style="
+          font-family:var(--font-display);
+          font-size:1.15rem;
+          color:var(--color-text-main);
+          margin-bottom:0.5rem;
+        ">
+          No photos in gallery
+        </h4>
 
-    const text = createElement(
-      "p",
-      "",
-      "Add the first festival moment to the gallery."
-    );
+        <p style="
+          font-size:0.85rem;
+          color:var(--color-text-sub);
+          margin-bottom:1rem;
+        ">
+          All photos have been removed.
+          You can upload new photos or restore
+          the original collection.
+        </p>
 
-    empty.append(icon, title, text);
+        <button
+          onclick="resetGalleryToDefault()"
+          class="btn-primary-action"
+        >
 
-    grid.appendChild(empty);
+          <span
+            class="material-symbols-outlined"
+            style="font-size:18px;"
+          >
+            refresh
+          </span>
+
+          <span>
+            Restore Default Photos
+          </span>
+
+        </button>
+
+      </div>
+    `;
 
     return;
   }
 
-  galleryMoments.forEach((photo, index) => {
-    const card = createElement(
-      "article",
-      "gallery-card"
-    );
+  galleryData.forEach((item, index) => {
 
-    card.tabIndex = 0;
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "gallery-card";
+
     card.setAttribute(
       "role",
       "button"
     );
 
     card.setAttribute(
+      "tabindex",
+      "0"
+    );
+
+    card.setAttribute(
       "aria-label",
-      `Open ${photo.title || "festival photo"}`
+      `View photo: ${item.title}`
     );
 
-    const image = document.createElement("img");
+    card.innerHTML = `
+      <div class="gallery-card-actions">
 
-    image.src = photo.image;
-    image.alt =
-      photo.title ||
-      "Vinayaka Festival moment";
+        <button
+          type="button"
+          class="btn-gallery-delete"
+          onclick="deleteGalleryPhoto(event, ${index})"
+          title="Remove this photo"
+          aria-label="Remove photo"
+        >
 
-    image.loading = "lazy";
-    image.decoding = "async";
+          <span
+            class="material-symbols-outlined"
+            style="font-size:18px;"
+          >
+            delete
+          </span>
 
-    image.addEventListener("error", () => {
-      image.removeAttribute("src");
-      image.style.background =
-        "linear-gradient(135deg,#650008,#d97706)";
-    });
+        </button>
 
-    const overlay = createElement(
-      "div",
-      "gallery-overlay"
-    );
+      </div>
 
-    const tag = createElement(
-      "span",
-      "gallery-tag",
-      photo.tag || "Festival Moment"
-    );
+      <img
+        src="${escapeHTML(item.image)}"
+        alt="${escapeHTML(item.alt || item.title)}"
+        loading="lazy"
+      />
 
-    const title = createElement(
-      "div",
-      "gallery-title",
-      photo.title || "Festival Moment"
-    );
+      <div class="gallery-overlay">
 
-    overlay.append(tag, title);
+        <span class="gallery-tag">
+          ${escapeHTML(item.tag)}
+        </span>
 
-    const deleteButton = createElement(
-      "button",
-      "gallery-delete-btn"
-    );
+        <h4 class="gallery-title">
+          ${escapeHTML(item.title)}
+        </h4>
 
-    deleteButton.type = "button";
-    deleteButton.title = "Delete photo";
-    deleteButton.setAttribute(
-      "aria-label",
-      "Delete photo"
-    );
-
-    const deleteIcon = createElement(
-      "span",
-      "material-symbols-outlined",
-      "delete"
-    );
-
-    deleteButton.appendChild(deleteIcon);
-
-    deleteButton.addEventListener(
-      "click",
-      event => {
-        event.stopPropagation();
-
-        deleteGalleryPhoto(index);
-      }
-    );
-
-    card.append(
-      image,
-      overlay,
-      deleteButton
-    );
+      </div>
+    `;
 
     card.addEventListener(
       "click",
       event => {
+
         if (
           event.target.closest(
-            ".gallery-delete-btn"
+            ".btn-gallery-delete"
           )
         ) {
           return;
         }
 
-        openLightbox(index);
+        openLightbox(
+          item.image,
+          item.title,
+          index
+        );
       }
     );
 
     card.addEventListener(
       "keydown",
       event => {
+
         if (
           event.key === "Enter" ||
           event.key === " "
         ) {
+
           event.preventDefault();
 
-          openLightbox(index);
+          openLightbox(
+            item.image,
+            item.title,
+            index
+          );
         }
       }
     );
 
     grid.appendChild(card);
   });
+
+  setupImageFallbacks();
 }
 
 /* =========================================================
-   LIGHTBOX
+   22. LIGHTBOX
    ========================================================= */
 
-function openLightbox(index) {
-  currentLightboxIndex = index;
+function openLightbox(
+  src,
+  title,
+  index = null
+) {
 
-  const modal = getElement(
-    "galleryModal"
-  );
+  const modal =
+    getElement("galleryModal");
 
-  const image = getElement(
-    "modalImg"
-  );
+  const modalImg =
+    getElement("modalImg");
 
-  if (!modal || !image) {
+  const modalTitle =
+    getElement("modalTitle");
+
+  if (!modal || !modalImg) {
     return;
   }
 
-  const photo =
-    galleryMoments[index];
+  modalImg.src = src;
 
-  if (!photo) {
-    return;
+  modalImg.alt = title || "Festival photo";
+
+  if (modalTitle) {
+    modalTitle.textContent =
+      title || "Festival Photo";
   }
 
-  image.src = photo.image;
-  image.alt =
-    photo.title ||
-    "Festival photograph";
+  activeLightboxIndex = index;
 
-  setModalVisible(modal, true);
+  modal.classList.add("open");
+
+  setBodyModalState(true);
 }
 
-function closeLightbox() {
-  closeModalById("galleryModal");
+window.closeLightbox =
+  function() {
 
-  currentLightboxIndex = null;
+    const modal =
+      getElement("galleryModal");
 
-  const image = getElement("modalImg");
+    if (!modal) {
+      return;
+    }
 
-  if (image) {
-    image.removeAttribute("src");
-  }
-}
+    modal.classList.remove("open");
 
-function deleteGalleryPhoto(index) {
-  if (
-    index < 0 ||
-    index >= galleryMoments.length
-  ) {
-    return;
-  }
+    setBodyModalState(false);
 
-  const photo =
-    galleryMoments[index];
-
-  const confirmed = window.confirm(
-    `Delete "${photo.title || "this photo"}"?`
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  galleryMoments.splice(index, 1);
-
-  writeStorage(
-    STORAGE_KEYS.gallery,
-    galleryMoments
-  );
-
-  renderGallery();
-
-  showToast("Photo deleted.");
-}
-
-function deleteCurrentLightboxPhoto() {
-  if (
-    currentLightboxIndex === null
-  ) {
-    return;
-  }
-
-  const index =
-    currentLightboxIndex;
-
-  closeLightbox();
-
-  deleteGalleryPhoto(index);
-}
-
-function resetGalleryToDefault() {
-  const confirmed = window.confirm(
-    "Reset the gallery to the default festival photos?"
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  galleryMoments =
-    structuredCloneSafe(
-      DEFAULT_GALLERY
-    );
-
-  writeStorage(
-    STORAGE_KEYS.gallery,
-    galleryMoments
-  );
-
-  renderGallery();
-
-  showToast(
-    "Gallery restored to default photos."
-  );
-}
-
-/* =========================================================
-   IMAGE UPLOAD / OPTIMIZATION
-   ========================================================= */
-
-function previewSelectedPhoto(event) {
-  const file =
-    event?.target?.files?.[0];
-
-  const preview =
-    getElement("photoPreview");
-
-  if (!file || !preview) {
-    return;
-  }
-
-  if (!file.type.startsWith("image/")) {
-    showToast(
-      "Please select an image file.",
-      "error"
-    );
-
-    event.target.value = "";
-
-    return;
-  }
-
-  const reader =
-    new FileReader();
-
-  reader.onload = () => {
-    preview.src = reader.result;
-    preview.style.display = "block";
+    activeLightboxIndex = null;
   };
 
-  reader.readAsDataURL(file);
-}
+window.deleteGalleryPhoto =
+  function(event, index) {
 
-async function handlePhotoUpload(event) {
-  event?.preventDefault();
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
 
-  const input =
-    getElement("photoFile");
+    if (
+      index < 0 ||
+      index >= galleryData.length
+    ) {
+      return;
+    }
 
-  const file =
-    input?.files?.[0];
+    const item =
+      galleryData[index];
 
-  if (!file) {
+    if (!confirm(
+      `Remove "${item.title}" from celebration gallery?`
+    )) {
+      return;
+    }
+
+    galleryData.splice(index, 1);
+
+    saveGalleryDataToStorage();
+
+    renderGallery();
+
+    if (activeLightboxIndex === index) {
+      closeLightbox();
+    }
+
     showToast(
-      "Please select a photo first.",
-      "warning"
+      `Photo "${item.title}" removed from gallery.`,
+      "info"
     );
+  };
 
-    return;
-  }
+window.deleteCurrentLightboxPhoto =
+  function() {
 
-  try {
-    const optimized =
-      await optimizeImageFile(
-        file,
-        1920,
-        0.82
+    let targetIndex =
+      activeLightboxIndex;
+
+    if (
+      targetIndex === null ||
+      targetIndex < 0 ||
+      targetIndex >= galleryData.length
+    ) {
+
+      const modalImg =
+        getElement("modalImg");
+
+      if (modalImg) {
+
+        targetIndex =
+          galleryData.findIndex(
+            item =>
+              item.image === modalImg.src
+          );
+      }
+    }
+
+    if (
+      targetIndex >= 0 &&
+      galleryData[targetIndex]
+    ) {
+
+      const item =
+        galleryData[targetIndex];
+
+      if (!confirm(
+        `Remove "${item.title}" from celebration gallery?`
+      )) {
+        return;
+      }
+
+      galleryData.splice(
+        targetIndex,
+        1
       );
 
-    addPhotoToGallery(
-      optimized,
-      getFieldValue("photoTitle").trim(),
-      getFieldValue("photoTag").trim()
-    );
+      saveGalleryDataToStorage();
 
-    if (input) {
-      input.value = "";
+      renderGallery();
+
+      closeLightbox();
+
+      showToast(
+        `Photo "${item.title}" removed from gallery.`,
+        "info"
+      );
+
+    } else {
+
+      closeLightbox();
     }
+  };
+
+window.resetGalleryToDefault =
+  function() {
+
+    if (!confirm(
+      "Reset celebration gallery to original default photos?"
+    )) {
+      return;
+    }
+
+    galleryData =
+      [...DEFAULT_GALLERY_DATA];
+
+    saveGalleryDataToStorage();
+
+    renderGallery();
+
+    showToast(
+      "Gallery reset to original festival photos!",
+      "success"
+    );
+  };
+
+/* =========================================================
+   23. PHOTO UPLOAD
+   ========================================================= */
+
+window.openPhotoUploadModal =
+  function() {
+
+    const modal =
+      getElement("photoUploadModal");
+
+    if (!modal) {
+      return;
+    }
+
+    uploadedPhotoDataUrl = null;
 
     const form =
       getElement("photoUploadForm");
@@ -1823,1266 +2298,1085 @@ async function handlePhotoUpload(event) {
       form.reset();
     }
 
-    const preview =
-      getElement("photoPreview");
+    modal.classList.add("open");
 
-    if (preview) {
-      preview.removeAttribute("src");
-      preview.style.display = "none";
+    setBodyModalState(true);
+  };
+
+window.closePhotoUploadModal =
+  function() {
+
+    const modal =
+      getElement("photoUploadModal");
+
+    if (!modal) {
+      return;
     }
 
-    closePhotoUploadModal();
+    modal.classList.remove("open");
 
-    showToast(
-      "Festival photo added successfully."
-    );
-  } catch (error) {
-    console.error(error);
+    setBodyModalState(false);
+  };
 
-    showToast(
-      "Unable to process this image.",
-      "error"
-    );
-  }
-}
+window.previewSelectedPhoto =
+  function(input) {
 
-function addPhotoToGallery(
-  imageData,
-  title = "",
-  tag = ""
-) {
-  galleryMoments.unshift({
-    image: imageData,
-    title: title || "Festival Moment",
-    tag: tag || "Festival Memory"
-  });
+    if (
+      !input.files ||
+      !input.files[0]
+    ) {
+      return;
+    }
 
-  if (
-    writeStorage(
-      STORAGE_KEYS.gallery,
-      galleryMoments
-    )
-  ) {
-    renderGallery();
-  }
-}
+    const file =
+      input.files[0];
 
-/* =========================================================
-   IMAGE OPTIMIZATION
-   ========================================================= */
+    if (!file.type.startsWith("image/")) {
 
-function optimizeImageFile(
-  file,
-  maxDimension = 1920,
-  quality = 0.82
-) {
-  return new Promise(
-    (resolve, reject) => {
-      if (!file.type.startsWith("image/")) {
-        reject(
-          new Error(
-            "Unsupported image type."
-          )
-        );
+      showToast(
+        "Please select a valid image file.",
+        "info"
+      );
 
-        return;
-      }
+      input.value = "";
 
-      if (file.size > 12 * 1024 * 1024) {
-        reject(
-          new Error(
-            "Image is larger than 12 MB."
-          )
-        );
+      return;
+    }
 
-        return;
-      }
+    const reader =
+      new FileReader();
+
+    reader.onload = event => {
+
+      uploadedPhotoDataUrl =
+        event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+window.handlePhotoUpload =
+  function(event) {
+
+    event.preventDefault();
+
+    const fileInput =
+      getElement("photoFileInput");
+
+    const urlInput =
+      getElement("photoUrlInput");
+
+    const titleInput =
+      getElement("photoTitleInput");
+
+    const tagSelect =
+      getElement("photoTagSelect");
+
+    const title =
+      titleInput.value.trim();
+
+    const tag =
+      tagSelect.value;
+
+    let imageUrl =
+      uploadedPhotoDataUrl ||
+      (
+        urlInput.value
+          ? urlInput.value.trim()
+          : null
+      );
+
+    if (!title) {
+
+      showToast(
+        "Please enter a photo title.",
+        "info"
+      );
+
+      return;
+    }
+
+    if (
+      !imageUrl &&
+      fileInput.files &&
+      fileInput.files[0]
+    ) {
 
       const reader =
         new FileReader();
 
-      reader.onerror = () =>
-        reject(
-          new Error(
-            "Unable to read image."
-          )
+      reader.onload = event => {
+
+        addPhotoToGallery(
+          event.target.result,
+          title,
+          tag
         );
-
-      reader.onload = () => {
-        const image =
-          new Image();
-
-        image.onload = () => {
-          let width = image.width;
-          let height = image.height;
-
-          const scale =
-            Math.min(
-              1,
-              maxDimension /
-                Math.max(
-                  width,
-                  height
-                )
-            );
-
-          width = Math.round(
-            width * scale
-          );
-
-          height = Math.round(
-            height * scale
-          );
-
-          const canvas =
-            document.createElement(
-              "canvas"
-            );
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const context =
-            canvas.getContext(
-              "2d",
-              {
-                alpha: false
-              }
-            );
-
-          if (!context) {
-            reject(
-              new Error(
-                "Canvas is unavailable."
-              )
-            );
-
-            return;
-          }
-
-          context.imageSmoothingEnabled =
-            true;
-
-          context.imageSmoothingQuality =
-            "high";
-
-          context.drawImage(
-            image,
-            0,
-            0,
-            width,
-            height
-          );
-
-          const output =
-            canvas.toDataURL(
-              "image/jpeg",
-              quality
-            );
-
-          resolve(output);
-        };
-
-        image.onerror = () =>
-          reject(
-            new Error(
-              "Unable to decode image."
-            )
-          );
-
-        image.src =
-          reader.result;
       };
 
-      reader.readAsDataURL(file);
-    }
-  );
-}
-
-/* =========================================================
-   PHOTO UPLOAD MODAL
-   ========================================================= */
-
-function openPhotoUploadModal() {
-  const modal =
-    getElement(
-      "photoUploadModal"
-    );
-
-  if (modal) {
-    setModalVisible(
-      modal,
-      true
-    );
-  }
-}
-
-function closePhotoUploadModal() {
-  closeModalById(
-    "photoUploadModal"
-  );
-}
-
-/* =========================================================
-   CAROUSEL MANAGEMENT
-   ========================================================= */
-
-function openCarouselModal() {
-  const modal =
-    getElement(
-      "carouselModal"
-    );
-
-  if (!modal) {
-    return;
-  }
-
-  renderCarouselSlidesList();
-
-  setModalVisible(
-    modal,
-    true
-  );
-}
-
-function closeCarouselModal() {
-  closeModalById(
-    "carouselModal"
-  );
-}
-
-function switchCarouselTab(tabName) {
-  document
-    .querySelectorAll(
-      "[data-carousel-tab]"
-    )
-    .forEach(tab => {
-      tab.classList.toggle(
-        "active",
-        tab.dataset.carouselTab ===
-          tabName
+      reader.readAsDataURL(
+        fileInput.files[0]
       );
-    });
 
-  document
-    .querySelectorAll(
-      "[data-carousel-panel]"
-    )
-    .forEach(panel => {
-      panel.style.display =
-        panel.dataset.carouselPanel ===
-        tabName
-          ? ""
-          : "none";
-    });
-}
+      return;
+    }
 
-function previewCarouselPhoto(event) {
-  const file =
-    event?.target?.files?.[0];
+    if (!imageUrl) {
 
-  const preview =
-    getElement(
-      "carouselPhotoPreview"
+      showToast(
+        "Please choose an image file or provide an image URL.",
+        "info"
+      );
+
+      return;
+    }
+
+    addPhotoToGallery(
+      imageUrl,
+      title,
+      tag
     );
-
-  if (!file || !preview) {
-    return;
-  }
-
-  if (!file.type.startsWith("image/")) {
-    showToast(
-      "Please select an image file.",
-      "error"
-    );
-
-    event.target.value = "";
-
-    return;
-  }
-
-  const reader =
-    new FileReader();
-
-  reader.onload = () => {
-    preview.src =
-      reader.result;
-
-    preview.style.display =
-      "block";
   };
 
-  reader.readAsDataURL(file);
+function addPhotoToGallery(
+  imageUrl,
+  title,
+  tag
+) {
+
+  const newPhoto = {
+    image: imageUrl,
+    tag: tag || "Festival Moments",
+    title: title,
+    alt: title
+  };
+
+  galleryData.unshift(newPhoto);
+
+  saveGalleryDataToStorage();
+
+  renderGallery();
+
+  closePhotoUploadModal();
+
+  showToast(
+    "Photo added to Celebration Gallery!",
+    "success"
+  );
 }
 
-async function handleCarouselSlideUpload(
-  event
-) {
-  event?.preventDefault();
+/* =========================================================
+   24. HERO CAROUSEL MANAGEMENT
+   ========================================================= */
 
-  const input =
-    getElement(
-      "carouselPhotoFile"
-    );
+window.openCarouselModal =
+  function() {
 
-  const file =
-    input?.files?.[0];
+    const modal =
+      getElement("carouselModal");
 
-  if (!file) {
-    showToast(
-      "Please select a slide image.",
-      "warning"
-    );
-
-    return;
-  }
-
-  try {
-    const optimized =
-      await optimizeImageFile(
-        file,
-        1920,
-        0.82
-      );
-
-    addSlideToCarousel(
-      optimized,
-      getFieldValue(
-        "carouselSlideTag"
-      ).trim(),
-      getFieldValue(
-        "carouselSlideTitle"
-      ).trim(),
-      getFieldValue(
-        "carouselSlideCta"
-      ).trim(),
-      getFieldValue(
-        "carouselSlideLink"
-      ).trim()
-    );
-
-    if (input) {
-      input.value = "";
+    if (!modal) {
+      return;
     }
 
+    uploadedCarouselPhotoDataUrl = null;
+
     const form =
-      getElement(
-        "carouselUploadForm"
-      );
+      getElement("carouselSlideForm");
 
     if (form) {
       form.reset();
     }
 
-    const preview =
-      getElement(
-        "carouselPhotoPreview"
-      );
+    window.switchCarouselTab("add");
 
-    if (preview) {
-      preview.removeAttribute(
-        "src"
-      );
+    renderCarouselSlidesList();
 
-      preview.style.display =
-        "none";
+    modal.classList.add("open");
+
+    setBodyModalState(true);
+  };
+
+window.closeCarouselModal =
+  function() {
+
+    const modal =
+      getElement("carouselModal");
+
+    if (!modal) {
+      return;
     }
 
-    showToast(
-      "Carousel slide added successfully."
-    );
-  } catch (error) {
-    console.error(error);
+    modal.classList.remove("open");
 
-    showToast(
-      "Unable to process the slide image.",
-      "error"
+    setBodyModalState(false);
+  };
+
+window.switchCarouselTab =
+  function(tab) {
+
+    const tabAdd =
+      getElement("tabBtnAddSlide");
+
+    const tabList =
+      getElement("tabBtnListSlides");
+
+    const contentAdd =
+      getElement("tabAddSlideContent");
+
+    const contentList =
+      getElement("tabListSlidesContent");
+
+    if (
+      !tabAdd ||
+      !tabList ||
+      !contentAdd ||
+      !contentList
+    ) {
+      return;
+    }
+
+    const isAdd =
+      tab === "add";
+
+    tabAdd.classList.toggle(
+      "active",
+      isAdd
     );
-  }
-}
+
+    tabList.classList.toggle(
+      "active",
+      !isAdd
+    );
+
+    contentAdd.style.display =
+      isAdd
+        ? "block"
+        : "none";
+
+    contentList.style.display =
+      isAdd
+        ? "none"
+        : "block";
+
+    if (!isAdd) {
+      renderCarouselSlidesList();
+    }
+  };
+
+window.previewCarouselPhoto =
+  function(input) {
+
+    if (
+      !input.files ||
+      !input.files[0]
+    ) {
+      return;
+    }
+
+    const file =
+      input.files[0];
+
+    if (!file.type.startsWith("image/")) {
+
+      showToast(
+        "Please select a valid image file.",
+        "info"
+      );
+
+      input.value = "";
+
+      return;
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = event => {
+
+      uploadedCarouselPhotoDataUrl =
+        event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+window.handleCarouselSlideUpload =
+  function(event) {
+
+    event.preventDefault();
+
+    const fileInput =
+      getElement("carouselFileInput");
+
+    const urlInput =
+      getElement("carouselUrlInput");
+
+    const titleInput =
+      getElement("carouselTitleInput");
+
+    const tagInput =
+      getElement("carouselTagInput");
+
+    const ctaTextInput =
+      getElement("carouselCtaTextInput");
+
+    const ctaLinkInput =
+      getElement("carouselCtaLinkInput");
+
+    const title =
+      titleInput.value.trim();
+
+    const tag =
+      tagInput.value.trim() ||
+      "Vinayaka Mahotsav 2026";
+
+    const ctaText =
+      ctaTextInput.value.trim() ||
+      "Explore Schedule";
+
+    const ctaLink =
+      ctaLinkInput.value.trim() ||
+      "#schedule";
+
+    let imageUrl =
+      uploadedCarouselPhotoDataUrl ||
+      (
+        urlInput.value
+          ? urlInput.value.trim()
+          : null
+      );
+
+    if (!title) {
+
+      showToast(
+        "Please enter a slide title.",
+        "info"
+      );
+
+      return;
+    }
+
+    if (
+      !imageUrl &&
+      fileInput.files &&
+      fileInput.files[0]
+    ) {
+
+      const reader =
+        new FileReader();
+
+      reader.onload = event => {
+
+        addSlideToCarousel(
+          event.target.result,
+          title,
+          tag,
+          ctaText,
+          ctaLink
+        );
+      };
+
+      reader.readAsDataURL(
+        fileInput.files[0]
+      );
+
+      return;
+    }
+
+    if (!imageUrl) {
+
+      showToast(
+        "Please choose an image file or provide an image URL.",
+        "info"
+      );
+
+      return;
+    }
+
+    addSlideToCarousel(
+      imageUrl,
+      title,
+      tag,
+      ctaText,
+      ctaLink
+    );
+  };
 
 function addSlideToCarousel(
-  image,
-  tag,
+  imageUrl,
   title,
+  tag,
   ctaText,
   ctaLink
 ) {
-  heroSlides.push({
-    image,
-    tag:
-      tag ||
-      "Vinayaka Festival 2026",
-    title:
-      title ||
-      "Festival Celebration",
-    ctaText:
-      ctaText ||
-      "Explore Festival",
-    ctaLink:
-      ctaLink ||
-      "#schedule"
-  });
 
-  if (
-    writeStorage(
-      STORAGE_KEYS.heroSlides,
-      heroSlides
-    )
-  ) {
-    currentSlideIndex =
-      heroSlides.length - 1;
+  const newSlide = {
+    image: imageUrl,
+    title: title,
+    tag: tag,
+    ctaText: ctaText,
+    ctaLink: ctaLink
+  };
+
+  heroSlides.unshift(newSlide);
+
+  currentSlideIndex = 0;
+
+  saveHeroSlidesToStorage();
+
+  initSlideshow();
+
+  showSlide(0);
+
+  closeCarouselModal();
+
+  showToast(
+    `Added new slide "${title}" to hero carousel!`,
+    "success"
+  );
+}
+
+function renderCarouselSlidesList() {
+
+  const listContainer =
+    getElement("carouselSlidesList");
+
+  const countBadge =
+    getElement("carouselSlideCount");
+
+  if (countBadge) {
+    countBadge.textContent =
+      heroSlides.length;
+  }
+
+  if (!listContainer) {
+    return;
+  }
+
+  if (heroSlides.length === 0) {
+
+    listContainer.innerHTML = `
+      <p style="
+        text-align:center;
+        color:var(--color-text-sub);
+        padding:1.5rem 0;
+      ">
+        No slides in carousel.
+        Add one using the tab above!
+      </p>
+    `;
+
+    return;
+  }
+
+  listContainer.innerHTML = "";
+
+  heroSlides.forEach(
+    (slide, index) => {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "carousel-slide-item";
+
+      item.innerHTML = `
+        <img
+          src="${escapeHTML(slide.image)}"
+          class="carousel-slide-thumb"
+          alt="${escapeHTML(slide.title)}"
+        />
+
+        <div class="carousel-slide-info">
+
+          <div
+            class="carousel-slide-title"
+            title="${escapeHTML(slide.title)}"
+          >
+            ${escapeHTML(slide.title)}
+          </div>
+
+          <div class="carousel-slide-tag">
+            ${escapeHTML(
+              slide.tag ||
+              "Slide " + (index + 1)
+            )}
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-remove-slide"
+          onclick="removeCarouselSlide(${index})"
+          title="Remove slide from carousel"
+        >
+
+          <span
+            class="material-symbols-outlined"
+            style="font-size:15px;"
+          >
+            delete
+          </span>
+
+          <span>Remove</span>
+
+        </button>
+      `;
+
+      listContainer.appendChild(item);
+    }
+  );
+
+  setupImageFallbacks();
+}
+
+window.removeCarouselSlide =
+  function(index) {
+
+    if (
+      index < 0 ||
+      index >= heroSlides.length
+    ) {
+      return;
+    }
+
+    const removed =
+      heroSlides[index];
+
+    if (heroSlides.length === 1) {
+
+      if (!confirm(
+        "Removing the only slide will leave the hero section blank. Proceed?"
+      )) {
+        return;
+      }
+
+    } else {
+
+      if (!confirm(
+        `Remove "${removed.title}" from hero carousel?`
+      )) {
+        return;
+      }
+    }
+
+    heroSlides.splice(index, 1);
+
+    if (
+      currentSlideIndex >=
+      heroSlides.length
+    ) {
+      currentSlideIndex =
+        Math.max(
+          0,
+          heroSlides.length - 1
+        );
+    }
+
+    saveHeroSlidesToStorage();
 
     initSlideshow();
 
     renderCarouselSlidesList();
-  }
-}
 
-function renderCarouselSlidesList() {
-  const container =
-    getElement(
-      "carouselSlidesList"
-    );
-
-  if (!container) {
-    return;
-  }
-
-  container.innerHTML = "";
-
-  heroSlides.forEach(
-    (slide, index) => {
-      const item =
-        createElement(
-          "div",
-          "carousel-slide-item"
-        );
-
-      const image =
-        document.createElement(
-          "img"
-        );
-
-      image.src =
-        slide.image;
-
-      image.alt =
-        slide.title ||
-        `Slide ${index + 1}`;
-
-      image.loading = "lazy";
-
-      const details =
-        createElement(
-          "div"
-        );
-
-      const title =
-        createElement(
-          "strong",
-          "",
-          slide.title ||
-            `Slide ${index + 1}`
-        );
-
-      const tag =
-        createElement(
-          "span",
-          "",
-          slide.tag || ""
-        );
-
-      details.append(
-        title,
-        tag
-      );
-
-      const remove =
-        createElement(
-          "button",
-          "table-action",
-          "Remove"
-        );
-
-      remove.type =
-        "button";
-
-      remove.addEventListener(
-        "click",
-        () => {
-          removeCarouselSlide(
-            index
-          );
-        }
-      );
-
-      item.append(
-        image,
-        details,
-        remove
-      );
-
-      container.appendChild(
-        item
-      );
-    }
-  );
-}
-
-function removeCarouselSlide(
-  index
-) {
-  if (
-    heroSlides.length <= 1
-  ) {
     showToast(
-      "At least one carousel slide is required.",
-      "warning"
+      `Slide "${removed.title}" removed from carousel.`,
+      "info"
     );
+  };
 
-    return;
-  }
+window.resetCarouselSlidesToDefault =
+  function() {
 
-  const slide =
-    heroSlides[index];
+    if (!confirm(
+      "Reset carousel to the original 4 default slides?"
+    )) {
+      return;
+    }
 
-  const confirmed =
-    window.confirm(
-      `Remove "${slide.title || "this slide"}"?`
+    heroSlides =
+      [...DEFAULT_HERO_SLIDES];
+
+    currentSlideIndex = 0;
+
+    saveHeroSlidesToStorage();
+
+    initSlideshow();
+
+    renderCarouselSlidesList();
+
+    showToast(
+      "Hero carousel reset to default slides!",
+      "success"
     );
-
-  if (!confirmed) {
-    return;
-  }
-
-  heroSlides.splice(
-    index,
-    1
-  );
-
-  if (
-    currentSlideIndex >=
-    heroSlides.length
-  ) {
-    currentSlideIndex =
-      heroSlides.length - 1;
-  }
-
-  writeStorage(
-    STORAGE_KEYS.heroSlides,
-    heroSlides
-  );
-
-  initSlideshow();
-
-  renderCarouselSlidesList();
-
-  showToast(
-    "Carousel slide removed."
-  );
-}
-
-function resetCarouselSlidesToDefault() {
-  const confirmed =
-    window.confirm(
-      "Reset the carousel to the original festival slides?"
-    );
-
-  if (!confirmed) {
-    return;
-  }
-
-  heroSlides =
-    structuredCloneSafe(
-      DEFAULT_HERO_SLIDES
-    );
-
-  currentSlideIndex = 0;
-
-  writeStorage(
-    STORAGE_KEYS.heroSlides,
-    heroSlides
-  );
-
-  initSlideshow();
-
-  renderCarouselSlidesList();
-
-  showToast(
-    "Carousel restored to default slides."
-  );
-}
+  };
 
 /* =========================================================
-   MOBILE NAVIGATION
+   25. IMAGE ERROR FALLBACK
    ========================================================= */
 
-function setupMobileNav() {
-  const drawer =
-    document.querySelector(
-      ".mobile-drawer"
-    );
+function setupImageFallbacks() {
 
-  const toggle =
-    document.querySelector(
-      ".mobile-menu-toggle"
-    );
+  document
+    .querySelectorAll("img")
+    .forEach(img => {
 
-  if (!drawer || !toggle) {
-    return;
-  }
+      if (img.dataset.errorBound) {
+        return;
+      }
 
-  window.toggleMobileMenu =
-    function () {
-      const open =
-        drawer.classList.toggle(
-          "open"
-        );
+      img.dataset.errorBound = "true";
 
-      toggle.setAttribute(
-        "aria-expanded",
-        open ? "true" : "false"
-      );
-
-      document.body.style.overflow =
-        open ? "hidden" : "";
-    };
-
-  toggle.setAttribute(
-    "aria-expanded",
-    "false"
-  );
-
-  toggle.addEventListener(
-    "click",
-    window.toggleMobileMenu
-  );
-
-  drawer
-    .querySelectorAll("a")
-    .forEach(link => {
-      link.addEventListener(
-        "click",
+      img.addEventListener(
+        "error",
         () => {
+
+          img.classList.add(
+            "image-load-error"
+          );
+
           if (
-            drawer.classList.contains(
-              "open"
-            )
+            img.closest(".slide") ||
+            img.closest(".gallery-card")
           ) {
-            window.toggleMobileMenu();
+
+            img.style.objectFit = "cover";
+
+            img.src =
+              "data:image/svg+xml;charset=UTF-8," +
+              encodeURIComponent(`
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="800"
+                  height="500"
+                  viewBox="0 0 800 500"
+                >
+                  <rect
+                    width="800"
+                    height="500"
+                    fill="#3b281c"
+                  />
+                  <text
+                    x="400"
+                    y="245"
+                    fill="#f5c65b"
+                    text-anchor="middle"
+                    font-family="Georgia"
+                    font-size="32"
+                  >
+                    Vinayaka Festival 2026
+                  </text>
+                  <text
+                    x="400"
+                    y="285"
+                    fill="#ffffff"
+                    text-anchor="middle"
+                    font-family="Arial"
+                    font-size="18"
+                  >
+                    Festival image unavailable
+                  </text>
+                </svg>
+              `);
           }
         }
       );
     });
+}
 
-  document.addEventListener(
-    "click",
-    event => {
-      if (
-        !drawer.classList.contains(
-          "open"
-        )
-      ) {
-        return;
+/* =========================================================
+   26. MODAL BACKDROP HANDLING
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    const modalMap = [
+      {
+        id: "galleryModal",
+        close: window.closeLightbox
+      },
+      {
+        id: "slotModal",
+        close: window.closeSlotModal
+      },
+      {
+        id: "annadanamModal",
+        close: window.closeAnnadanamModal
+      },
+      {
+        id: "photoUploadModal",
+        close: window.closePhotoUploadModal
+      },
+      {
+        id: "carouselModal",
+        close: window.closeCarouselModal
       }
+    ];
+
+    modalMap.forEach(item => {
+
+      const modal =
+        getElement(item.id);
 
       if (
-        !drawer.contains(
-          event.target
-        ) &&
-        !toggle.contains(
-          event.target
-        )
+        modal &&
+        event.target === modal
       ) {
-        window.toggleMobileMenu();
+        item.close();
       }
-    }
-  );
+    });
+  }
+);
+
+/* =========================================================
+   27. KEYBOARD SHORTCUTS
+   ========================================================= */
+
+function setupKeyboardShortcuts() {
 
   document.addEventListener(
     "keydown",
     event => {
-      if (
-        event.key === "Escape" &&
-        drawer.classList.contains(
-          "open"
-        )
-      ) {
-        window.toggleMobileMenu();
 
-        toggle.focus();
+      if (event.key === "Escape") {
+
+        window.closeLightbox();
+        window.closeSlotModal();
+        window.closeAnnadanamModal();
+        window.closePhotoUploadModal();
+        window.closeCarouselModal();
+
+        return;
       }
-    }
-  );
 
-  window.addEventListener(
-    "resize",
-    () => {
-      if (
-        window.innerWidth > 960 &&
-        drawer.classList.contains(
-          "open"
-        )
-      ) {
-        window.toggleMobileMenu();
-      }
-    }
-  );
-}
-
-/* =========================================================
-   SCROLL SPY
-   ========================================================= */
-
-function setupScrollSpy() {
-  const links =
-    document.querySelectorAll(
-      ".desktop-nav .nav-link"
-    );
-
-  if (!links.length) {
-    return;
-  }
-
-  const sections = [];
-
-  links.forEach(link => {
-    const href =
-      link.getAttribute(
-        "href"
-      );
-
-    if (
-      href &&
-      href.startsWith("#")
-    ) {
-      const section =
-        document.querySelector(
-          href
-        );
-
-      if (section) {
-        sections.push({
-          section,
-          link
-        });
-      }
-    }
-  });
-
-  if (!sections.length) {
-    return;
-  }
-
-  const observer =
-    new IntersectionObserver(
-      entries => {
-        entries.forEach(
-          entry => {
-            if (
-              entry.isIntersecting
-            ) {
-              sections.forEach(
-                item => {
-                  item.link.classList.toggle(
-                    "active",
-                    item.section ===
-                      entry.target
-                  );
-                }
-              );
-            }
-          }
-        );
-      },
-      {
-        rootMargin:
-          "-25% 0px -60% 0px",
-        threshold: 0
-      }
-    );
-
-  sections.forEach(
-    item =>
-      observer.observe(
-        item.section
-      )
-  );
-}
-
-/* =========================================================
-   MODAL HELPERS
-   ========================================================= */
-
-function isModalVisible(
-  modal
-) {
-  if (!modal) {
-    return false;
-  }
-
-  const style =
-    window.getComputedStyle(
-      modal
-    );
-
-  return (
-    style.display !== "none" &&
-    style.visibility !== "hidden"
-  );
-}
-
-function setModalVisible(
-  modal,
-  visible
-) {
-  if (!modal) {
-    return;
-  }
-
-  if (visible) {
-    modal.classList.add(
-      "open"
-    );
-
-    modal.style.display =
-      "flex";
-
-    modal.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-    document.body.style.overflow =
-      "hidden";
-  } else {
-    modal.classList.remove(
-      "open"
-    );
-
-    modal.style.display =
-      "none";
-
-    modal.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-    restoreBodyScroll();
-  }
-}
-
-function closeModalById(
-  id
-) {
-  const modal =
-    getElement(id);
-
-  if (!modal) {
-    return;
-  }
-
-  modal.classList.remove(
-    "open"
-  );
-
-  modal.style.display =
-    "none";
-
-  modal.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-
-  restoreBodyScroll();
-}
-
-function restoreBodyScroll() {
-  const anyModalOpen =
-    Array.from(
-      document.querySelectorAll(
-        ".modal, .modal-overlay, #galleryModal"
-      )
-    ).some(
-      modal =>
-        modal.classList.contains(
-          "open"
-        ) ||
-        isModalVisible(modal)
-    );
-
-  const drawerOpen =
-    document.querySelector(
-      ".mobile-drawer.open"
-    );
-
-  if (
-    !anyModalOpen &&
-    !drawerOpen
-  ) {
-    document.body.style.overflow =
-      "";
-  }
-}
-
-/* =========================================================
-   BACKDROP + ESCAPE HANDLERS
-   ========================================================= */
-
-function setupGlobalModalHandlers() {
-  document.addEventListener(
-    "click",
-    event => {
-      const target =
-        event.target;
+      const galleryModal =
+        getElement("galleryModal");
 
       if (
-        target.classList.contains(
-          "modal"
-        ) ||
-        target.classList.contains(
-          "modal-overlay"
-        ) ||
-        target.id ===
-          "galleryModal"
+        galleryModal &&
+        galleryModal.classList.contains("open")
       ) {
-        const id =
-          target.id;
 
-        if (id) {
-          closeModalById(id);
+        if (event.key === "ArrowRight") {
+          showNextGalleryImage();
+        }
+
+        if (event.key === "ArrowLeft") {
+          showPreviousGalleryImage();
         }
       }
     }
   );
-
-  document.addEventListener(
-    "keydown",
-    event => {
-      if (
-        event.key !== "Escape"
-      ) {
-        return;
-      }
-
-      closeModalById(
-        "slotModal"
-      );
-
-      closeModalById(
-        "annadanamModal"
-      );
-
-      closeModalById(
-        "photoUploadModal"
-      );
-
-      closeModalById(
-        "carouselModal"
-      );
-
-      closeLightbox();
-    }
-  );
 }
 
-/* =========================================================
-   FIELD HELPERS
-   ========================================================= */
+function showNextGalleryImage() {
 
-function getFieldValue(
-  id
-) {
-  const element =
-    getElement(id);
-
-  return element
-    ? String(
-        element.value || ""
-      )
-    : "";
-}
-
-function setFieldValue(
-  id,
-  value
-) {
-  const element =
-    getElement(id);
-
-  if (element) {
-    element.value =
-      value ?? "";
-  }
-}
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-function showToast(
-  message,
-  type = "success"
-) {
-  let container =
-    getElement(
-      "toastContainer"
-    );
-
-  if (!container) {
-    container =
-      createElement(
-        "div"
-      );
-
-    container.id =
-      "toastContainer";
-
-    document.body.appendChild(
-      container
-    );
-  }
-
-  const toast =
-    createElement(
-      "div",
-      `toast ${type}`
-    );
-
-  const iconName =
-    type === "error"
-      ? "error"
-      : type === "warning"
-      ? "warning"
-      : "check_circle";
-
-  const icon =
-    createElement(
-      "span",
-      "material-symbols-outlined",
-      iconName
-    );
-
-  icon.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-
-  const text =
-    createElement(
-      "div",
-      "",
-      String(message)
-    );
-
-  toast.append(
-    icon,
-    text
-  );
-
-  container.appendChild(
-    toast
-  );
-
-  window.setTimeout(
-    () => {
-      toast.style.opacity =
-        "0";
-
-      toast.style.transform =
-        "translateY(8px)";
-
-      window.setTimeout(
-        () => {
-          toast.remove();
-        },
-        220
-      );
-    },
-    3200
-  );
-}
-
-/* =========================================================
-   SMOOTH ANCHOR LINKS
-   ========================================================= */
-
-function setupSmoothLinks() {
-  document.addEventListener(
-    "click",
-    event => {
-      const link =
-        event.target.closest(
-          'a[href^="#"]'
-        );
-
-      if (!link) {
-        return;
-      }
-
-      const href =
-        link.getAttribute(
-          "href"
-        );
-
-      if (
-        !href ||
-        href === "#"
-      ) {
-        return;
-      }
-
-      const target =
-        document.querySelector(
-          href
-        );
-
-      if (!target) {
-        return;
-      }
-
-      event.preventDefault();
-
-      target.scrollIntoView({
-        behavior:
-          prefersReducedMotion()
-            ? "auto"
-            : "smooth",
-        block: "start"
-      });
-    }
-  );
-}
-
-/* =========================================================
-   PRELOAD FIRST HERO IMAGE
-   ========================================================= */
-
-function preloadFirstHeroImage() {
   if (
-    !heroSlides.length ||
-    !heroSlides[0]?.image
+    activeLightboxIndex === null ||
+    galleryData.length === 0
   ) {
     return;
   }
 
-  const image =
-    new Image();
+  const nextIndex =
+    (activeLightboxIndex + 1) %
+    galleryData.length;
 
-  image.src =
-    heroSlides[0].image;
+  const item =
+    galleryData[nextIndex];
+
+  openLightbox(
+    item.image,
+    item.title,
+    nextIndex
+  );
+}
+
+function showPreviousGalleryImage() {
+
+  if (
+    activeLightboxIndex === null ||
+    galleryData.length === 0
+  ) {
+    return;
+  }
+
+  const previousIndex =
+    (
+      activeLightboxIndex -
+      1 +
+      galleryData.length
+    ) %
+    galleryData.length;
+
+  const item =
+    galleryData[previousIndex];
+
+  openLightbox(
+    item.image,
+    item.title,
+    previousIndex
+  );
 }
 
 /* =========================================================
-   GLOBAL PUBLIC API
+   28. MODAL ACCESSIBILITY
    ========================================================= */
 
-window.openSlotModal =
-  openSlotModal;
+function setupModalAccessibility() {
 
-window.closeSlotModal =
-  closeSlotModal;
+  document
+    .querySelectorAll(".modal")
+    .forEach(modal => {
 
-window.onSlotSelectionChange =
-  onSlotSelectionChange;
+      modal.setAttribute(
+        "aria-hidden",
+        "true"
+      );
 
-window.saveSlotDetails =
-  saveSlotDetails;
+      const observer =
+        new MutationObserver(() => {
 
-window.clearSlotBooking =
-  clearSlotBooking;
+          modal.setAttribute(
+            "aria-hidden",
+            modal.classList.contains("open")
+              ? "false"
+              : "true"
+          );
+        });
 
-window.openAnnadanamModal =
-  openAnnadanamModal;
-
-window.closeAnnadanamModal =
-  closeAnnadanamModal;
-
-window.onAnnadanamSelectionChange =
-  onAnnadanamSelectionChange;
-
-window.saveAnnadanamSponsorship =
-  saveAnnadanamSponsorship;
-
-window.clearAnnadanamSponsorship =
-  clearAnnadanamSponsorship;
-
-window.openLightbox =
-  openLightbox;
-
-window.closeLightbox =
-  closeLightbox;
-
-window.deleteGalleryPhoto =
-  deleteGalleryPhoto;
-
-window.deleteCurrentLightboxPhoto =
-  deleteCurrentLightboxPhoto;
-
-window.resetGalleryToDefault =
-  resetGalleryToDefault;
-
-window.openPhotoUploadModal =
-  openPhotoUploadModal;
-
-window.closePhotoUploadModal =
-  closePhotoUploadModal;
-
-window.previewSelectedPhoto =
-  previewSelectedPhoto;
-
-window.handlePhotoUpload =
-  handlePhotoUpload;
-
-window.openCarouselModal =
-  openCarouselModal;
-
-window.closeCarouselModal =
-  closeCarouselModal;
-
-window.switchCarouselTab =
-  switchCarouselTab;
-
-window.previewCarouselPhoto =
-  previewCarouselPhoto;
-
-window.handleCarouselSlideUpload =
-  handleCarouselSlideUpload;
-
-window.addSlideToCarousel =
-  addSlideToCarousel;
-
-window.renderCarouselSlidesList =
-  renderCarouselSlidesList;
-
-window.removeCarouselSlide =
-  removeCarouselSlide;
-
-window.resetCarouselSlidesToDefault =
-  resetCarouselSlidesToDefault;
-
-window.nextSlide =
-  nextSlide;
-
-window.prevSlide =
-  prevSlide;
-
-window.goToSlide =
-  goToSlide;
+      observer.observe(
+        modal,
+        {
+          attributes: true,
+          attributeFilter: ["class"]
+        }
+      );
+    });
+}
 
 /* =========================================================
-   INITIALIZATION
+   29. MOBILE NAVIGATION
    ========================================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+function setupMobileNav() {
+
+  const toggleBtn =
+    getElement("mobileMenuBtn");
+
+  const drawer =
+    getElement("mobileDrawer");
+
+  const icon =
+    getElement("menuIcon");
+
+  if (!toggleBtn || !drawer) {
+    return;
+  }
+
+  window.toggleMobileMenu =
+    function() {
+
+      const isOpen =
+        drawer.classList.contains("open");
+
+      drawer.classList.toggle(
+        "open",
+        !isOpen
+      );
+
+      toggleBtn.setAttribute(
+        "aria-expanded",
+        String(!isOpen)
+      );
+
+      if (icon) {
+        icon.textContent =
+          isOpen
+            ? "menu"
+            : "close";
+      }
+    };
+
+  if (!toggleBtn.dataset.bound) {
+
+    toggleBtn.dataset.bound =
+      "true";
+
+    toggleBtn.addEventListener(
+      "click",
+      window.toggleMobileMenu
+    );
+  }
+
+  drawer
+    .querySelectorAll("a")
+    .forEach(link => {
+
+      link.addEventListener(
+        "click",
+        () => {
+
+          drawer.classList.remove(
+            "open"
+          );
+
+          toggleBtn.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+
+          if (icon) {
+            icon.textContent =
+              "menu";
+          }
+        }
+      );
+    });
+}
+
+/* =========================================================
+   30. SCROLL SPY
+   ========================================================= */
+
+function setupScrollSpy() {
+
+  const sections =
+    document.querySelectorAll(
+      "section[id]"
+    );
+
+  const navLinks =
+    document.querySelectorAll(
+      ".desktop-nav .nav-link"
+    );
+
+  if (
+    !sections.length ||
+    !navLinks.length
+  ) {
+    return;
+  }
+
+  const updateScrollSpy =
+    () => {
+
+      let currentId = "";
+
+      const scrollPosition =
+        window.scrollY + 140;
+
+      sections.forEach(section => {
+
+        const top =
+          section.offsetTop;
+
+        const bottom =
+          top + section.offsetHeight;
+
+        if (
+          scrollPosition >= top &&
+          scrollPosition < bottom
+        ) {
+          currentId =
+            section.id;
+        }
+      });
+
+      navLinks.forEach(link => {
+
+        const isActive =
+          link.getAttribute("href") ===
+          `#${currentId}`;
+
+        link.classList.toggle(
+          "active",
+          isActive
+        );
+      });
+    };
+
+  let ticking = false;
+
+  window.addEventListener(
+    "scroll",
+    () => {
+
+      if (!ticking) {
+
+        window.requestAnimationFrame(
+          () => {
+
+            updateScrollSpy();
+
+            ticking = false;
+          }
+        );
+
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  updateScrollSpy();
+}
+
+/* =========================================================
+   31. PUBLIC API
+   ========================================================= */
+
+window.VinayakaFestival = {
+
+  config: festivalConfig,
+
+  getHeroSlides: () =>
+    [...heroSlides],
+
+  getYajamanSlots: () =>
+    [...yajamanSlots],
+
+  getAnnadanamDonors: () =>
+    [...annadanamDonors],
+
+  getGallery: () =>
+    [...galleryData],
+
+  resetAllData: function() {
+
+    if (!confirm(
+      "Reset ALL festival portal data to defaults?"
+    )) {
+      return;
+    }
+
+    heroSlides =
+      [...DEFAULT_HERO_SLIDES];
+
+    yajamanSlots =
+      [...DEFAULT_YAJAMAN_SLOTS];
+
+    annadanamDonors =
+      [...DEFAULT_ANNADANAM_DONORS];
+
+    galleryData =
+      [...DEFAULT_GALLERY_DATA];
+
+    currentSlideIndex = 0;
+
+    saveHeroSlidesToStorage();
+
+    saveYajamanSlotsToStorage();
+
+    saveAnnadanamDonorsToStorage();
+
+    saveGalleryDataToStorage();
+
     initSlideshow();
-
-    preloadFirstHeroImage();
-
-    renderSchedule();
 
     renderYajamanSlots();
 
@@ -3090,18 +3384,25 @@ document.addEventListener(
 
     renderGallery();
 
-    setupMobileNav();
+    showToast(
+      "All festival portal data has been restored.",
+      "success"
+    );
+  },
 
-    setupScrollSpy();
+  clearStorage: function() {
 
-    setupScheduleFilters();
+    if (!confirm(
+      "Clear all locally saved festival changes?"
+    )) {
+      return;
+    }
 
-    setupCarouselKeyboard();
+    Object.values(STORAGE_KEYS)
+      .forEach(key => {
+        localStorage.removeItem(key);
+      });
 
-    setupPageVisibility();
-
-    setupGlobalModalHandlers();
-
-    setupSmoothLinks();
+    location.reload();
   }
-);
+};
