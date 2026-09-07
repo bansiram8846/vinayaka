@@ -2533,355 +2533,243 @@ async function loadPujaBookings() {
 
 
 function renderPujaTable() {
-
-  const tbody =
-    document.getElementById(
-      "yajamanTableBody"
-    );
+  const tbody = document.getElementById("yajamanTableBody");
 
   if (!tbody) {
-
     return;
-
   }
-
 
   let rows = [];
-
   let availableCount = 0;
 
+  PUJA_DATES.forEach(day => {
+    for (let slotNumber = 1; slotNumber <= 3; slotNumber++) {
 
-  PUJA_DATES.forEach(
-    day => {
+      const booking = pujaBookings.find(
+        item =>
+          item.seva_date === day.date &&
+          Number(item.slot_number) === slotNumber
+      );
 
-      for (
-        let slotNumber = 1;
-        slotNumber <= 3;
-        slotNumber++
-      ) {
+      if (booking) {
+        rows.push({
+          day,
+          slotNumber,
+          booking
+        });
+      } else {
+        availableCount++;
 
-        const booking =
-          pujaBookings.find(
-            item =>
-              item.seva_date ===
-                day.date &&
-              Number(
-                item.slot_number
-              ) === slotNumber
-          );
-
-
-        if (booking) {
-
-          rows.push({
-
-            day,
-
-            slotNumber,
-
-            booking
-
-          });
-
-        }
-        else {
-
-          availableCount++;
-
-          rows.push({
-
-            day,
-
-            slotNumber,
-
-            booking: null
-
-          });
-
-        }
-
+        rows.push({
+          day,
+          slotNumber,
+          booking: null
+        });
       }
-
     }
-  );
+  });
 
-
-  const count =
-    document.getElementById(
-      "availableSlotCount"
-    );
+  const count = document.getElementById("availableSlotCount");
 
   if (count) {
-
-    count.textContent =
-      availableCount;
-
+    count.textContent = availableCount;
   }
 
+  tbody.innerHTML = rows.map(row => {
 
-  tbody.innerHTML =
-    rows.map(
-      row => {
+    /* =====================================================
+       BOOKED SLOT
+       ===================================================== */
 
-        if (row.booking) {
+    if (row.booking) {
 
-          const b =
-            row.booking;
+      const b = row.booking;
 
-          return `
+      return `
+        <tr>
+          <td>
+            <strong>
+              ${escapeHtml(row.day.label)}
+            </strong>
+          </td>
 
-            <tr>
+          <td>
+            Slot ${row.slotNumber}
+          </td>
 
-              <td>
-                <strong>
-                  ${escapeHtml(
-                    row.day.label
-                  )}
-                </strong>
-              </td>
+          <td>
+            <strong>
+              ${escapeHtml(b.flat_number)}
+            </strong>
+          </td>
 
-              <td>
-                Slot ${row.slotNumber}
-              </td>
+          <td>
+            <strong>
+              ${escapeHtml(b.family_name)}
+            </strong>
 
-              <td>
-                <strong>
-                  ${escapeHtml(
-                    b.flat_number
-                  )}
-                </strong>
-              </td>
+            ${
+              b.notes
+                ? `
+                  <small
+                    style="
+                      display:block;
+                      color:var(--muted);
+                      font-size:.65rem;
+                    ">
+                    ${escapeHtml(b.notes)}
+                  </small>
+                `
+                : ""
+            }
+          </td>
 
-              <td>
+          <td>
+            ${escapeHtml(b.notes || "Puja Seva")}
 
-                <strong>
-                  ${escapeHtml(
-                    b.family_name
-                  )}
-                </strong>
+            <span class="badge-confirmed">
+              Confirmed
+            </span>
+          </td>
 
-                ${
-                  b.notes
-                    ? `
-                      <small
-                        style="
-                          display:block;
-                          color:var(--muted);
-                          font-size:.65rem;
-                        ">
+          <td>
+            ${
+              isAdmin
+                ? `
+                  <button
+                    class="btn-slot-action btn-slot-edit"
+                    type="button"
+                    onclick="openPujaEdit('${b.id}')">
 
-                        ${escapeHtml(
-                          b.notes
-                        )}
+                    <span
+                      class="material-symbols-outlined"
+                      style="font-size:14px">
+                      edit
+                    </span>
 
-                      </small>
-                    `
-                    : ""
-                }
-
-              </td>
-
-              <td>
-
-                ${escapeHtml(
-                  b.notes ||
-                  "Puja Seva"
-                )}
-
-                <span class="badge-confirmed">
-                  Confirmed
-                </span>
-
-              </td>
-
-              <td>
-
-                ${
-                  isAdmin
-                    ? `
-
-                      <button
-                        class="btn-slot-action btn-slot-edit"
-                        onclick="openPujaEdit('${b.id}')">
-
-                        <span
-                          class="material-symbols-outlined"
-                          style="font-size:14px">
-
-                          edit
-
-                        </span>
-
-                        Update
-
-                      </button>
-
-                    `
-                    : `
-
-                      <span class="badge-confirmed">
-                        Booked
-                      </span>
-
-                    `
-                }
-
-              </td>
-
-            </tr>
-
-          `;
-
-        }
+                    Update
+                  </button>
+                `
+                : `
+                  <span class="badge-confirmed">
+                    Booked
+                  </span>
+                `
+            }
+          </td>
+        </tr>
+      `;
+    }
 
 
-        return `
+    /* =====================================================
+       VACANT SLOT
+       ===================================================== */
 
-          <tr class="row-vacant">
+    return `
+      <tr class="row-vacant">
 
-            <td>
+        <td>
+          <strong>
+            ${escapeHtml(row.day.label)}
+          </strong>
+        </td>
 
-              <strong>
-                ${escapeHtml(
-                  row.day.label
-                )}
-              </strong>
+        <td>
+          Slot ${row.slotNumber}
+        </td>
 
-            </td>
+        <td>—</td>
 
-            <td>
-              Slot ${row.slotNumber}
-            </td>
+        <td>
+          <span class="badge-vacant">
+            Available
+          </span>
+        </td>
 
-            <td>—</td>
+        <td>
+          Puja Seva
+        </td>
 
-            <td>
+        <td>
 
-              <span class="badge-vacant">
-                Available
-              </span>
+          ${
+            isAdmin
+              ? `
+                <button
+                  class="btn-slot-action btn-slot-book"
+                  type="button"
+                  onclick="openPujaBooking(
+                    '${row.day.date}',
+                    ${row.slotNumber}
+                  )">
 
-            </td>
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size:14px">
+                    add_circle
+                  </span>
 
-            <td>
-              Puja Seva
-            </td>
-
-            <td>
-
-              <button
-                class="btn-slot-action btn-slot-book"
-                onclick="openPujaBooking('${row.day.date}',${row.slotNumber})">
-
+                  Add Booking
+                </button>
+              `
+              : `
                 <span
-                  class="material-symbols-outlined"
-                  style="font-size:14px">
+                  class="badge-vacant"
+                  title="Only festival administrators can manage Puja bookings">
 
-                  add_circle
-
+                  Admin Managed
                 </span>
+              `
+          }
 
-                Book Slot
+        </td>
 
-              </button>
+      </tr>
+    `;
 
-            </td>
-
-          </tr>
-
-        `;
-
-      }
-    ).join("");
-
+  }).join("");
 }
 
+window.openPujaBooking = function (date, slotNumber) {
 
-window.openPujaBooking =
-  function (
-    date,
-    slotNumber
-  ) {
-
-    currentPujaRecord =
-      null;
-
-    document
-      .getElementById(
-        "slotModalTitle"
-      )
-      .textContent =
-      "Book Puja Seva";
-
-
-    document
-      .getElementById(
-        "slotIdInput"
-      )
-      .value = "";
-
-
-    document
-      .getElementById(
-        "slotDateInput"
-      )
-      .value =
-      date;
-
-
-    document
-      .getElementById(
-        "slotNumberInput"
-      )
-      .value =
-      String(slotNumber);
-
-
-    document
-      .getElementById(
-        "flatNumberInput"
-      )
-      .value = "";
-
-
-    document
-      .getElementById(
-        "familyYajamanInput"
-      )
-      .value = "";
-
-
-    document
-      .getElementById(
-        "sevaPreferenceInput"
-      )
-      .value =
-      "Puja Seva";
-
-
-    document
-      .getElementById(
-        "gotramInput"
-      )
-      .value = "";
-
-
-    document
-      .getElementById(
-        "clearSlotBtn"
-      )
-      .style.display =
-      "none";
-
-
-    openModal(
-      document.getElementById(
-        "slotModal"
-      )
+  if (!isAdmin) {
+    showToast(
+      "Only the festival administrator can add Puja bookings.",
+      "error"
     );
 
-  };
+    return;
+  }
 
+  currentPujaRecord = null;
+
+  document.getElementById("slotModalTitle").textContent =
+    "Add Puja Seva Booking";
+
+  document.getElementById("slotIdInput").value = "";
+
+  document.getElementById("slotDateInput").value = date;
+
+  document.getElementById("slotNumberInput").value =
+    String(slotNumber);
+
+  document.getElementById("flatNumberInput").value = "";
+
+  document.getElementById("familyYajamanInput").value = "";
+
+  document.getElementById("sevaPreferenceInput").value =
+    "Puja Seva";
+
+  document.getElementById("gotramInput").value = "";
+
+  document.getElementById("clearSlotBtn").style.display =
+    "none";
+
+  openModal(
+    document.getElementById("slotModal")
+  );
+};
 
 window.openPujaEdit =
   async function (id) {
