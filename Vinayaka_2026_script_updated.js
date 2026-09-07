@@ -1014,48 +1014,7 @@ function initSlideshow() {
               : "lazy"
           }">
 
-        <div class="slide-overlay">
 
-          <div>
-
-            <span class="slide-caption-tag">
-              ${escapeHtml(
-                slide.tag ||
-                "Vinayaka Mahotsav 2026"
-              )}
-            </span>
-
-            <h2 class="slide-title">
-              ${escapeHtml(
-                slide.title
-              )}
-            </h2>
-
-          </div>
-
-          <a
-            href="${escapeHtml(
-              slide.ctaLink ||
-              "#schedule"
-            )}"
-            class="btn-primary-action">
-
-            ${escapeHtml(
-              slide.ctaText ||
-              "Explore"
-            )}
-
-            <span
-              class="material-symbols-outlined"
-              style="font-size:16px">
-
-              arrow_forward
-
-            </span>
-
-          </a>
-
-        </div>
 
       `;
 
@@ -4356,7 +4315,103 @@ function setupModalAccessibility() {
 function setupFestivalEffects() {
   // The buttons use direct onclick handlers in index.html so the effects
   // remain reliable even if other initialization code changes.
-  // Keep this hook for future festival effects without double-binding clicks.
+}
+
+/* =========================================================
+   PLAYFUL FESTIVAL RAT
+   The rat wanders around the visible page, pauses, looks toward
+   the visitor's pointer for a moment, then continues wandering.
+   ========================================================= */
+function setupFestivalRat() {
+  if (document.getElementById("festivalRat")) return;
+
+  const rat = document.createElement("div");
+  rat.id = "festivalRat";
+  rat.className = "festival-rat";
+  rat.setAttribute("aria-hidden", "true");
+  rat.innerHTML = `
+    <span class="rat-body">🐀</span>
+    <span class="rat-sparkle">✦</span>
+  `;
+  document.body.appendChild(rat);
+
+  let pointerX = window.innerWidth * 0.55;
+  let pointerY = window.innerHeight * 0.55;
+  let x = Math.max(30, window.innerWidth * 0.08);
+  let y = Math.max(100, window.innerHeight * 0.18);
+  let targetX = x;
+  let targetY = y;
+  let lastTime = performance.now();
+  let state = "moving";
+  let stateUntil = lastTime + 2600;
+
+  document.addEventListener("pointermove", event => {
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+  }, { passive: true });
+
+  function chooseTarget() {
+    const margin = 34;
+    const top = Math.max(88, window.scrollY + margin);
+    const bottom = window.scrollY + window.innerHeight - margin;
+    const left = margin;
+    const right = window.innerWidth - margin;
+    const side = Math.floor(Math.random() * 4);
+
+    if (side === 0) { targetX = left; targetY = top + Math.random() * Math.max(10, bottom - top); }
+    if (side === 1) { targetX = right; targetY = top + Math.random() * Math.max(10, bottom - top); }
+    if (side === 2) { targetX = left + Math.random() * Math.max(10, right - left); targetY = top; }
+    if (side === 3) { targetX = left + Math.random() * Math.max(10, right - left); targetY = bottom; }
+  }
+
+  chooseTarget();
+
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+
+    if (state === "moving") {
+      const dx = targetX - x;
+      const dy = targetY - y;
+      const distance = Math.hypot(dx, dy);
+      const speed = Math.min(190, 95 + distance * 0.16);
+
+      if (distance < 8) {
+        state = "watching";
+        stateUntil = now + 2200 + Math.random() * 1400;
+        rat.classList.add("rat-watching");
+      } else {
+        x += (dx / distance) * speed * dt;
+        y += (dy / distance) * speed * dt;
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        rat.style.setProperty("--rat-angle", `${angle}deg`);
+      }
+    } else {
+      // During the pause the rat faces the visitor, as if it has noticed them.
+      const dx = pointerX - x;
+      const dy = pointerY + window.scrollY - y;
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      rat.style.setProperty("--rat-look-angle", `${angle}deg`);
+
+      if (now >= stateUntil) {
+        rat.classList.remove("rat-watching");
+        chooseTarget();
+        state = "moving";
+        stateUntil = now + 4000;
+      }
+    }
+
+    rat.style.transform = `translate3d(${x}px, ${y - window.scrollY}px, 0) rotate(${state === "watching" ? "var(--rat-look-angle)" : "var(--rat-angle)"})`;
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener("resize", () => {
+    x = Math.min(x, window.innerWidth - 40);
+    y = Math.min(y, window.scrollY + window.innerHeight - 40);
+    chooseTarget();
+  });
+
+  requestAnimationFrame(tick);
 }
 
 function ringTempleBell() {
@@ -4368,83 +4423,32 @@ function ringTempleBell() {
     window.setTimeout(() => button.classList.remove("bell-ringing"), 1200);
   }
 
+  // Use a real temple-bell recording stored locally with the website.
+  // It is exactly 10 seconds long, so there is no synthetic notification tone.
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) throw new Error("Web Audio API unavailable");
+    if (!window.__templeBellAudio) {
+      window.__templeBellAudio = new Audio("temple-bell-10s.wav");
+      window.__templeBellAudio.preload = "auto";
+      window.__templeBellAudio.volume = 0.82;
+    }
 
-    const ctx = new AudioContext();
-    const now = ctx.currentTime;
-
-    // Rich temple-bell style resonance: fundamental + metallic partials,
-    // with a long natural decay of approximately 10 seconds.
-    const master = ctx.createGain();
-    master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(0.30, now + 0.018);
-    master.gain.exponentialRampToValueAtTime(0.0001, now + 9.85);
-    master.connect(ctx.destination);
-
-    const partials = [
-      [196.00, 0.30, "sine"],
-      [392.00, 0.22, "sine"],
-      [523.25, 0.15, "triangle"],
-      [659.25, 0.11, "triangle"],
-      [783.99, 0.08, "sine"],
-      [1046.50, 0.045, "sine"],
-      [1318.51, 0.025, "sine"]
-    ];
-
-    partials.forEach(([frequency, volume, type], index) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      osc.type = type;
-      osc.frequency.setValueAtTime(frequency, now);
-      osc.detune.setValueAtTime(index * 1.7 - 4, now);
-      osc.frequency.exponentialRampToValueAtTime(frequency * 0.992, now + 8.8);
-
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(2400 + index * 180, now);
-      filter.Q.setValueAtTime(0.7, now);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(volume, now + 0.012 + index * 0.002);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 9.55 - index * 0.08);
-
-      osc.connect(gain);
-      gain.connect(filter);
-      filter.connect(master);
-
-      osc.start(now);
-      osc.stop(now + 10.0);
-    });
-
-    // Short metallic strike transient for a more convincing bell attack.
-    const strike = ctx.createOscillator();
-    const strikeGain = ctx.createGain();
-    strike.type = "triangle";
-    strike.frequency.setValueAtTime(1450, now);
-    strike.frequency.exponentialRampToValueAtTime(480, now + 0.18);
-    strikeGain.gain.setValueAtTime(0.0001, now);
-    strikeGain.gain.exponentialRampToValueAtTime(0.16, now + 0.004);
-    strikeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
-    strike.connect(strikeGain);
-    strikeGain.connect(master);
-    strike.start(now);
-    strike.stop(now + 0.6);
-
-    window.setTimeout(() => {
-      try { ctx.close(); } catch (_) {}
-    }, 10500);
-  }
-  catch (error) {
+    const audio = window.__templeBellAudio;
+    audio.pause();
+    audio.currentTime = 0;
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(error => {
+        console.warn("Temple bell audio could not start:", error);
+        showToast("Tap the bell again to play the temple bell sound.", "info");
+      });
+    }
+  } catch (error) {
     console.warn("Temple bell audio unavailable:", error);
-    showToast("Temple bell effect played.", "info");
+    showToast("Temple bell audio is unavailable.", "error");
   }
 }
 
 function scatterFlowers() {
-  // Remove an existing shower so repeated clicks always produce a fresh effect.
   document.querySelectorAll(".flower-shower-layer").forEach(layer => layer.remove());
 
   const layer = document.createElement("div");
@@ -4452,7 +4456,7 @@ function scatterFlowers() {
   layer.setAttribute("aria-hidden", "true");
   document.body.appendChild(layer);
 
-  const flowers = ["🌸", "🌺", "🌼", "🪷", "🌻", "💮", "🌷"];
+  const flowers = ["🌸", "🌺", "🌼", "🪷", "🌻", "💮"];
   const count = window.innerWidth < 600 ? 42 : 72;
 
   for (let i = 0; i < count; i++) {
@@ -4460,24 +4464,17 @@ function scatterFlowers() {
     petal.className = "falling-flower";
     petal.textContent = flowers[Math.floor(Math.random() * flowers.length)];
 
-    const startX = Math.random() * 100;
-    const drift = (Math.random() - 0.5) * 320;
-    const size = 17 + Math.random() * 22;
-    const duration = 3.4 + Math.random() * 3.1;
-    const delay = Math.random() * 0.9;
-    const rotation = Math.random() * 360;
-
-    petal.style.left = `${startX}vw`;
-    petal.style.fontSize = `${size}px`;
-    petal.style.animationDuration = `${duration}s`;
-    petal.style.animationDelay = `${delay}s`;
-    petal.style.setProperty("--drift", `${drift}px`);
-    petal.style.setProperty("--rotation", `${rotation}deg`);
+    petal.style.left = `${Math.random() * 100}vw`;
+    petal.style.fontSize = `${18 + Math.random() * 22}px`;
+    petal.style.animationDuration = `${3.2 + Math.random() * 3.0}s`;
+    petal.style.animationDelay = `${Math.random() * 0.9}s`;
+    petal.style.setProperty("--drift", `${(Math.random() - 0.5) * 320}px`);
+    petal.style.setProperty("--rotation", `${Math.random() * 720 - 360}deg`);
 
     layer.appendChild(petal);
   }
 
-  window.setTimeout(() => layer.remove(), 7600);
+  window.setTimeout(() => layer.remove(), 7200);
 }
 
 /* =========================================================
