@@ -3153,83 +3153,193 @@ body.admin-mode .admin-only-control {
     animation: none;
   }
 }
-\n\n/* =========================================================\n   FINAL SYNCHRONIZED OVERRIDES — 2026-09-07\n   ========================================================= */\n.slideshow .slide {\n  position: absolute;\n  inset: 0;\n  overflow: hidden;\n}\n.slideshow .slide img {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}\n.slideshow .slide-overlay,\n.slideshow .slide-caption-tag,\n.slideshow .slide-title,\n.slideshow .btn-primary-action {\n  display: none !important;\n}\n\n/* Bell + flower controls are immediately before Home. */\n.desktop-nav {\n  display: flex !important;\n  align-items: center;\n}\n.header-fx-controls {\n  position: static !important;\n  order: 1 !important;\n  flex: 0 0 auto;\n}\n.desktop-nav > .nav-link {\n  order: 3;\n}\n.desktop-nav > .nav-link:first-of-type {\n  order: 2;\n}\n.desktop-nav > .admin-login-btn {\n  order: 4;\n}\n\n/* Idol donor is informational only; no arrow/navigation affordance. */\n.honour-card-idol .honour-arrow,\n.honour-card-idol::after {\n  display: none !important;\n}\n\n/* Only admins see management controls. */\nbody:not(.admin-mode) .admin-only-control {\n  display: none !important;\n}\n\n@media (max-width: 720px) {\n  .desktop-nav { display: none !important; }\n}\n\n\n/* Final mobile navigation / overflow fixes */\nhtml, body {\n  max-width: 100%;\n  overflow-x: hidden !important;\n}\nbody {\n  width: 100%;\n}\n@media (max-width: 768px) {\n  .header-nav,\n  .main-nav,\n  nav,\n  .nav-links {\n    overflow-x: hidden !important;\n  }\n  .header-nav .nav-links,\n  .main-nav .nav-links {\n    display: grid !important;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 6px;\n    width: 100%;\n  }\n  /* Keep Bell and Flower outside the 3-line menu grid. */\n  .header-fx-controls {\n    display: flex !important;\n    flex: 0 0 auto;\n  }\n  .header-fx-controls + .nav-links {\n    display: grid !important;\n  }\n  .header-nav a, .main-nav a, .nav-links a, .nav-links button {\n    min-width: 0 !important;\n    white-space: normal !important;\n  }\n  .festival-rat {\n    will-change: transform;\n  }\n}\n
-
-/* FINAL MOBILE FIXES */
-html, body { max-width: 100%; overflow-x: hidden !important; }
-@media (max-width: 768px) {
-  .desktop-nav {
-    gap: 0 !important;
-  }
-  /* Bell + flower remain separate; navigation stays in the hamburger drawer. */
-  .header-fx-controls {
-    display: flex !important;
-    flex-shrink: 0 !important;
-  }
-  .mobile-drawer {
-    width: min(92vw, 360px) !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-  }
-  .mobile-drawer a,
-  .mobile-drawer button {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    white-space: normal !important;
-  }
-  /* Three-line mobile menu icon, with bell/flower kept outside it. */
-  #mobileMenuBtn {
-    display: inline-flex !important;
-    width: 44px !important;
-    height: 44px !important;
-    flex: 0 0 44px !important;
-  }
-  #menuIcon { font-size: 28px !important; }
-  .festival-rat {
-    pointer-events: none !important;
-  }
-}
 
 
 /* =========================================================
-   HONOUR CARD CLICK CELEBRATION — STAR EXPLOSION
+   FINAL MOBILE NAVIGATION + RAT DIRECTION FIX
    ========================================================= */
-.honour-card { -webkit-tap-highlight-color: transparent; }
-.honour-card.honour-celebrate {
-  animation: honourCelebrate .95s cubic-bezier(.2,.85,.25,1);
+html, body {
+  max-width: 100%;
+  overflow-x: clip !important;
 }
-@keyframes honourCelebrate {
-  0% { transform: perspective(900px) scale(1); filter: brightness(1); }
-  28% { transform: perspective(900px) translateY(-10px) scale(1.045) rotateX(3deg); filter: brightness(1.22) saturate(1.2); }
-  58% { transform: perspective(900px) translateY(-4px) scale(.99); filter: brightness(1.08); }
-  100% { transform: perspective(900px) scale(1); filter: brightness(1); }
+
+.site-header,
+.header-inner,
+main,
+section,
+.hero-shell,
+.hero-strip,
+.container {
+  max-width: 100%;
 }
-.star-explosion {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  pointer-events: none;
-  overflow: hidden;
+
+@media (max-width: 980px) {
+  .header-inner {
+    min-width: 0 !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  /* Bell + Flower remain visible on mobile. */
+  .desktop-nav {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+  }
+
+  .desktop-nav .nav-link,
+  .desktop-nav .admin-login-btn {
+    display: none !important;
+  }
+
+  .header-fx-controls {
+    display: inline-flex !important;
+    position: static !important;
+    margin: 0 !important;
+    order: initial !important;
+  }
+
+  .mobile-menu-btn {
+    display: grid !important;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    margin-left: 0 !important;
+  }
+
+  .mobile-drawer {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 8px !important;
+    padding: 10px 14px 14px !important;
+  }
+
+  .mobile-drawer a {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    text-align: center !important;
+    padding: 11px 8px !important;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.65);
+  }
+
+  /* Exactly three visual menu rows: Home/Schedule, Seva, Gallery/Admin. */
+  .mobile-drawer a:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .mobile-drawer a:nth-child(4) {
+    grid-column: 1;
+  }
+
+  .mobile-admin-btn {
+    grid-column: 2 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 11px 8px !important;
+    box-sizing: border-box !important;
+  }
 }
-.exploding-star {
-  position: fixed;
-  left: 0;
-  top: 0;
-  font-size: 18px;
-  line-height: 1;
-  font-weight: 900;
-  text-shadow: 0 0 8px rgba(255,220,110,.9), 0 0 18px rgba(255,170,40,.65);
-  transform: translate(-50%,-50%) scale(.2) rotate(0deg);
-  animation: starExplode 1s cubic-bezier(.15,.75,.2,1) var(--delay) forwards;
+
+@media (max-width: 600px) {
+  .brand {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .brand > span:last-child {
+    min-width: 0 !important;
+  }
+
+  .brand strong,
+  .brand small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .festival-fx-btn {
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;
+  }
+
+  .mobile-menu-btn {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+  }
+
+  .hero-strip,
+  .hero-info-row,
+  .feature-grid,
+  .honour-grid,
+  .gallery-grid {
+    max-width: 100% !important;
+  }
 }
-@keyframes starExplode {
-  0% { opacity: 0; transform: translate(-50%,-50%) scale(.15) rotate(0deg); }
-  12% { opacity: 1; transform: translate(-50%,-50%) scale(var(--scale)) rotate(25deg); }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(.05) rotate(var(--rot)); }
+
+/* Rat itself never creates page width or horizontal scrolling. */
+.festival-rat {
+  left: 0 !important;
+  top: 0 !important;
+  max-width: 54px;
+}
+
+
+/* Honour-card celebration: premium 8D-style response + star burst */
+.honour-card-idol,
+.honour-card-annadanam {
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 .honour-card-idol:focus-visible,
 .honour-card-annadanam:focus-visible {
-  outline: 3px solid rgba(197,150,62,.75);
+  outline: 3px solid rgba(255, 196, 64, .75);
   outline-offset: 4px;
+}
+.honour-card-idol.honour-celebrate,
+.honour-card-annadanam.honour-celebrate {
+  animation: honourCelebrate .85s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes honourCelebrate {
+  0% { transform: perspective(900px) rotateX(0) rotateY(0) scale(1); }
+  25% { transform: perspective(900px) rotateX(-5deg) rotateY(7deg) scale(1.045); }
+  50% { transform: perspective(900px) rotateX(5deg) rotateY(-7deg) scale(1.075); }
+  75% { transform: perspective(900px) rotateX(-2deg) rotateY(3deg) scale(1.03); }
+  100% { transform: perspective(900px) rotateX(0) rotateY(0) scale(1); }
+}
+.star-explosion {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 1px;
+  z-index: 99999;
+  pointer-events: none;
+}
+.exploding-star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: calc(14px + 12px * var(--scale));
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(255, 190, 50, .75);
+  animation: starExplode 1.05s cubic-bezier(.15,.75,.25,1) forwards;
+  animation-delay: var(--delay);
+}
+@keyframes starExplode {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.1) rotate(0deg); }
+  12% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--rot)); }
 }
