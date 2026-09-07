@@ -2885,211 +2885,201 @@ window.openPujaEdit =
   };
 
 
-window.saveSlotDetails =
-  async function (event) {
+window.saveSlotDetails = async function (event) {
 
-    event.preventDefault();
-
-    /* Existing records may only be modified by an administrator.
-       Empty currentPujaRecord means this is a new public booking. */
-    if (currentPujaRecord?.id && !isAdmin) {
-      showToast("Only the festival administrator can update Puja slots.", "error");
-      closeSlotModal();
-      return;
-    }
+  event.preventDefault();
 
 
-    const date =
-      document
-        .getElementById(
-          "slotDateInput"
-        )
-        .value;
+  /* =====================================================
+     ADMIN ONLY
+     ===================================================== */
 
-    const slotNumber =
-      Number(
-        document
-          .getElementById(
-            "slotNumberInput"
-          )
-          .value
-      );
+  if (!isAdmin || !currentUser) {
 
-    const flat =
-      document
-        .getElementById(
-          "flatNumberInput"
-        )
-        .value
-        .trim();
+    showToast(
+      "Only the festival administrator can manage Puja bookings.",
+      "error"
+    );
 
-    const family =
-      document
-        .getElementById(
-          "familyYajamanInput"
-        )
-        .value
-        .trim();
-
-    const seva =
-      document
-        .getElementById(
-          "sevaPreferenceInput"
-        )
-        .value
-        .trim();
-
-    const gotram =
-      document
-        .getElementById(
-          "gotramInput"
-        )
-        .value
-        .trim();
+    return;
+  }
 
 
-    if (!date || !flat || !family) {
+  const date =
+    document.getElementById("slotDateInput").value;
+
+  const slotNumber =
+    Number(
+      document.getElementById("slotNumberInput").value
+    );
+
+  const flat =
+    document
+      .getElementById("flatNumberInput")
+      .value
+      .trim();
+
+  const family =
+    document
+      .getElementById("familyYajamanInput")
+      .value
+      .trim();
+
+  const seva =
+    document
+      .getElementById("sevaPreferenceInput")
+      .value
+      .trim();
+
+  const gotram =
+    document
+      .getElementById("gotramInput")
+      .value
+      .trim();
+
+
+  if (!date || !flat || !family) {
+
+    showToast(
+      "Please enter date, flat number and family name.",
+      "info"
+    );
+
+    return;
+  }
+
+
+  if (
+    slotNumber < 1 ||
+    slotNumber > 3
+  ) {
+
+    showToast(
+      "Invalid Puja slot.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const payload = {
+
+    seva_date: date,
+
+    slot_number: slotNumber,
+
+    flat_number: flat,
+
+    family_name: family,
+
+    notes: [
+      seva,
+
+      gotram
+        ? `Gotram: ${gotram}`
+        : ""
+
+    ]
+      .filter(Boolean)
+      .join(" • ")
+
+  };
+
+
+  try {
+
+    /* ===================================================
+       UPDATE EXISTING BOOKING
+       =================================================== */
+
+    if (
+      currentPujaRecord &&
+      currentPujaRecord.id
+    ) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("puja_seva")
+          .update(payload)
+          .eq(
+            "id",
+            currentPujaRecord.id
+          );
+
+
+      if (error) {
+        throw error;
+      }
+
 
       showToast(
-        "Please enter date, flat number and family name.",
-        "info"
+        "Puja Seva booking updated successfully."
       );
-
-      return;
 
     }
 
 
-    const payload = {
+    /* ===================================================
+       CREATE NEW BOOKING
+       =================================================== */
 
-      seva_date:
-        date,
+    else {
 
-      slot_number:
-        slotNumber,
-
-      flat_number:
-        flat,
-
-      family_name:
-        family,
-
-      notes:
-        [
-          seva,
-          gotram
-            ? `Gotram: ${gotram}`
-            : ""
-        ]
-        .filter(Boolean)
-        .join(" • ")
-
-    };
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("puja_seva")
+          .insert(payload);
 
 
-    try {
+      if (error) {
 
-      if (
-        currentPujaRecord &&
-        currentPujaRecord.id
-      ) {
-
-        if (!isAdmin) {
+        if (
+          error.code === "23505"
+        ) {
 
           showToast(
-            "Only the admin can update an existing booking.",
+            "This Puja slot has already been booked.",
             "error"
           );
 
           return;
-
         }
 
-
-        const {
-          error
-        } =
-          await supabaseClient
-
-            .from("puja_seva")
-
-            .update(payload)
-
-            .eq(
-              "id",
-              currentPujaRecord.id
-            );
-
-
-        if (error) {
-
-          throw error;
-
-        }
-
-
-        showToast(
-          "Puja Seva booking updated."
-        );
-
-      }
-      else {
-
-        const {
-          error
-        } =
-          await supabaseClient
-
-            .from("puja_seva")
-
-            .insert(payload);
-
-
-        if (error) {
-
-          if (
-            error.code === "23505"
-          ) {
-
-            showToast(
-              "This Puja slot has already been booked. Please choose another slot.",
-              "error"
-            );
-
-            return;
-
-          }
-
-          throw error;
-
-        }
-
-
-        showToast(
-          "Puja Seva slot booked successfully."
-        );
-
+        throw error;
       }
 
-
-      closeSlotModal();
-
-      await loadPujaBookings();
-
-    }
-    catch (error) {
-
-      console.error(error);
 
       showToast(
-        error.message ||
-        "Unable to save Puja booking.",
-        "error"
+        "Puja Seva booking added successfully."
       );
-
     }
 
-  };
+
+    closeSlotModal();
+
+    await loadPujaBookings();
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Puja booking error:",
+      error
+    );
+
+    showToast(
+      error.message ||
+      "Unable to save Puja booking.",
+      "error"
+    );
+  }
+};
 
 
 window.clearSlotBooking =
@@ -3259,18 +3249,13 @@ function renderAnnadanamTable() {
     );
 
   if (!tbody) {
-
     return;
-
   }
 
 
   const grouped =
     ANNADANAM_ITEMS.map(
-      (
-        item,
-        index
-      ) => {
+      (item, index) => {
 
         const slotNumber =
           index + 1;
@@ -3291,17 +3276,17 @@ function renderAnnadanamTable() {
           slotNumber,
           donors
         };
-
       }
     );
 
 
   tbody.innerHTML =
-    grouped.map(
-      group => {
+    grouped
+      .map(group => {
 
         const donorText =
           group.donors.length
+
             ? group.donors
                 .map(
                   donor =>
@@ -3312,39 +3297,47 @@ function renderAnnadanamTable() {
                     )}`
                 )
                 .join("<br>")
-            : `
-              <span class="badge-vacant">
-                Open for Support
-              </span>
-            `;
 
+            : `
+                <span class="badge-vacant">
+                  Open for Support
+                </span>
+              `;
+
+
+        /* =================================================
+           ADMIN ACTION
+           ================================================= */
 
         const action =
-          isAdmin && group.donors.length
-            ? group.donors.map(donor => `
-                <span class="admin-annadanam-actions">
-                  <button
-                    class="btn-slot-action btn-slot-edit admin-only-control"
-                    onclick="openAnnadanamEdit('${donor.id}')">
-                    <span class="material-symbols-outlined" style="font-size:14px">edit</span>
-                    Update
-                  </button>
-                  <button
-                    class="btn-slot-action btn-danger-outline admin-only-control"
-                    onclick="deleteAnnadanamDonor('${donor.id}')">
-                    <span class="material-symbols-outlined" style="font-size:14px">delete</span>
-                    Remove
-                  </button>
+          isAdmin
+
+            ? `
+              <button
+                class="btn-slot-action btn-slot-book"
+                type="button"
+                onclick="openAnnadanamModal(
+                  ${group.slotNumber}
+                )">
+
+                <span
+                  class="material-symbols-outlined"
+                  style="font-size:14px">
+                  volunteer_activism
                 </span>
-              `).join("")
+
+                Add Donor
+              </button>
+            `
+
             : `
-                <button
-                  class="btn-slot-action btn-slot-book"
-                  onclick="openAnnadanamModal('${group.slotNumber}')">
-                  <span class="material-symbols-outlined" style="font-size:14px">volunteer_activism</span>
-                  Support
-                </button>
-              `;
+              <span
+                class="badge-vacant"
+                title="Only the festival administrator can manage Annadanam">
+
+                Admin Managed
+              </span>
+            `;
 
 
         return `
@@ -3355,11 +3348,13 @@ function renderAnnadanamTable() {
 
               ${
                 group.donors.length
+
                   ? `
                     <strong>
                       ${donorText}
                     </strong>
                   `
+
                   : `
                     <span
                       style="
@@ -3374,10 +3369,12 @@ function renderAnnadanamTable() {
 
             </td>
 
+
             <td>
 
               ${
                 group.donors.length
+
                   ? group.donors
                       .map(
                         donor =>
@@ -3386,10 +3383,12 @@ function renderAnnadanamTable() {
                           )
                       )
                       .join("<br>")
+
                   : "—"
               }
 
             </td>
+
 
             <td>
 
@@ -3412,21 +3411,18 @@ function renderAnnadanamTable() {
 
             </td>
 
+
             <td>
-
               ${action}
-
             </td>
 
           </tr>
 
         `;
 
-      }
-    ).join("");
-
+      })
+      .join("");
 }
-
 
 window.openAnnadanamModal =
   async function (
@@ -3542,6 +3538,21 @@ window.saveAnnadanamSponsorship =
     event.preventDefault();
 
 
+    /* =====================================================
+       ADMIN ONLY
+       ===================================================== */
+
+    if (!isAdmin || !currentUser) {
+
+      showToast(
+        "Only the festival administrator can add Annadanam donors.",
+        "error"
+      );
+
+      return;
+    }
+
+
     const slotNumber =
       Number(
         document
@@ -3551,6 +3562,7 @@ window.saveAnnadanamSponsorship =
           .value
       );
 
+
     const flat =
       document
         .getElementById(
@@ -3559,6 +3571,7 @@ window.saveAnnadanamSponsorship =
         .value
         .trim();
 
+
     const donor =
       document
         .getElementById(
@@ -3566,6 +3579,7 @@ window.saveAnnadanamSponsorship =
         )
         .value
         .trim();
+
 
     const notes =
       document
@@ -3588,36 +3602,47 @@ window.saveAnnadanamSponsorship =
       );
 
       return;
+    }
 
+
+    if (
+      slotNumber < 1 ||
+      slotNumber > 3
+    ) {
+
+      showToast(
+        "Invalid Annadanam slot.",
+        "error"
+      );
+
+      return;
     }
 
 
     try {
+
+      /* ===================================================
+         FIND SLOT
+         =================================================== */
 
       const {
         data: slot,
         error: slotError
       } =
         await supabaseClient
-
           .from(
             "annadanam_slots"
           )
-
           .select("id")
-
           .eq(
             "slot_number",
             slotNumber
           )
-
           .maybeSingle();
 
 
       if (slotError) {
-
         throw slotError;
-
       }
 
 
@@ -3626,65 +3651,68 @@ window.saveAnnadanamSponsorship =
         throw new Error(
           "Annadanam slot is not available."
         );
-
       }
 
 
-      let error;
+      /* ===================================================
+         INSERT DONOR
+         =================================================== */
 
-      if (currentAnnadanamDonor?.id) {
-        if (!isAdmin) {
-          showToast("Only the festival administrator can update Annadanam entries.", "error");
-          return;
-        }
-
-        ({ error } = await supabaseClient
-          .from("annadanam_donors")
-          .update({
-            flat_number: flat,
-            family_name: donor,
-            notes: notes || null
-          })
-          .eq("id", currentAnnadanamDonor.id));
-      } else {
-        ({ error } = await supabaseClient
-          .from("annadanam_donors")
+      const {
+        error
+      } =
+        await supabaseClient
+          .from(
+            "annadanam_donors"
+          )
           .insert({
-            slot_id: slot.id,
-            flat_number: flat,
-            family_name: donor,
-            notes: notes || null
-          }));
+
+            slot_id:
+              slot.id,
+
+            flat_number:
+              flat,
+
+            family_name:
+              donor,
+
+            notes:
+              notes || null
+
+          });
+
+
+      if (error) {
+        throw error;
       }
 
-      if (error) throw error;
 
       closeAnnadanamModal();
+
       await loadAnnadanamDonors();
 
+
       showToast(
-        currentAnnadanamDonor?.id
-          ? "Annadanam entry updated successfully."
-          : "Annadanam support registered successfully."
+        "Annadanam donor added successfully."
       );
 
-      currentAnnadanamDonor = null;
-
     }
+
     catch (error) {
 
-      console.error(error);
+      console.error(
+        "Annadanam error:",
+        error
+      );
 
       showToast(
         error.message ||
-        "Unable to register Annadanam support.",
+        "Unable to add Annadanam donor.",
         "error"
       );
-
     }
 
   };
-
 
 window.closeAnnadanamModal =
   function () {
