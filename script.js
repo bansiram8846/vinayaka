@@ -39,7 +39,7 @@ const festivalConfig = {
 // ==========================================
 // 2. HERO SLIDESHOW DATA (Including New Images)
 // ==========================================
-const heroSlides = [
+const DEFAULT_HERO_SLIDES = [
   {
     image: "/images/eco_clay_ganesha.jpg",
     tag: "Sacred Idol Donated by Praveen (Flat 201)",
@@ -69,6 +69,31 @@ const heroSlides = [
     ctaLink: "#schedule"
   }
 ];
+
+let heroSlides = loadHeroSlides();
+
+function loadHeroSlides() {
+  try {
+    const saved = localStorage.getItem("vinayaka_2026_hero_slides");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn("Could not load hero slides from localStorage", e);
+  }
+  return [...DEFAULT_HERO_SLIDES];
+}
+
+function saveHeroSlidesToStorage() {
+  try {
+    localStorage.setItem("vinayaka_2026_hero_slides", JSON.stringify(heroSlides));
+  } catch (e) {
+    console.warn("Could not save hero slides to localStorage", e);
+  }
+}
 
 // ==========================================
 // 3. FESTIVAL SCHEDULE DATA
@@ -367,12 +392,15 @@ function loadGalleryData() {
   try {
     const saved = localStorage.getItem("vinayaka_2026_gallery_moments");
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.warn("Could not load gallery from localStorage", e);
   }
-  return DEFAULT_GALLERY_DATA;
+  return [...DEFAULT_GALLERY_DATA];
 }
 
 function saveGalleryDataToStorage() {
@@ -909,13 +937,30 @@ window.clearAnnadanamSponsorship = function() {
 };
 
 /* --- Celebration Gallery Render & Lightbox --- */
+let activeLightboxIndex = null;
+
 function renderGallery() {
   const grid = document.getElementById("galleryGrid");
   if (!grid) return;
 
   grid.innerHTML = "";
 
-  galleryData.forEach(item => {
+  if (galleryData.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: var(--color-surface-low); border: 2px dashed var(--color-border); border-radius: 16px;">
+        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-text-sub); margin-bottom: 0.5rem;">photo_library</span>
+        <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--color-text-main); margin-bottom: 0.5rem;">No photos in gallery</h4>
+        <p style="font-size: 0.85rem; color: var(--color-text-sub); margin-bottom: 1rem;">All photos have been removed. You can upload new photos or restore the original collection.</p>
+        <button onclick="resetGalleryToDefault()" class="btn-primary-action" style="margin: 0 auto;">
+          <span class="material-symbols-outlined" style="font-size: 18px;">refresh</span>
+          <span>Restore Default Photos</span>
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  galleryData.forEach((item, index) => {
     const card = document.createElement("div");
     card.className = "gallery-card";
     card.setAttribute("role", "button");
@@ -923,6 +968,11 @@ function renderGallery() {
     card.setAttribute("aria-label", `View photo: ${item.title}`);
 
     card.innerHTML = `
+      <div class="gallery-card-actions">
+        <button type="button" class="btn-gallery-delete" onclick="deleteGalleryPhoto(event, ${index})" title="Remove this photo" aria-label="Remove photo">
+          <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+        </button>
+      </div>
       <img src="${item.image}" alt="${item.alt || item.title}" loading="lazy" />
       <div class="gallery-overlay">
         <span class="gallery-tag">${item.tag}</span>
@@ -930,11 +980,11 @@ function renderGallery() {
       </div>
     `;
 
-    card.addEventListener("click", () => openLightbox(item.image, item.title));
+    card.addEventListener("click", () => openLightbox(item.image, item.title, index));
     card.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openLightbox(item.image, item.title);
+        openLightbox(item.image, item.title, index);
       }
     });
 
@@ -942,7 +992,7 @@ function renderGallery() {
   });
 }
 
-function openLightbox(src, title) {
+function openLightbox(src, title, index = null) {
   const modal = document.getElementById("galleryModal");
   const modalImg = document.getElementById("modalImg");
   const modalTitle = document.getElementById("modalTitle");
@@ -951,6 +1001,7 @@ function openLightbox(src, title) {
 
   modalImg.src = src;
   if (modalTitle) modalTitle.textContent = title;
+  activeLightboxIndex = index;
   modal.classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -960,6 +1011,56 @@ window.closeLightbox = function() {
   if (!modal) return;
   modal.classList.remove("open");
   document.body.style.overflow = "";
+  activeLightboxIndex = null;
+};
+
+window.deleteGalleryPhoto = function(e, index) {
+  if (e && e.stopPropagation) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+  if (index < 0 || index >= galleryData.length) return;
+
+  const item = galleryData[index];
+  const confirmMsg = `Remove "${item.title}" from celebration gallery?`;
+  if (!confirm(confirmMsg)) return;
+
+  galleryData.splice(index, 1);
+  saveGalleryDataToStorage();
+  renderGallery();
+  showToast(`Photo "${item.title}" removed from gallery`, "info");
+};
+
+window.deleteCurrentLightboxPhoto = function() {
+  let targetIndex = activeLightboxIndex;
+  if (targetIndex === null || targetIndex < 0 || targetIndex >= galleryData.length) {
+    const modalImg = document.getElementById("modalImg");
+    if (modalImg) {
+      targetIndex = galleryData.findIndex(item => item.image === modalImg.src);
+    }
+  }
+
+  if (targetIndex !== -1 && targetIndex !== null && galleryData[targetIndex]) {
+    const item = galleryData[targetIndex];
+    if (confirm(`Remove "${item.title}" from celebration gallery?`)) {
+      galleryData.splice(targetIndex, 1);
+      saveGalleryDataToStorage();
+      renderGallery();
+      window.closeLightbox();
+      showToast(`Photo "${item.title}" removed from gallery`, "info");
+    }
+  } else {
+    window.closeLightbox();
+  }
+};
+
+window.resetGalleryToDefault = function() {
+  if (confirm("Reset celebration gallery to original default photos?")) {
+    galleryData = [...DEFAULT_GALLERY_DATA];
+    saveGalleryDataToStorage();
+    renderGallery();
+    showToast("Gallery reset to original festival photos!", "success");
+  }
 };
 
 /* --- Add / Upload Festival Photo --- */
@@ -1004,7 +1105,6 @@ window.handlePhotoUpload = function(e) {
   let imageUrl = uploadedPhotoDataUrl || (urlInput.value ? urlInput.value.trim() : null);
 
   if (!imageUrl && fileInput.files && fileInput.files[0]) {
-    // Wait for read
     const reader = new FileReader();
     reader.onload = function(evt) {
       const dataUrl = evt.target.result;
@@ -1037,6 +1137,168 @@ function addPhotoToGallery(imageUrl, title, tag) {
   showToast("Photo added to Celebration Gallery!", "success");
 }
 
+/* --- Hero Carousel Photo Upload & Management --- */
+let uploadedCarouselPhotoDataUrl = null;
+
+window.openCarouselModal = function() {
+  const modal = document.getElementById("carouselModal");
+  if (!modal) return;
+  uploadedCarouselPhotoDataUrl = null;
+  const form = document.getElementById("carouselSlideForm");
+  if (form) form.reset();
+  window.switchCarouselTab("add");
+  renderCarouselSlidesList();
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+};
+
+window.closeCarouselModal = function() {
+  const modal = document.getElementById("carouselModal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+};
+
+window.switchCarouselTab = function(tab) {
+  const tabAdd = document.getElementById("tabBtnAddSlide");
+  const tabList = document.getElementById("tabBtnListSlides");
+  const contentAdd = document.getElementById("tabAddSlideContent");
+  const contentList = document.getElementById("tabListSlidesContent");
+
+  if (!tabAdd || !tabList || !contentAdd || !contentList) return;
+
+  if (tab === "add") {
+    tabAdd.classList.add("active");
+    tabList.classList.remove("active");
+    contentAdd.style.display = "block";
+    contentList.style.display = "none";
+  } else {
+    tabAdd.classList.remove("active");
+    tabList.classList.add("active");
+    contentAdd.style.display = "none";
+    contentList.style.display = "block";
+    renderCarouselSlidesList();
+  }
+};
+
+window.previewCarouselPhoto = function(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      uploadedCarouselPhotoDataUrl = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+
+window.handleCarouselSlideUpload = function(e) {
+  e.preventDefault();
+  const fileInput = document.getElementById("carouselFileInput");
+  const urlInput = document.getElementById("carouselUrlInput");
+  const titleInput = document.getElementById("carouselTitleInput");
+  const tagInput = document.getElementById("carouselTagInput");
+  const ctaTextInput = document.getElementById("carouselCtaTextInput");
+  const ctaLinkInput = document.getElementById("carouselCtaLinkInput");
+
+  const title = titleInput.value.trim();
+  const tag = tagInput.value.trim() || "Vinayaka Mahotsav 2026";
+  const ctaText = ctaTextInput.value.trim() || "Explore Schedule";
+  const ctaLink = ctaLinkInput.value.trim() || "#schedule";
+
+  let imageUrl = uploadedCarouselPhotoDataUrl || (urlInput.value ? urlInput.value.trim() : null);
+
+  if (!imageUrl && fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const dataUrl = evt.target.result;
+      addSlideToCarousel(dataUrl, title, tag, ctaText, ctaLink);
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+    return;
+  }
+
+  if (!imageUrl) {
+    showToast("Please choose an image file or provide an image URL.", "info");
+    return;
+  }
+
+  addSlideToCarousel(imageUrl, title, tag, ctaText, ctaLink);
+};
+
+function addSlideToCarousel(imageUrl, title, tag, ctaText, ctaLink) {
+  const newSlide = {
+    image: imageUrl,
+    title: title,
+    tag: tag,
+    ctaText: ctaText,
+    ctaLink: ctaLink
+  };
+
+  heroSlides.unshift(newSlide);
+  saveHeroSlidesToStorage();
+  initSlideshow();
+  showSlide(0);
+  closeCarouselModal();
+  showToast(`Added new slide "${title}" to hero carousel!`, "success");
+}
+
+function renderCarouselSlidesList() {
+  const listContainer = document.getElementById("carouselSlidesList");
+  const countBadge = document.getElementById("carouselSlideCount");
+  if (countBadge) countBadge.textContent = heroSlides.length;
+  if (!listContainer) return;
+
+  if (heroSlides.length === 0) {
+    listContainer.innerHTML = `<p style="text-align:center; color:var(--color-text-sub); padding:1.5rem 0;">No slides in carousel. Add one using the tab above!</p>`;
+    return;
+  }
+
+  listContainer.innerHTML = "";
+  heroSlides.forEach((slide, index) => {
+    const item = document.createElement("div");
+    item.className = "carousel-slide-item";
+    item.innerHTML = `
+      <img src="${slide.image}" class="carousel-slide-thumb" alt="${slide.title}" />
+      <div class="carousel-slide-info">
+        <div class="carousel-slide-title" title="${slide.title}">${slide.title}</div>
+        <div class="carousel-slide-tag">${slide.tag || "Slide " + (index + 1)}</div>
+      </div>
+      <button type="button" class="btn-remove-slide" onclick="removeCarouselSlide(${index})" title="Remove slide from carousel">
+        <span class="material-symbols-outlined" style="font-size:15px;">delete</span>
+        <span>Remove</span>
+      </button>
+    `;
+    listContainer.appendChild(item);
+  });
+}
+
+window.removeCarouselSlide = function(index) {
+  if (index < 0 || index >= heroSlides.length) return;
+  const removed = heroSlides[index];
+
+  if (heroSlides.length === 1) {
+    if (!confirm("Removing the only slide will leave the hero section blank. Proceed?")) return;
+  } else {
+    if (!confirm(`Remove "${removed.title}" from hero carousel?`)) return;
+  }
+
+  heroSlides.splice(index, 1);
+  saveHeroSlidesToStorage();
+  initSlideshow();
+  renderCarouselSlidesList();
+  showToast(`Slide "${removed.title}" removed from carousel.`, "info");
+};
+
+window.resetCarouselSlidesToDefault = function() {
+  if (confirm("Reset carousel to the original 4 default slides?")) {
+    heroSlides = [...DEFAULT_HERO_SLIDES];
+    saveHeroSlidesToStorage();
+    initSlideshow();
+    renderCarouselSlidesList();
+    showToast("Hero carousel reset to default slides!", "success");
+  }
+};
+
 // Global modal close handlers
 document.addEventListener("click", (e) => {
   const galleryModal = document.getElementById("galleryModal");
@@ -1050,6 +1312,9 @@ document.addEventListener("click", (e) => {
 
   const photoModal = document.getElementById("photoUploadModal");
   if (e.target === photoModal) window.closePhotoUploadModal();
+
+  const carouselModal = document.getElementById("carouselModal");
+  if (e.target === carouselModal) window.closeCarouselModal();
 });
 
 document.addEventListener("keydown", (e) => {
@@ -1058,6 +1323,7 @@ document.addEventListener("keydown", (e) => {
     window.closeSlotModal();
     window.closeAnnadanamModal();
     window.closePhotoUploadModal();
+    window.closeCarouselModal();
   }
 });
 
