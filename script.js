@@ -1133,53 +1133,34 @@ function initSlideshow() {
 
   startSlideshowTimer();
 
+  const slideshow = document.querySelector(".slideshow");
+  if (slideshow) {
+    slideshow.onmouseenter = () => clearInterval(slideshowTimer);
+    slideshow.onmouseleave = () => startSlideshowTimer();
+    slideshow.ontouchstart = () => clearInterval(slideshowTimer);
+    slideshow.ontouchend = () => { clearInterval(slideshowTimer); startSlideshowTimer(); };
+  }
 }
 
 
-function showSlide(index) {
+function showSlide(index, direction = "next") {
+  const slides = document.querySelectorAll(".slide");
+  const dots = document.querySelectorAll(".dot");
+  if (!slides.length) return;
 
-  const slides =
-    document.querySelectorAll(
-      ".slide"
-    );
+  const previousIndex = currentSlideIndex;
+  currentSlideIndex = (index + slides.length) % slides.length;
 
-  const dots =
-    document.querySelectorAll(
-      ".dot"
-    );
-
-  if (!slides.length) {
-
-    return;
-
-  }
-
-  currentSlideIndex =
-    (index + slides.length) %
-    slides.length;
-
-  slides.forEach(
-    (slide, i) => {
-
-      slide.classList.toggle(
-        "active",
-        i === currentSlideIndex
-      );
-
+  slides.forEach((slide, i) => {
+    slide.classList.remove("active", "slide-enter-next", "slide-enter-prev", "slide-leave-next", "slide-leave-prev");
+    if (i === currentSlideIndex) {
+      slide.classList.add("active", direction === "prev" ? "slide-enter-prev" : "slide-enter-next");
+    } else if (i === previousIndex) {
+      slide.classList.add(direction === "prev" ? "slide-leave-next" : "slide-leave-prev");
     }
-  );
+  });
 
-  dots.forEach(
-    (dot, i) => {
-
-      dot.classList.toggle(
-        "active",
-        i === currentSlideIndex
-      );
-
-    }
-  );
-
+  dots.forEach((dot, i) => dot.classList.toggle("active", i === currentSlideIndex));
 }
 
 
