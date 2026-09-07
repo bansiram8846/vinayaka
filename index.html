@@ -24,6 +24,17 @@
 
 <div id="toastContainer" class="toast-container"></div>
 
+<div class="festival-fx-controls" aria-label="Festival effects">
+  <button id="templeBellBtn" class="festival-fx-btn bell-fx-btn" type="button" aria-label="Ring temple bell" title="Ring temple bell">
+    <span class="material-symbols-outlined">notifications_active</span>
+    <span class="fx-tooltip">Ring Bell</span>
+  </button>
+  <button id="flowerBtn" class="festival-fx-btn flower-fx-btn" type="button" aria-label="Scatter flowers" title="Scatter flowers">
+    <span class="material-symbols-outlined">local_florist</span>
+    <span class="fx-tooltip">Scatter Flowers</span>
+  </button>
+</div>
+
 <!-- ================= HEADER ================= -->
 
 <header class="site-header" id="top">
@@ -145,24 +156,13 @@
 
           <div>
             <small>Venue</small>
-            <strong>Clubhouse Central Mandapam</strong>
+            <strong>Ground Floor</strong>
           </div>
         </div>
 
       </div>
 
-      <div class="hero-actions">
 
-        <a href="#schedule" class="btn btn-primary">
-          View Festival Schedule
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </a>
-
-        <a href="#puja-annadanam" class="btn btn-light">
-          Explore Seva Slots
-        </a>
-
-      </div>
 
     </div>
 
@@ -237,7 +237,7 @@
 
 <!-- ================= INTRO ================= -->
 
-<section class="intro-section section">
+<section id="festival-intro" class="intro-section section">
 
   <div class="section-heading centered">
 
@@ -417,7 +417,7 @@
     <button
       class="honour-card honour-card-idol"
       type="button"
-      onclick="document.getElementById('gallery')?.scrollIntoView({behavior:'smooth'})"
+      onclick="document.getElementById('festival-intro')?.scrollIntoView({behavior:'smooth'})"
       aria-label="View Idol Donor details">
 
       <span class="honour-card-shine" aria-hidden="true"></span>
