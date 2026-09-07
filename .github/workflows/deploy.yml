@@ -28,6 +28,8 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -38,3 +40,12 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Output Live Website URL
+        run: |
+          echo "========================================="
+          echo "🎉 Website deployed successfully!"
+          echo "🌐 Live URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "========================================="
+          echo "### 🌐 Live Website URL" >> $GITHUB_STEP_SUMMARY
+          echo "Your website is live at: [${{ steps.deployment.outputs.page_url }}](${{ steps.deployment.outputs.page_url }})" >> $GITHUB_STEP_SUMMARY
