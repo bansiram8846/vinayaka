@@ -2,2187 +2,310 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
-
-  <meta
-    name="description"
-    content="Vinayaka Festival 2026 - Gowtham Sai Elite Towers Residents Welfare Association"
-  >
-
-  <meta name="theme-color" content="#8f1d14">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8f2d16">
+  <meta name="description" content="Vinayaka Festival 2026 — Gowtham Sai Elite Towers">
   <title>Vinayaka Festival 2026 | Gowtham Sai Elite Towers</title>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
-
-  <!-- Material Symbols -->
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200"
-  >
-
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,0" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <!-- =========================================================
-       TOP ANNOUNCEMENT BAR
-  ========================================================== -->
+  <div id="toastContainer" class="toast-container"></div>
 
-  <div class="announcement-bar">
-    <div class="container announcement-inner">
-
-      <div class="announcement-left">
-        <span class="material-symbols-outlined">celebration</span>
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <a class="brand" href="#home" aria-label="Vinayaka Festival home">
+        <span class="brand-mark">ॐ</span>
         <span>
-          <strong>Vinayaka Festival 2026</strong>
-          • 14th September – 19th September
+          <strong>Vinayaka Festival</strong>
+          <small>Gowtham Sai Elite Towers</small>
         </span>
-      </div>
-
-      <div class="announcement-right">
-        <span class="announcement-dot"></span>
-        <span>Community Celebration</span>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- =========================================================
-       HEADER / NAVIGATION
-  ========================================================== -->
-
-  <header class="site-header" id="siteHeader">
-
-    <div class="container header-inner">
-
-      <a href="#home" class="brand">
-
-        <div class="brand-icon">
-          <span class="material-symbols-outlined">temple_hindu</span>
-        </div>
-
-        <div class="brand-text">
-          <span class="brand-title">Vinayaka Mahotsav</span>
-          <span class="brand-subtitle">Gowtham Sai Elite Towers</span>
-        </div>
-
       </a>
-
 
       <nav class="desktop-nav" aria-label="Main navigation">
-
-        <a href="#home" class="nav-link active">
-          <span class="material-symbols-outlined">home</span>
-          Home
-        </a>
-
-        <a href="#contributions" class="nav-link">
-          <span class="material-symbols-outlined">payments</span>
-          Contributions
-        </a>
-
-        <a href="#schedule" class="nav-link">
-          <span class="material-symbols-outlined">calendar_month</span>
-          Schedule
-        </a>
-
-        <a href="#puja-annadanam" class="nav-link">
-          <span class="material-symbols-outlined">volunteer_activism</span>
-          Seva
-        </a>
-
-        <a href="#gallery" class="nav-link">
-          <span class="material-symbols-outlined">photo_library</span>
-          Gallery
-        </a>
-
+        <a class="nav-link active" href="#home">Home</a>
+        <a class="nav-link" href="#schedule">Schedule</a>
+        <a class="nav-link" href="#puja-annadanam">Seva & Annadanam</a>
+        <a class="nav-link" href="#gallery">Gallery</a>
       </nav>
 
-
-      <div class="header-actions">
-
-        <button
-          type="button"
-          class="header-action-btn"
-          onclick="scrollToSection('puja-annadanam')"
-        >
-          <span class="material-symbols-outlined">event_available</span>
-          <span class="desktop-only">Book Seva</span>
-        </button>
-
-        <button
-          type="button"
-          class="mobile-menu-btn"
-          id="mobileMenuBtn"
-          aria-label="Open navigation menu"
-        >
-          <span id="menuIcon" class="material-symbols-outlined">menu</span>
-        </button>
-
-      </div>
-
+      <button id="mobileMenuBtn" class="icon-btn mobile-menu-btn" type="button" aria-label="Open menu">
+        <span id="menuIcon" class="material-symbols-outlined">menu</span>
+      </button>
     </div>
 
+    <div id="mobileDrawer" class="mobile-drawer">
+      <a href="#home">Home</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#puja-annadanam">Seva & Annadanam</a>
+      <a href="#gallery">Gallery</a>
+    </div>
   </header>
 
-
-  <!-- =========================================================
-       MOBILE DRAWER
-  ========================================================== -->
-
-  <aside class="mobile-drawer" id="mobileDrawer">
-
-    <div class="mobile-drawer-header">
-
-      <div class="mobile-brand">
-        <div class="brand-icon">
-          <span class="material-symbols-outlined">temple_hindu</span>
-        </div>
-
-        <div>
-          <strong>Vinayaka Mahotsav</strong>
-          <small>Gowtham Sai Elite Towers</small>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        class="drawer-close"
-        onclick="toggleMobileMenu()"
-        aria-label="Close menu"
-      >
-        <span class="material-symbols-outlined">close</span>
-      </button>
-
-    </div>
-
-
-    <nav class="mobile-nav">
-
-      <a href="#home">
-        <span class="material-symbols-outlined">home</span>
-        Home
-      </a>
-
-      <a href="#contributions">
-        <span class="material-symbols-outlined">payments</span>
-        Contributions
-      </a>
-
-      <a href="#schedule">
-        <span class="material-symbols-outlined">calendar_month</span>
-        Festival Schedule
-      </a>
-
-      <a href="#puja-annadanam">
-        <span class="material-symbols-outlined">volunteer_activism</span>
-        Puja & Seva
-      </a>
-
-      <a href="#gallery">
-        <span class="material-symbols-outlined">photo_library</span>
-        Celebration Gallery
-      </a>
-
-    </nav>
-
-
-    <div class="mobile-drawer-footer">
-      <div class="mobile-drawer-note">
-        <span class="material-symbols-outlined">groups</span>
-        <div>
-          <strong>One Community</strong>
-          <span>One Celebration</span>
-        </div>
-      </div>
-    </div>
-
-  </aside>
-
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-
-
-  <!-- =========================================================
-       HERO
-  ========================================================== -->
-
   <main>
-
-    <section class="hero-section" id="home">
-
-      <div class="hero-glow hero-glow-one"></div>
-      <div class="hero-glow hero-glow-two"></div>
-
-
-      <div class="container hero-layout">
-
-        <!-- Hero Content -->
-
-        <div class="hero-content">
-
-          <div class="eyebrow">
-
-            <span class="eyebrow-line"></span>
-
-            <span>ॐ श्री गणेशाय नमः</span>
-
-            <span class="eyebrow-line"></span>
-
-          </div>
-
-
-          <h1>
-            Vinayaka
-            <span>Festival 2026</span>
-          </h1>
-
-
-          <p class="hero-description">
-            Six auspicious days of devotion, community,
-            culture, seva and celebration at
-            <strong>Gowtham Sai Elite Towers</strong>.
+    <section id="home" class="hero-section">
+      <div class="hero-shell">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="live-dot"></span> Six auspicious days • 14–19 September 2026</span>
+          <h1>Vakratunda <span>Mahotsavam</span></h1>
+          <p class="hero-lead">
+            A joyful celebration of devotion, community, culture and togetherness
+            at Gowtham Sai Elite Towers.
           </p>
 
-
-          <div class="hero-meta">
-
-            <div class="hero-meta-item">
-
-              <span class="hero-meta-icon">
-                <span class="material-symbols-outlined">
-                  calendar_month
-                </span>
-              </span>
-
-              <div>
-                <small>Festival Dates</small>
-                <strong>14 – 19 September 2026</strong>
-              </div>
-
+          <div class="hero-info-row">
+            <div class="hero-info">
+              <span class="material-symbols-outlined">calendar_month</span>
+              <div><small>Festival</small><strong>14–19 Sept 2026</strong></div>
             </div>
-
-
-            <div class="hero-meta-item">
-
-              <span class="hero-meta-icon">
-                <span class="material-symbols-outlined">
-                  location_on
-                </span>
-              </span>
-
-              <div>
-                <small>Venue</small>
-                <strong>Clubhouse Central Mandapam</strong>
-              </div>
-
+            <div class="hero-info">
+              <span class="material-symbols-outlined">location_on</span>
+              <div><small>Venue</small><strong>Clubhouse Central Mandapam</strong></div>
             </div>
-
           </div>
 
-
-          <div class="hero-buttons">
-
-            <a
-              href="#schedule"
-              class="btn btn-primary"
-            >
-              <span class="material-symbols-outlined">
-                calendar_month
-              </span>
-
-              View Festival Schedule
-            </a>
-
-
-            <a
-              href="#puja-annadanam"
-              class="btn btn-outline"
-            >
-              <span class="material-symbols-outlined">
-                volunteer_activism
-              </span>
-
-              Participate in Seva
-            </a>
-
+          <div class="hero-actions">
+            <a href="#schedule" class="btn btn-primary"><span>View Festival Schedule</span><span class="material-symbols-outlined">arrow_forward</span></a>
+            <a href="#puja-annadanam" class="btn btn-light">Explore Seva Slots</a>
           </div>
-
-
-          <!-- Countdown -->
-
-          <div class="countdown-card">
-
-            <div class="countdown-heading">
-              <span class="material-symbols-outlined">
-                timer
-              </span>
-
-              <span>Festival Countdown</span>
-            </div>
-
-
-            <div class="countdown-grid">
-
-              <div class="countdown-unit">
-                <strong id="countdownDays">--</strong>
-                <span>Days</span>
-              </div>
-
-              <div class="countdown-separator">:</div>
-
-              <div class="countdown-unit">
-                <strong id="countdownHours">--</strong>
-                <span>Hours</span>
-              </div>
-
-              <div class="countdown-separator">:</div>
-
-              <div class="countdown-unit">
-                <strong id="countdownMinutes">--</strong>
-                <span>Minutes</span>
-              </div>
-
-              <div class="countdown-separator">:</div>
-
-              <div class="countdown-unit">
-                <strong id="countdownSeconds">--</strong>
-                <span>Seconds</span>
-              </div>
-
-            </div>
-
-          </div>
-
         </div>
-
-
-        <!-- Hero Slider -->
 
         <div class="hero-visual">
-
-          <div class="hero-frame">
-
-            <div class="hero-corner hero-corner-tl"></div>
-            <div class="hero-corner hero-corner-tr"></div>
-            <div class="hero-corner hero-corner-bl"></div>
-            <div class="hero-corner hero-corner-br"></div>
-
-
-            <div
-              class="slideshow-track"
-              id="slideshowTrack"
-            ></div>
-
-
-            <button
-              type="button"
-              id="slideshowPrev"
-              class="slider-arrow slider-prev"
-              aria-label="Previous slide"
-            >
-              <span class="material-symbols-outlined">
-                arrow_back
-              </span>
+          <div class="hero-glow"></div>
+          <div class="slideshow" aria-label="Festival highlights">
+            <div id="slideshowTrack" class="slideshow-track"></div>
+            <button id="slideshowPrev" class="slide-control prev" type="button" aria-label="Previous slide">
+              <span class="material-symbols-outlined">chevron_left</span>
             </button>
-
-
-            <button
-              type="button"
-              id="slideshowNext"
-              class="slider-arrow slider-next"
-              aria-label="Next slide"
-            >
-              <span class="material-symbols-outlined">
-                arrow_forward
-              </span>
+            <button id="slideshowNext" class="slide-control next" type="button" aria-label="Next slide">
+              <span class="material-symbols-outlined">chevron_right</span>
             </button>
-
-
-            <div
-              class="slideshow-dots"
-              id="slideshowDots"
-            ></div>
-
+            <div id="slideshowDots" class="slideshow-dots"></div>
           </div>
-
-
-          <div class="hero-floating-card">
-
-            <div class="floating-icon">
-              <span class="material-symbols-outlined">
-                temple_hindu
-              </span>
-            </div>
-
-            <div>
-              <small>Our Sacred Mandapam</small>
-              <strong>Vighnaharta Maha Mandap</strong>
-            </div>
-
-          </div>
-
         </div>
-
       </div>
 
-
-      <div class="hero-bottom-pattern"></div>
-
+      <div class="hero-strip">
+        <div><span class="material-symbols-outlined">temple_hindu</span><strong>Prana Pratishtha</strong><small>14 September</small></div>
+        <div><span class="material-symbols-outlined">local_dining</span><strong>Maha Annadanam</strong><small>19 September</small></div>
+        <div><span class="material-symbols-outlined">music_note</span><strong>Cultural Celebrations</strong><small>18 September</small></div>
+        <div><span class="material-symbols-outlined">celebration</span><strong>Visarjan Shobha Yatra</strong><small>19 September</small></div>
+      </div>
     </section>
 
-
-    <!-- =======================================================
-         FESTIVAL HIGHLIGHTS
-    ======================================================== -->
-
-    <section class="highlights-section">
-
-      <div class="container">
-
-        <div class="section-heading compact-heading">
-
-          <div>
-            <span class="section-kicker">
-              OUR CELEBRATION
-            </span>
-
-            <h2>
-              Six Days of
-              <span>Divine Togetherness</span>
-            </h2>
-          </div>
-
-          <p>
-            A shared celebration created by the residents,
-            families and friends of Gowtham Sai Elite Towers.
-          </p>
-
-        </div>
-
-
-        <div class="highlight-grid">
-
-          <article class="highlight-card">
-
-            <div class="highlight-icon">
-              <span class="material-symbols-outlined">
-                calendar_month
-              </span>
-            </div>
-
-            <div>
-              <strong>6</strong>
-              <span>Auspicious Days</span>
-            </div>
-
-          </article>
-
-
-          <article class="highlight-card">
-
-            <div class="highlight-icon">
-              <span class="material-symbols-outlined">
-                apartment
-              </span>
-            </div>
-
-            <div>
-              <strong>20</strong>
-              <span>Resident Flats</span>
-            </div>
-
-          </article>
-
-
-          <article class="highlight-card">
-
-            <div class="highlight-icon">
-              <span class="material-symbols-outlined">
-                volunteer_activism
-              </span>
-            </div>
-
-            <div>
-              <strong>8</strong>
-              <span>Seva Opportunities</span>
-            </div>
-
-          </article>
-
-
-          <article class="highlight-card">
-
-            <div class="highlight-icon">
-              <span class="material-symbols-outlined">
-                groups
-              </span>
-            </div>
-
-            <div>
-              <strong>1</strong>
-              <span>United Community</span>
-            </div>
-
-          </article>
-
-        </div>
-
+    <section class="intro-section section">
+      <div class="section-heading centered">
+        <span class="section-kicker">॥ श्री गणेशाय नमः ॥</span>
+        <h2>A celebration for our <em>entire community</em></h2>
+        <p>Six days of sacred rituals, evening aarti, children's activities, prasadam and a grand community feast.</p>
       </div>
 
+      <div class="feature-grid">
+        <article class="feature-card featured">
+          <div class="feature-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
+          <div><span class="card-label">Sacred Idol</span><h3>Eco-Friendly 7ft Clay Ganesha</h3><p>Our festival idol is a beautiful eco-conscious clay murti donated by Praveen & Family, Flat 201.</p></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon"><span class="material-symbols-outlined">self_improvement</span></div>
+          <div><span class="card-label">Every Evening</span><h3>Maha Aarti & Gotra Archana</h3><p>Residents can join the community aarti and participate in registered family sankalpam.</p></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon"><span class="material-symbols-outlined">restaurant</span></div>
+          <div><span class="card-label">Grand Finale</span><h3>Maha Annadanam</h3><p>A traditional Satvik community feast hosted by Mohan Rao & Family, Flat 101, on 19 September.</p></div>
+        </article>
+      </div>
     </section>
 
-
-    <!-- =======================================================
-         SACRED HIGHLIGHTS
-    ======================================================== -->
-
-    <section class="sacred-section">
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <span class="section-kicker">
-            SPECIAL HONOURS
-          </span>
-
-          <h2>
-            This Year's
-            <span>Sacred Contributions</span>
-          </h2>
-
-          <p>
-            Heartfelt contributions from our residents
-            making the festival special for everyone.
-          </p>
-
-        </div>
-
-
-        <div class="sacred-grid">
-
-          <article class="sacred-card sacred-card-featured">
-
-            <div class="sacred-card-image">
-              <img
-                src="/images/eco_clay_ganesha.jpg"
-                alt="Eco-friendly 7ft clay Ganesha"
-              >
-
-              <div class="image-badge">
-                <span class="material-symbols-outlined">
-                  verified
-                </span>
-                Sacred Donation
-              </div>
-            </div>
-
-
-            <div class="sacred-card-content">
-
-              <span class="card-kicker">
-                IDOL DONATION
-              </span>
-
-              <h3>
-                Eco-Friendly 7ft
-                Clay Ganesha Murti
-              </h3>
-
-              <p>
-                Our sacred festival idol has been lovingly
-                donated by Praveen & Family from Flat 201.
-              </p>
-
-
-              <div class="person-detail">
-
-                <div class="person-avatar">P</div>
-
-                <div>
-                  <strong>Praveen & Family</strong>
-                  <span>Flat 201</span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </article>
-
-
-          <article class="sacred-card">
-
-            <div class="sacred-card-image">
-              <img
-                src="/images/maha_annadanam_feast.jpg"
-                alt="Grand Maha Annadanam feast"
-              >
-
-              <div class="image-badge">
-                <span class="material-symbols-outlined">
-                  restaurant
-                </span>
-                Confirmed Host
-              </div>
-            </div>
-
-
-            <div class="sacred-card-content">
-
-              <span class="card-kicker">
-                MAHA ANNADANAM
-              </span>
-
-              <h3>
-                Grand Community Feast
-              </h3>
-
-              <p>
-                A traditional Satvik community feast hosted
-                for residents, staff, security and devotees.
-              </p>
-
-
-              <div class="person-detail">
-
-                <div class="person-avatar">M</div>
-
-                <div>
-                  <strong>Mohan Rao & Family</strong>
-                  <span>Flat 101 • 19 Sept</span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </article>
-
-        </div>
-
+    <section id="schedule" class="section section-tinted">
+      <div class="section-heading">
+        <span class="section-kicker">Festival calendar</span>
+        <h2>Six days of <em>divine celebration</em></h2>
+        <p>Plan your family participation with the complete festival programme.</p>
       </div>
 
-    </section>
-
-
-    <!-- =======================================================
-         CONTRIBUTIONS
-    ======================================================== -->
-
-    <section
-      class="section contributions-section"
-      id="contributions"
-    >
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <span class="section-kicker">
-            COMMUNITY CONTRIBUTIONS
-          </span>
-
-          <h2>
-            Every Contribution
-            <span>Builds the Celebration</span>
-          </h2>
-
-          <p>
-            Track the festival contribution status of all
-            resident flats in one simple place.
-          </p>
-
-        </div>
-
-
-        <div class="contribution-dashboard">
-
-          <div class="contribution-summary">
-
-            <div class="summary-main">
-
-              <div class="summary-icon">
-                <span class="material-symbols-outlined">
-                  account_balance_wallet
-                </span>
-              </div>
-
-              <div>
-                <span>Total Festival Collection</span>
-                <strong id="totalContributionAmount">
-                  ₹0
-                </strong>
-              </div>
-
-            </div>
-
-
-            <div class="summary-stats">
-
-              <div>
-                <span>Collected</span>
-                <strong id="collectedFlatCount">0</strong>
-              </div>
-
-              <div>
-                <span>Pending</span>
-                <strong id="pendingFlatCount">0</strong>
-              </div>
-
-              <div>
-                <span>Total Flats</span>
-                <strong>20</strong>
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="contribution-progress">
-
-            <div class="progress-header">
-
-              <strong>Collection Progress</strong>
-
-              <span id="contributionPercentage">
-                0%
-              </span>
-
-            </div>
-
-            <div class="progress-track">
-              <div
-                class="progress-fill"
-                id="contributionProgress"
-                style="width:0%"
-              ></div>
-            </div>
-
-          </div>
-
-
-          <div class="table-wrapper">
-
-            <table class="modern-table contribution-table">
-
-              <thead>
-
-                <tr>
-                  <th>Flat</th>
-                  <th>Resident / Family</th>
-                  <th>Contribution</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-
-              </thead>
-
-              <tbody id="contributionTableBody">
-                <!-- Generated by JS -->
-              </tbody>
-
-            </table>
-
-          </div>
-
-
-          <div class="contribution-note">
-
-            <span class="material-symbols-outlined">
-              info
-            </span>
-
-            <span>
-              Contribution information is stored locally in
-              this browser. No online payment processing is
-              connected to this portal.
-            </span>
-
-          </div>
-
-        </div>
-
+      <div class="schedule-filters" role="tablist" aria-label="Schedule filters">
+        <button class="schedule-filter-btn active" data-filter="all" onclick="filterSchedule('all')">All Events</button>
+        <button class="schedule-filter-btn" data-filter="puja" onclick="filterSchedule('puja')">Puja & Aarti</button>
+        <button class="schedule-filter-btn" data-filter="cultural" onclick="filterSchedule('cultural')">Cultural</button>
+        <button class="schedule-filter-btn" data-filter="special" onclick="filterSchedule('special')">Special</button>
       </div>
 
+      <div id="scheduleCardsContainer" class="schedule-grid"></div>
     </section>
 
-
-    <!-- =======================================================
-         SCHEDULE
-    ======================================================== -->
-
-    <section
-      class="section schedule-section"
-      id="schedule"
-    >
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <span class="section-kicker">
-            FESTIVAL PROGRAMME
-          </span>
-
-          <h2>
-            Six Days of
-            <span>Divine Celebration</span>
-          </h2>
-
-          <p>
-            Plan your participation and join the community
-            for every important ritual and celebration.
-          </p>
-
-        </div>
-
-
-        <div class="schedule-filter-bar">
-
-          <button
-            type="button"
-            class="schedule-filter-btn active"
-            data-filter="all"
-            onclick="filterSchedule('all')"
-          >
-            All Events
-          </button>
-
-          <button
-            type="button"
-            class="schedule-filter-btn"
-            data-filter="puja"
-            onclick="filterSchedule('puja')"
-          >
-            Puja
-          </button>
-
-          <button
-            type="button"
-            class="schedule-filter-btn"
-            data-filter="cultural"
-            onclick="filterSchedule('cultural')"
-          >
-            Cultural
-          </button>
-
-          <button
-            type="button"
-            class="schedule-filter-btn"
-            data-filter="special"
-            onclick="filterSchedule('special')"
-          >
-            Special Events
-          </button>
-
-        </div>
-
-
-        <div
-          class="schedule-grid"
-          id="scheduleCardsContainer"
-        ></div>
-
+    <section id="puja-annadanam" class="section">
+      <div class="section-heading">
+        <span class="section-kicker">Participate & serve</span>
+        <h2>Seva slots & <em>Annadanam</em></h2>
+        <p>Choose an available puja seva or volunteer to sponsor an Annadanam item.</p>
       </div>
 
-    </section>
-
-
-    <!-- =======================================================
-         PUJA + ANNADANAM
-    ======================================================== -->
-
-    <section
-      class="section seva-section"
-      id="puja-annadanam"
-    >
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <span class="section-kicker">
-            SEVA PARTICIPATION
-          </span>
-
-          <h2>
-            Participate in
-            <span>Seva & Sankalpam</span>
-          </h2>
-
-          <p>
-            Reserve a Puja Yajaman slot or sponsor an Annadanam
-            requirement for the community.
-          </p>
-
+      <div class="honour-grid">
+        <div class="honour-card">
+          <span class="honour-icon">🙏</span>
+          <div><small>Day 01 Puja Yajaman</small><strong>Praveen & Family · Flat 201</strong><p>Prana Pratishtha & Sthapana Puja</p></div>
         </div>
-
-
-        <!-- PUJA -->
-
-        <div class="management-card">
-
-          <div class="management-header">
-
-            <div>
-
-              <div class="management-title-row">
-
-                <div class="management-icon">
-                  <span class="material-symbols-outlined">
-                    temple_hindu
-                  </span>
-                </div>
-
-                <div>
-
-                  <span class="section-kicker">
-                    PUJA YAJAMAN
-                  </span>
-
-                  <h3>
-                    Puja Sankalpam Slots
-                  </h3>
-
-                </div>
-
-              </div>
-
-              <p>
-                Residents can register their family for
-                the available Puja Yajaman slots.
-              </p>
-
-            </div>
-
-
-            <button
-              type="button"
-              class="btn btn-primary btn-small"
-              onclick="openSlotModal()"
-            >
-              <span class="material-symbols-outlined">
-                add_circle
-              </span>
-
-              Book Slot
-            </button>
-
-          </div>
-
-
-          <div class="table-wrapper">
-
-            <table class="modern-table seva-table">
-
-              <thead>
-
-                <tr>
-                  <th>Slot</th>
-                  <th>Flat</th>
-                  <th>Family</th>
-                  <th>Seva</th>
-                  <th>Action</th>
-                </tr>
-
-              </thead>
-
-              <tbody id="yajamanTableBody">
-                <!-- Generated by JS -->
-              </tbody>
-
-            </table>
-
-          </div>
-
+        <div class="honour-card">
+          <span class="honour-icon">🍚</span>
+          <div><small>Maha Annadanam Host</small><strong>Mohan Rao & Family · Flat 101</strong><p>Saturday, 19 September 2026</p></div>
         </div>
-
-
-        <!-- ANNADANAM -->
-
-        <div class="management-card annadanam-card">
-
-          <div class="management-header">
-
-            <div>
-
-              <div class="management-title-row">
-
-                <div class="management-icon annadanam-icon">
-                  <span class="material-symbols-outlined">
-                    restaurant
-                  </span>
-                </div>
-
-                <div>
-
-                  <span class="section-kicker">
-                    MAHA ANNADANAM
-                  </span>
-
-                  <h3>
-                    Annadanam Sponsorship
-                  </h3>
-
-                </div>
-
-              </div>
-
-              <p>
-                Sponsor food ingredients and dining requirements
-                for the Grand Community Feast.
-              </p>
-
-            </div>
-
-
-            <button
-              type="button"
-              class="btn btn-secondary btn-small"
-              onclick="openAnnadanamModal()"
-            >
-              <span class="material-symbols-outlined">
-                volunteer_activism
-              </span>
-
-              Sponsor Seva
-            </button>
-
-          </div>
-
-
-          <div class="table-wrapper">
-
-            <table class="modern-table seva-table">
-
-              <thead>
-
-                <tr>
-                  <th>Donor</th>
-                  <th>Flat</th>
-                  <th>Requirement</th>
-                  <th>Status</th>
-                </tr>
-
-              </thead>
-
-              <tbody id="annadanamTableBody">
-                <!-- Generated by JS -->
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
       </div>
 
-    </section>
-
-
-    <!-- =======================================================
-         GALLERY
-    ======================================================== -->
-
-    <section
-      class="section gallery-section"
-      id="gallery"
-    >
-
-      <div class="container">
-
-        <div class="gallery-heading">
-
-          <div class="section-heading">
-
-            <span class="section-kicker">
-              CELEBRATION MEMORIES
-            </span>
-
-            <h2>
-              Moments of
-              <span>Devotion & Joy</span>
-            </h2>
-
-            <p>
-              Capture and preserve the beautiful moments
-              of our community celebration.
-            </p>
-
-          </div>
-
-
-          <div class="gallery-actions">
-
-            <button
-              type="button"
-              class="btn btn-outline-dark"
-              onclick="openPhotoUploadModal()"
-            >
-              <span class="material-symbols-outlined">
-                add_photo_alternate
-              </span>
-
-              Add Photo
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-primary"
-              onclick="openCarouselModal()"
-            >
-              <span class="material-symbols-outlined">
-                view_carousel
-              </span>
-
-              Manage Hero
-            </button>
-
-          </div>
-
+      <div class="content-panel">
+        <div class="panel-heading">
+          <div><span class="panel-icon"><span class="material-symbols-outlined">volunteer_activism</span></span><div><h3>Puja Yajaman Seva Slots</h3><p>Book a family sankalpam slot for the festival.</p></div></div>
+          <span class="count-pill"><span id="availableSlotCount">0</span> slots available</span>
         </div>
 
-
-        <div
-          class="gallery-grid"
-          id="galleryGrid"
-        ></div>
-
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Slot</th><th>Flat</th><th>Family</th><th>Seva</th><th>Action</th></tr></thead>
+            <tbody id="yajamanTableBody"></tbody>
+          </table>
+        </div>
       </div>
 
-    </section>
-
-
-    <!-- =======================================================
-         COMMUNITY MESSAGE
-    ======================================================== -->
-
-    <section class="community-banner">
-
-      <div class="container">
-
-        <div class="community-banner-inner">
-
-          <div class="community-om">
-            ॐ
-          </div>
-
-          <div>
-
-            <span class="section-kicker">
-              FROM THE RESIDENTS WELFARE ASSOCIATION
-            </span>
-
-            <h2>
-              Ganapati Bappa Morya!
-            </h2>
-
-            <p>
-              May Lord Ganesha bless every family with
-              happiness, health, prosperity and togetherness.
-            </p>
-
-          </div>
-
-          <div class="community-decoration">
-            <span>श्री</span>
-            <span>गणेशाय</span>
-            <span>नमः</span>
-          </div>
-
+      <div class="content-panel annadanam-panel">
+        <div class="panel-heading">
+          <div class="panel-heading-text"><span class="panel-icon"><span class="material-symbols-outlined">restaurant</span></span><div><h3>Annadanam Sponsorship</h3><p>Support the community feast with a food or dining requirement.</p></div></div>
+          <span class="saffron-pill">Seva opportunity</span>
         </div>
 
-      </div>
+        <div class="annadanam-banner">
+          <div><span class="material-symbols-outlined">volunteer_activism</span><div><strong>Every contribution to Annadanam is a service.</strong><small>Open sponsorship slots can be selected below.</small></div></div>
+        </div>
 
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Sponsor</th><th>Flat</th><th>Requirement</th><th>Status / Action</th></tr></thead>
+            <tbody id="annadanamTableBody"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
+    <section id="gallery" class="section section-dark">
+      <div class="section-heading light">
+        <span class="section-kicker">Festival moments</span>
+        <h2>Celebration <em>gallery</em></h2>
+        <p>Capture and preserve the beautiful moments of our community celebration.</p>
+      </div>
+
+      <div class="gallery-toolbar">
+        <button class="btn btn-light" type="button" onclick="openPhotoUploadModal()"><span class="material-symbols-outlined">add_photo_alternate</span>Add Festival Photo</button>
+        <button class="btn btn-outline-light" type="button" onclick="openCarouselModal()"><span class="material-symbols-outlined">view_carousel</span>Manage Hero Slides</button>
+      </div>
+
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
   </main>
 
-
-  <!-- =========================================================
-       FOOTER
-  ========================================================== -->
-
   <footer class="site-footer">
-
-    <div class="container">
-
-      <div class="footer-main">
-
-        <div class="footer-brand">
-
-          <div class="brand-icon">
-            <span class="material-symbols-outlined">
-              temple_hindu
-            </span>
-          </div>
-
-          <div>
-
-            <strong>Vinayaka Festival 2026</strong>
-
-            <span>
-              Gowtham Sai Elite Towers
-            </span>
-
-            <small>
-              Residents Welfare Association
-            </small>
-
-          </div>
-
-        </div>
-
-
-        <div class="footer-links">
-
-          <a href="#home">Home</a>
-          <a href="#contributions">Contributions</a>
-          <a href="#schedule">Schedule</a>
-          <a href="#puja-annadanam">Seva</a>
-          <a href="#gallery">Gallery</a>
-
-        </div>
-
-
-        <div class="footer-location">
-
-          <span class="material-symbols-outlined">
-            location_on
-          </span>
-
-          <span>
-            Clubhouse Central Mandapam
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="footer-bottom">
-
-        <span>
-          © 2026 Gowtham Sai Elite Towers Residents Welfare Association
-        </span>
-
-        <span>
-          ॐ श्री गणेशाय नमः
-        </span>
-
-      </div>
-
+    <div class="footer-inner">
+      <div><strong>॥ श्री गणेशाय नमः ॥</strong><p>Vinayaka Festival 2026 · Gowtham Sai Elite Towers</p></div>
+      <a href="#top" class="back-top">Back to top <span class="material-symbols-outlined">north</span></a>
     </div>
-
   </footer>
 
-
-  <!-- =========================================================
-       MOBILE BOTTOM NAV
-  ========================================================== -->
-
-  <nav class="mobile-bottom-nav">
-
-    <a href="#home" class="mobile-bottom-link active">
-      <span class="material-symbols-outlined">home</span>
-      <span>Home</span>
-    </a>
-
-    <a href="#contributions" class="mobile-bottom-link">
-      <span class="material-symbols-outlined">payments</span>
-      <span>Funds</span>
-    </a>
-
-    <a href="#schedule" class="mobile-bottom-link">
-      <span class="material-symbols-outlined">calendar_month</span>
-      <span>Schedule</span>
-    </a>
-
-    <a href="#puja-annadanam" class="mobile-bottom-link">
-      <span class="material-symbols-outlined">volunteer_activism</span>
-      <span>Seva</span>
-    </a>
-
-    <a href="#gallery" class="mobile-bottom-link">
-      <span class="material-symbols-outlined">photo_library</span>
-      <span>Gallery</span>
-    </a>
-
-  </nav>
-
-
-  <!-- =========================================================
-       PUJA SLOT MODAL
-  ========================================================== -->
-
-  <div
-    class="modal"
-    id="slotModal"
-    aria-hidden="true"
-  >
-
-    <div class="modal-dialog">
-
-      <div class="modal-header">
-
-        <div>
-
-          <span class="modal-kicker">
-            PUJA YAJAMAN
-          </span>
-
-          <h3>
-            Book Puja Sankalpam
-          </h3>
-
-        </div>
-
-        <button
-          type="button"
-          class="modal-close"
-          onclick="closeSlotModal()"
-        >
-          <span class="material-symbols-outlined">
-            close
-          </span>
-        </button>
-
-      </div>
-
-
-      <form
-        id="slotForm"
-        onsubmit="saveSlotDetails(event)"
-      >
-
-        <input
-          type="hidden"
-          id="slotIndexInput"
-          value=""
-        >
-
-
-        <div class="form-group">
-
-          <label for="slotSelect">
-            Puja Slot
-          </label>
-
-          <select
-            id="slotSelect"
-            onchange="onSlotSelectionChange(this.value)"
-            required
-          ></select>
-
-        </div>
-
-
+  <!-- Puja Slot Modal -->
+  <div id="slotModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="slotModalTitle">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeSlotModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      <div class="modal-heading"><span class="modal-icon">🙏</span><div><h3 id="slotModalTitle">Book Puja Seva</h3><p>Enter the family details for this seva slot.</p></div></div>
+      <form onsubmit="saveSlotDetails(event)">
+        <input type="hidden" id="slotIndexInput">
+        <label>Seva Slot<select id="slotSelect" onchange="onSlotSelectionChange(this.value)" required></select></label>
         <div class="form-grid">
-
-          <div class="form-group">
-
-            <label for="flatNumberInput">
-              Flat Number
-            </label>
-
-            <input
-              type="text"
-              id="flatNumberInput"
-              placeholder="e.g. 302"
-              required
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="familyYajamanInput">
-              Family / Yajaman
-            </label>
-
-            <input
-              type="text"
-              id="familyYajamanInput"
-              placeholder="Family name"
-              required
-            >
-
-          </div>
-
+          <label>Flat Number<input id="flatNumberInput" placeholder="e.g. 203" required></label>
+          <label>Family / Yajaman<input id="familyYajamanInput" placeholder="Family name" required></label>
         </div>
-
-
-        <div class="form-group">
-
-          <label for="sevaPreferenceInput">
-            Seva / Puja
-          </label>
-
-          <input
-            type="text"
-            id="sevaPreferenceInput"
-            placeholder="Puja seva"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="gotramInput">
-            Gotram
-          </label>
-
-          <input
-            type="text"
-            id="gotramInput"
-            placeholder="e.g. Kasyapa Gotram"
-          >
-
-        </div>
-
-
-        <div class="form-note">
-
-          <span class="material-symbols-outlined">
-            info
-          </span>
-
-          <span>
-            Please ensure the flat number and family name
-            are entered correctly.
-          </span>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="btn btn-danger-outline"
-            onclick="clearSlotBooking()"
-          >
-            <span class="material-symbols-outlined">
-              event_busy
-            </span>
-
-            Mark Vacant
-          </button>
-
-          <div class="modal-actions-right">
-
-            <button
-              type="button"
-              class="btn btn-light"
-              onclick="closeSlotModal()"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-primary"
-            >
-              <span class="material-symbols-outlined">
-                check_circle
-              </span>
-
-              Confirm Booking
-            </button>
-
-          </div>
-
-        </div>
-
+        <label>Seva Preference<input id="sevaPreferenceInput" required></label>
+        <label>Gotram <span class="optional">(optional)</span><input id="gotramInput" placeholder="e.g. Kasyapa Gotram"></label>
+        <div class="modal-actions"><button type="button" class="btn btn-danger-outline" onclick="clearSlotBooking()">Mark Vacant</button><button class="btn btn-primary" type="submit">Save Booking</button></div>
       </form>
-
     </div>
-
   </div>
 
-
-  <!-- =========================================================
-       ANNADANAM MODAL
-  ========================================================== -->
-
-  <div
-    class="modal"
-    id="annadanamModal"
-    aria-hidden="true"
-  >
-
-    <div class="modal-dialog">
-
-      <div class="modal-header">
-
-        <div>
-
-          <span class="modal-kicker">
-            MAHA ANNADANAM
-          </span>
-
-          <h3>
-            Sponsor Annadanam
-          </h3>
-
-        </div>
-
-        <button
-          type="button"
-          class="modal-close"
-          onclick="closeAnnadanamModal()"
-        >
-          <span class="material-symbols-outlined">
-            close
-          </span>
-        </button>
-
-      </div>
-
-
-      <form
-        id="annadanamForm"
-        onsubmit="saveAnnadanamSponsorship(event)"
-      >
-
-        <input
-          type="hidden"
-          id="annadanamIndexInput"
-          value=""
-        >
-
-
-        <div class="form-group">
-
-          <label for="annadanamItemSelect">
-            Sponsorship Requirement
-          </label>
-
-          <select
-            id="annadanamItemSelect"
-            onchange="onAnnadanamSelectionChange(this.value)"
-            required
-          ></select>
-
-        </div>
-
-
+  <!-- Annadanam Modal -->
+  <div id="annadanamModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="annadanamModalTitle">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAnnadanamModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      <div class="modal-heading"><span class="modal-icon">🍚</span><div><h3 id="annadanamModalTitle">Sponsor Annadanam</h3><p>Thank you for supporting the community feast.</p></div></div>
+      <form onsubmit="saveAnnadanamSponsorship(event)">
+        <input type="hidden" id="annadanamIndexInput">
+        <label>Requirement<select id="annadanamItemSelect" onchange="onAnnadanamSelectionChange(this.value)" required></select></label>
         <div class="form-grid">
-
-          <div class="form-group">
-
-            <label for="annadanamFlatInput">
-              Flat Number
-            </label>
-
-            <input
-              type="text"
-              id="annadanamFlatInput"
-              placeholder="e.g. 302"
-              required
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="annadanamDonorInput">
-              Donor / Family
-            </label>
-
-            <input
-              type="text"
-              id="annadanamDonorInput"
-              placeholder="Donor name"
-              required
-            >
-
-          </div>
-
+          <label>Flat Number<input id="annadanamFlatInput" placeholder="e.g. 203" required></label>
+          <label>Family / Sponsor<input id="annadanamDonorInput" placeholder="Family name" required></label>
         </div>
-
-
-        <div class="sponsorship-message">
-
-          <span class="material-symbols-outlined">
-            restaurant
-          </span>
-
-          <div>
-
-            <strong>
-              Seva is an offering to the community
-            </strong>
-
-            <p>
-              Your sponsorship will be displayed as part
-              of the Annadanam contribution list.
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="btn btn-danger-outline"
-            onclick="clearAnnadanamSponsorship()"
-          >
-            <span class="material-symbols-outlined">
-              remove_circle
-            </span>
-
-            Mark Open
-          </button>
-
-          <div class="modal-actions-right">
-
-            <button
-              type="button"
-              class="btn btn-light"
-              onclick="closeAnnadanamModal()"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-secondary"
-            >
-              <span class="material-symbols-outlined">
-                volunteer_activism
-              </span>
-
-              Confirm Sponsorship
-            </button>
-
-          </div>
-
-        </div>
-
+        <div class="modal-actions"><button type="button" class="btn btn-danger-outline" onclick="clearAnnadanamSponsorship()">Mark Open</button><button class="btn btn-primary" type="submit">Confirm Sponsorship</button></div>
       </form>
-
     </div>
-
   </div>
 
-
-  <!-- =========================================================
-       GALLERY LIGHTBOX
-  ========================================================== -->
-
-  <div
-    class="modal gallery-modal"
-    id="galleryModal"
-    aria-hidden="true"
-  >
-
-    <div class="lightbox-dialog">
-
-      <button
-        type="button"
-        class="lightbox-close"
-        onclick="closeLightbox()"
-      >
-        <span class="material-symbols-outlined">
-          close
-        </span>
-      </button>
-
-
-      <div class="lightbox-image-wrapper">
-
-        <img
-          id="modalImg"
-          src=""
-          alt=""
-        >
-
-      </div>
-
-
-      <div class="lightbox-footer">
-
-        <div>
-          <span class="modal-kicker">
-            FESTIVAL MEMORY
-          </span>
-
-          <h3 id="modalTitle">
-            Festival Moment
-          </h3>
-        </div>
-
-
-        <button
-          type="button"
-          class="btn btn-danger-outline"
-          onclick="deleteCurrentLightboxPhoto()"
-        >
-          <span class="material-symbols-outlined">
-            delete
-          </span>
-
-          Remove
-        </button>
-
-      </div>
-
+  <!-- Gallery Lightbox -->
+  <div id="galleryModal" class="modal lightbox-modal" role="dialog" aria-modal="true">
+    <div class="lightbox-card">
+      <button class="modal-close" onclick="closeLightbox()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      <img id="modalImg" src="" alt="">
+      <div class="lightbox-caption"><strong id="modalTitle"></strong><button class="btn btn-danger-outline" onclick="deleteCurrentLightboxPhoto()">Remove Photo</button></div>
     </div>
-
   </div>
 
-
-  <!-- =========================================================
-       PHOTO UPLOAD MODAL
-  ========================================================== -->
-
-  <div
-    class="modal"
-    id="photoUploadModal"
-    aria-hidden="true"
-  >
-
-    <div class="modal-dialog">
-
-      <div class="modal-header">
-
-        <div>
-
-          <span class="modal-kicker">
-            CELEBRATION GALLERY
-          </span>
-
-          <h3>
-            Add Festival Photo
-          </h3>
-
-        </div>
-
-        <button
-          type="button"
-          class="modal-close"
-          onclick="closePhotoUploadModal()"
-        >
-          <span class="material-symbols-outlined">
-            close
-          </span>
-        </button>
-
-      </div>
-
-
-      <form
-        id="photoUploadForm"
-        onsubmit="handlePhotoUpload(event)"
-      >
-
-        <div class="upload-dropzone">
-
-          <span class="material-symbols-outlined">
-            cloud_upload
-          </span>
-
-          <strong>
-            Choose a festival photo
-          </strong>
-
-          <small>
-            JPG, PNG or WebP
-          </small>
-
-          <input
-            type="file"
-            id="photoFileInput"
-            accept="image/*"
-            onchange="previewSelectedPhoto(this)"
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="photoUrlInput">
-            Or use image URL
-          </label>
-
-          <input
-            type="url"
-            id="photoUrlInput"
-            placeholder="https://example.com/photo.jpg"
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="photoTitleInput">
-            Photo Title
-          </label>
-
-          <input
-            type="text"
-            id="photoTitleInput"
-            placeholder="Festival celebration moment"
-            required
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="photoTagSelect">
-            Category
-          </label>
-
-          <select id="photoTagSelect">
-
-            <option>Celebration</option>
-            <option>Decorations</option>
-            <option>Aarti</option>
-            <option>Puja</option>
-            <option>Annadanam</option>
-            <option>Cultural</option>
-            <option>Prasadam</option>
-            <option>Visarjan</option>
-
-          </select>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="btn btn-light"
-            onclick="closePhotoUploadModal()"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            class="btn btn-primary"
-          >
-            <span class="material-symbols-outlined">
-              add_photo_alternate
-            </span>
-
-            Add Photo
-          </button>
-
-        </div>
-
+  <!-- Photo Upload Modal -->
+  <div id="photoUploadModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closePhotoUploadModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      <div class="modal-heading"><span class="modal-icon">📷</span><div><h3>Add Festival Photo</h3><p>Upload a local image or provide an image URL.</p></div></div>
+      <form id="photoUploadForm" onsubmit="handlePhotoUpload(event)">
+        <label>Photo file<input id="photoFileInput" type="file" accept="image/*" onchange="previewSelectedPhoto(this)"></label>
+        <div class="or-divider"><span>OR</span></div>
+        <label>Image URL<input id="photoUrlInput" type="url" placeholder="https://..."></label>
+        <label>Photo title<input id="photoTitleInput" placeholder="Festival moment" required></label>
+        <label>Category<select id="photoTagSelect"><option>Festival</option><option>Decorations</option><option>Aarti</option><option>Cultural</option><option>Prasadam</option><option>Annadanam</option><option>Visarjan</option></select></label>
+        <div class="modal-actions"><button class="btn btn-primary" type="submit">Add to Gallery</button></div>
       </form>
-
     </div>
-
   </div>
 
-
-  <!-- =========================================================
-       HERO CAROUSEL MANAGEMENT MODAL
-  ========================================================== -->
-
-  <div
-    class="modal"
-    id="carouselModal"
-    aria-hidden="true"
-  >
-
-    <div class="modal-dialog modal-dialog-large">
-
-      <div class="modal-header">
-
-        <div>
-
-          <span class="modal-kicker">
-            HERO CAROUSEL
-          </span>
-
-          <h3>
-            Manage Festival Slides
-          </h3>
-
-        </div>
-
-        <button
-          type="button"
-          class="modal-close"
-          onclick="closeCarouselModal()"
-        >
-          <span class="material-symbols-outlined">
-            close
-          </span>
-        </button>
-
-      </div>
-
+  <!-- Carousel Manager Modal -->
+  <div id="carouselModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card modal-wide">
+      <button class="modal-close" onclick="closeCarouselModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      <div class="modal-heading"><span class="modal-icon">🎞️</span><div><h3>Hero Carousel Manager</h3><p>Add and remove the images shown in the hero area.</p></div></div>
 
       <div class="modal-tabs">
-
-        <button
-          type="button"
-          id="tabBtnAddSlide"
-          class="modal-tab active"
-          onclick="switchCarouselTab('add')"
-        >
-          <span class="material-symbols-outlined">
-            add_photo_alternate
-          </span>
-
-          Add Slide
-        </button>
-
-
-        <button
-          type="button"
-          id="tabBtnListSlides"
-          class="modal-tab"
-          onclick="switchCarouselTab('list')"
-        >
-          <span class="material-symbols-outlined">
-            view_carousel
-          </span>
-
-          Manage Slides
-
-          <span
-            class="count-badge"
-            id="carouselSlideCount"
-          >
-            0
-          </span>
-
-        </button>
-
+        <button id="tabBtnAddSlide" class="modal-tab active" onclick="switchCarouselTab('add')">Add Slide</button>
+        <button id="tabBtnListSlides" class="modal-tab" onclick="switchCarouselTab('list')">Current Slides <span id="carouselSlideCount">0</span></button>
       </div>
-
-
-      <!-- Add Slide -->
 
       <div id="tabAddSlideContent">
-
-        <form
-          id="carouselSlideForm"
-          onsubmit="handleCarouselSlideUpload(event)"
-        >
-
-          <div class="upload-dropzone">
-
-            <span class="material-symbols-outlined">
-              add_photo_alternate
-            </span>
-
-            <strong>
-              Add Hero Image
-            </strong>
-
-            <small>
-              Select an image from your device
-            </small>
-
-            <input
-              type="file"
-              id="carouselFileInput"
-              accept="image/*"
-              onchange="previewCarouselPhoto(this)"
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="carouselUrlInput">
-              Or Image URL
-            </label>
-
-            <input
-              type="url"
-              id="carouselUrlInput"
-              placeholder="https://example.com/hero.jpg"
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="carouselTitleInput">
-              Slide Title
-            </label>
-
-            <input
-              type="text"
-              id="carouselTitleInput"
-              placeholder="Festival highlight"
-              required
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="carouselTagInput">
-              Caption / Tag
-            </label>
-
-            <input
-              type="text"
-              id="carouselTagInput"
-              placeholder="Every Evening at 07:30 PM"
-            >
-
-          </div>
-
-
+        <form id="carouselSlideForm" onsubmit="handleCarouselSlideUpload(event)">
+          <label>Slide image<input id="carouselFileInput" type="file" accept="image/*" onchange="previewCarouselPhoto(this)"></label>
+          <div class="or-divider"><span>OR</span></div>
+          <label>Image URL<input id="carouselUrlInput" type="url" placeholder="https://..."></label>
+          <label>Title<input id="carouselTitleInput" placeholder="Festival highlight" required></label>
           <div class="form-grid">
-
-            <div class="form-group">
-
-              <label for="carouselCtaTextInput">
-                Button Text
-              </label>
-
-              <input
-                type="text"
-                id="carouselCtaTextInput"
-                placeholder="Explore Schedule"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label for="carouselCtaLinkInput">
-                Button Link
-              </label>
-
-              <input
-                type="text"
-                id="carouselCtaLinkInput"
-                placeholder="#schedule"
-              >
-
-            </div>
-
+            <label>Caption tag<input id="carouselTagInput" placeholder="Every evening at 7:30 PM"></label>
+            <label>CTA text<input id="carouselCtaTextInput" placeholder="View schedule"></label>
           </div>
-
-
-          <div class="modal-actions">
-
-            <button
-              type="button"
-              class="btn btn-light"
-              onclick="closeCarouselModal()"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-primary"
-            >
-              <span class="material-symbols-outlined">
-                add_circle
-              </span>
-
-              Add Slide
-            </button>
-
-          </div>
-
+          <label>CTA link<input id="carouselCtaLinkInput" placeholder="#schedule"></label>
+          <div class="modal-actions"><button class="btn btn-primary" type="submit">Add Slide</button></div>
         </form>
-
       </div>
 
-
-      <!-- Slide List -->
-
-      <div
-        id="tabListSlidesContent"
-        style="display:none;"
-      >
-
-        <div
-          class="carousel-slides-list"
-          id="carouselSlidesList"
-        ></div>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="btn btn-danger-outline"
-            onclick="resetCarouselSlidesToDefault()"
-          >
-            <span class="material-symbols-outlined">
-              restart_alt
-            </span>
-
-            Restore Defaults
-          </button>
-
-          <button
-            type="button"
-            class="btn btn-light"
-            onclick="closeCarouselModal()"
-          >
-            Close
-          </button>
-
-        </div>
-
+      <div id="tabListSlidesContent" style="display:none">
+        <div id="carouselSlidesList" class="carousel-slides-list"></div>
+        <div class="modal-actions"><button class="btn btn-danger-outline" type="button" onclick="resetCarouselSlidesToDefault()">Restore Default Slides</button></div>
       </div>
-
     </div>
-
   </div>
 
-
-  <!-- =========================================================
-       TOAST
-  ========================================================== -->
-
-  <div
-    class="toast-container"
-    id="toastContainer"
-  ></div>
-
-
   <script src="script.js"></script>
-
 </body>
 </html>
