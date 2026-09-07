@@ -3,309 +3,1569 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#8f2d16">
-  <meta name="description" content="Vinayaka Festival 2026 — Gowtham Sai Elite Towers">
+
+  <meta name="theme-color" content="#9b341f">
+  <meta
+    name="description"
+    content="Vinayaka Festival 2026 - Gowtham Sai Elite Towers"
+  >
+
   <title>Vinayaka Festival 2026 | Gowtham Sai Elite Towers</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,0" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,0"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- Supabase JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    defer
+  ></script>
 </head>
+
 <body>
 
+  <!-- =========================
+       TOAST
+  ========================== -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <header class="site-header" id="top">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <header class="site-header">
+
     <div class="header-inner">
-      <a class="brand" href="#home" aria-label="Vinayaka Festival home">
-        <span class="brand-mark">ॐ</span>
-        <span>
+
+      <a href="#home" class="brand">
+
+        <span class="brand-symbol">ॐ</span>
+
+        <span class="brand-text">
           <strong>Vinayaka Festival</strong>
           <small>Gowtham Sai Elite Towers</small>
         </span>
+
       </a>
 
-      <nav class="desktop-nav" aria-label="Main navigation">
-        <a class="nav-link active" href="#home">Home</a>
-        <a class="nav-link" href="#schedule">Schedule</a>
-        <a class="nav-link" href="#puja-annadanam">Seva & Annadanam</a>
-        <a class="nav-link" href="#gallery">Gallery</a>
+      <nav class="desktop-nav">
+
+        <a href="#home" class="nav-link active">Home</a>
+
+        <a href="#schedule" class="nav-link">
+          Schedule
+        </a>
+
+        <a href="#seva" class="nav-link">
+          Seva
+        </a>
+
+        <a href="#annadanam" class="nav-link">
+          Annadanam
+        </a>
+
+        <a href="#gallery" class="nav-link">
+          Gallery
+        </a>
+
+        <button
+          id="adminLoginNav"
+          class="nav-admin-btn"
+          type="button"
+        >
+          Admin
+        </button>
+
       </nav>
 
-      <button id="mobileMenuBtn" class="icon-btn mobile-menu-btn" type="button" aria-label="Open menu">
-        <span id="menuIcon" class="material-symbols-outlined">menu</span>
+      <button
+        id="mobileMenuBtn"
+        class="mobile-menu-btn"
+        type="button"
+        aria-label="Open menu"
+      >
+        <span class="material-symbols-outlined">
+          menu
+        </span>
       </button>
+
     </div>
 
     <div id="mobileDrawer" class="mobile-drawer">
+
       <a href="#home">Home</a>
       <a href="#schedule">Schedule</a>
-      <a href="#puja-annadanam">Seva & Annadanam</a>
+      <a href="#seva">Seva</a>
+      <a href="#annadanam">Annadanam</a>
       <a href="#gallery">Gallery</a>
+
+      <button
+        id="mobileAdminLogin"
+        class="mobile-admin-btn"
+        type="button"
+      >
+        Admin Login
+      </button>
+
     </div>
+
   </header>
 
+
+  <!-- =========================
+       MAIN
+  ========================== -->
   <main>
+
+    <!-- HERO -->
     <section id="home" class="hero-section">
-      <div class="hero-shell">
-        <div class="hero-copy">
-          <span class="eyebrow"><span class="live-dot"></span> Six auspicious days • 14–19 September 2026</span>
-          <h1>Vakratunda <span>Mahotsavam</span></h1>
-          <p class="hero-lead">
-            A joyful celebration of devotion, community, culture and togetherness
-            at Gowtham Sai Elite Towers.
+
+      <div class="hero-background-pattern"></div>
+
+      <div class="hero-container">
+
+        <div class="hero-content">
+
+          <span class="eyebrow">
+            <span class="live-dot"></span>
+            6 Auspicious Days • 14–19 September 2026
+          </span>
+
+          <h1>
+            Vakratunda
+            <span>Mahotsavam</span>
+          </h1>
+
+          <p class="hero-description">
+            A joyful celebration of devotion, culture,
+            community and togetherness at
+            Gowtham Sai Elite Towers.
           </p>
 
-          <div class="hero-info-row">
-            <div class="hero-info">
-              <span class="material-symbols-outlined">calendar_month</span>
-              <div><small>Festival</small><strong>14–19 Sept 2026</strong></div>
+          <div class="hero-details">
+
+            <div class="hero-detail">
+
+              <span class="material-symbols-outlined">
+                calendar_month
+              </span>
+
+              <div>
+                <small>Festival Dates</small>
+                <strong>14 – 19 September 2026</strong>
+              </div>
+
             </div>
-            <div class="hero-info">
-              <span class="material-symbols-outlined">location_on</span>
-              <div><small>Venue</small><strong>Clubhouse Central Mandapam</strong></div>
+
+            <div class="hero-detail">
+
+              <span class="material-symbols-outlined">
+                location_on
+              </span>
+
+              <div>
+                <small>Venue</small>
+                <strong>Clubhouse Central Mandapam</strong>
+              </div>
+
             </div>
+
           </div>
 
           <div class="hero-actions">
-            <a href="#schedule" class="btn btn-primary"><span>View Festival Schedule</span><span class="material-symbols-outlined">arrow_forward</span></a>
-            <a href="#puja-annadanam" class="btn btn-light">Explore Seva Slots</a>
+
+            <a
+              href="#schedule"
+              class="btn btn-primary"
+            >
+              <span>View Schedule</span>
+              <span class="material-symbols-outlined">
+                arrow_forward
+              </span>
+            </a>
+
+            <a
+              href="#seva"
+              class="btn btn-light"
+            >
+              Participate in Seva
+            </a>
+
           </div>
+
         </div>
+
+
+        <!-- HERO VISUAL -->
 
         <div class="hero-visual">
-          <div class="hero-glow"></div>
-          <div class="slideshow" aria-label="Festival highlights">
-            <div id="slideshowTrack" class="slideshow-track"></div>
-            <button id="slideshowPrev" class="slide-control prev" type="button" aria-label="Previous slide">
-              <span class="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button id="slideshowNext" class="slide-control next" type="button" aria-label="Next slide">
-              <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-            <div id="slideshowDots" class="slideshow-dots"></div>
+
+          <div class="hero-card">
+
+            <div class="hero-image-main">
+
+              <img
+                src="images/eco_clay_ganesha.jpg"
+                alt="Ganesha Festival"
+                onerror="this.src='https://images.unsplash.com/photo-1531761535209-180857e963b9?auto=format&fit=crop&w=1000&q=85'"
+              >
+
+              <div class="hero-image-overlay">
+
+                <span>
+                  ॥ श्री गणेशाय नमः ॥
+                </span>
+
+                <h2>
+                  Ganapati Bappa Morya
+                </h2>
+
+              </div>
+
+            </div>
+
+            <div class="hero-mini-cards">
+
+              <div>
+                <span>🙏</span>
+                <strong>Daily Aarti</strong>
+                <small>7:30 PM</small>
+              </div>
+
+              <div>
+                <span>🍚</span>
+                <strong>Annadanam</strong>
+                <small>19 Sept</small>
+              </div>
+
+              <div>
+                <span>🎉</span>
+                <strong>Visarjan</strong>
+                <small>19 Sept</small>
+              </div>
+
+            </div>
+
           </div>
+
         </div>
+
       </div>
 
-      <div class="hero-strip">
-        <div><span class="material-symbols-outlined">temple_hindu</span><strong>Prana Pratishtha</strong><small>14 September</small></div>
-        <div><span class="material-symbols-outlined">local_dining</span><strong>Maha Annadanam</strong><small>19 September</small></div>
-        <div><span class="material-symbols-outlined">music_note</span><strong>Cultural Celebrations</strong><small>18 September</small></div>
-        <div><span class="material-symbols-outlined">celebration</span><strong>Visarjan Shobha Yatra</strong><small>19 September</small></div>
+
+      <div class="festival-strip">
+
+        <div>
+          <span class="material-symbols-outlined">
+            temple_hindu
+          </span>
+          <strong>Prana Pratishtha</strong>
+          <small>14 September</small>
+        </div>
+
+        <div>
+          <span class="material-symbols-outlined">
+            self_improvement
+          </span>
+          <strong>Daily Puja</strong>
+          <small>14–19 September</small>
+        </div>
+
+        <div>
+          <span class="material-symbols-outlined">
+            restaurant
+          </span>
+          <strong>Maha Annadanam</strong>
+          <small>19 September</small>
+        </div>
+
+        <div>
+          <span class="material-symbols-outlined">
+            celebration
+          </span>
+          <strong>Visarjan</strong>
+          <small>19 September</small>
+        </div>
+
       </div>
+
     </section>
 
-    <section class="intro-section section">
+
+    <!-- =========================
+         INTRO
+    ========================== -->
+
+    <section class="section intro-section">
+
       <div class="section-heading centered">
-        <span class="section-kicker">॥ श्री गणेशाय नमः ॥</span>
-        <h2>A celebration for our <em>entire community</em></h2>
-        <p>Six days of sacred rituals, evening aarti, children's activities, prasadam and a grand community feast.</p>
+
+        <span class="section-kicker">
+          ॥ श्री गणेशाय नमः ॥
+        </span>
+
+        <h2>
+          A celebration for our
+          <em>entire community</em>
+        </h2>
+
+        <p>
+          Six days of sacred rituals, evening aarti,
+          children's activities, prasadam and community
+          Annadanam.
+        </p>
+
       </div>
+
 
       <div class="feature-grid">
-        <article class="feature-card featured">
-          <div class="feature-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
-          <div><span class="card-label">Sacred Idol</span><h3>Eco-Friendly 7ft Clay Ganesha</h3><p>Our festival idol is a beautiful eco-conscious clay murti donated by Praveen & Family, Flat 201.</p></div>
-        </article>
+
         <article class="feature-card">
-          <div class="feature-icon"><span class="material-symbols-outlined">self_improvement</span></div>
-          <div><span class="card-label">Every Evening</span><h3>Maha Aarti & Gotra Archana</h3><p>Residents can join the community aarti and participate in registered family sankalpam.</p></div>
+
+          <div class="feature-icon">
+            <span class="material-symbols-outlined">
+              auto_awesome
+            </span>
+          </div>
+
+          <div>
+
+            <span class="card-label">
+              Sacred Idol
+            </span>
+
+            <h3>
+              Eco-Friendly Ganesha
+            </h3>
+
+            <p>
+              A beautiful eco-conscious clay Ganesha
+              for our community celebration.
+            </p>
+
+          </div>
+
         </article>
+
+
         <article class="feature-card">
-          <div class="feature-icon"><span class="material-symbols-outlined">restaurant</span></div>
-          <div><span class="card-label">Grand Finale</span><h3>Maha Annadanam</h3><p>A traditional Satvik community feast hosted by Mohan Rao & Family, Flat 101, on 19 September.</p></div>
+
+          <div class="feature-icon">
+            <span class="material-symbols-outlined">
+              self_improvement
+            </span>
+          </div>
+
+          <div>
+
+            <span class="card-label">
+              Every Evening
+            </span>
+
+            <h3>
+              Maha Aarti
+            </h3>
+
+            <p>
+              Join fellow residents for evening
+              Maha Aarti and devotional activities.
+            </p>
+
+          </div>
+
         </article>
+
+
+        <article class="feature-card">
+
+          <div class="feature-icon">
+            <span class="material-symbols-outlined">
+              restaurant
+            </span>
+          </div>
+
+          <div>
+
+            <span class="card-label">
+              Grand Finale
+            </span>
+
+            <h3>
+              Maha Annadanam
+            </h3>
+
+            <p>
+              A community feast celebrating service,
+              sharing and togetherness.
+            </p>
+
+          </div>
+
+        </article>
+
       </div>
+
     </section>
+
+
+    <!-- =========================
+         CONTRIBUTION SUMMARY
+    ========================== -->
+
+    <section class="section summary-section">
+
+      <div class="section-heading centered">
+
+        <span class="section-kicker">
+          Community participation
+        </span>
+
+        <h2>
+          Together we make the
+          <em>festival special</em>
+        </h2>
+
+        <p>
+          Community-level contribution information only.
+          Individual contribution details are not displayed.
+        </p>
+
+      </div>
+
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+
+          <span class="material-symbols-outlined">
+            apartment
+          </span>
+
+          <strong id="statFlats">
+            —
+          </strong>
+
+          <small>
+            Participating Flats
+          </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span class="material-symbols-outlined">
+            volunteer_activism
+          </span>
+
+          <strong id="statContributors">
+            —
+          </strong>
+
+          <small>
+            Community Contributors
+          </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span class="material-symbols-outlined">
+            celebration
+          </span>
+
+          <strong>
+            6
+          </strong>
+
+          <small>
+            Festival Days
+          </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span class="material-symbols-outlined">
+            groups
+          </span>
+
+          <strong>
+            3
+          </strong>
+
+          <small>
+            Annadanam Slots
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         SCHEDULE
+    ========================== -->
 
     <section id="schedule" class="section section-tinted">
+
       <div class="section-heading">
-        <span class="section-kicker">Festival calendar</span>
-        <h2>Six days of <em>divine celebration</em></h2>
-        <p>Plan your family participation with the complete festival programme.</p>
+
+        <span class="section-kicker">
+          Festival Calendar
+        </span>
+
+        <h2>
+          Six days of
+          <em>divine celebration</em>
+        </h2>
+
+        <p>
+          Plan your family participation around
+          the festival programme.
+        </p>
+
       </div>
 
-      <div class="schedule-filters" role="tablist" aria-label="Schedule filters">
-        <button class="schedule-filter-btn active" data-filter="all" onclick="filterSchedule('all')">All Events</button>
-        <button class="schedule-filter-btn" data-filter="puja" onclick="filterSchedule('puja')">Puja & Aarti</button>
-        <button class="schedule-filter-btn" data-filter="cultural" onclick="filterSchedule('cultural')">Cultural</button>
-        <button class="schedule-filter-btn" data-filter="special" onclick="filterSchedule('special')">Special</button>
+
+      <div class="schedule-filters">
+
+        <button
+          class="schedule-filter active"
+          data-filter="all"
+        >
+          All
+        </button>
+
+        <button
+          class="schedule-filter"
+          data-filter="puja"
+        >
+          Puja
+        </button>
+
+        <button
+          class="schedule-filter"
+          data-filter="cultural"
+        >
+          Cultural
+        </button>
+
+        <button
+          class="schedule-filter"
+          data-filter="special"
+        >
+          Special
+        </button>
+
       </div>
 
-      <div id="scheduleCardsContainer" class="schedule-grid"></div>
+
+      <div
+        id="scheduleContainer"
+        class="schedule-grid"
+      ></div>
+
     </section>
 
-    <section id="puja-annadanam" class="section">
+
+    <!-- =========================
+         PUJA SEVA
+    ========================== -->
+
+    <section id="seva" class="section">
+
       <div class="section-heading">
-        <span class="section-kicker">Participate & serve</span>
-        <h2>Seva slots & <em>Annadanam</em></h2>
-        <p>Choose an available puja seva or volunteer to sponsor an Annadanam item.</p>
+
+        <span class="section-kicker">
+          Participate & Serve
+        </span>
+
+        <h2>
+          Puja Yajaman
+          <em>Seva</em>
+        </h2>
+
+        <p>
+          Up to three families can participate
+          in Puja Seva on a single day.
+        </p>
+
       </div>
 
-      <div class="honour-grid">
-        <div class="honour-card">
-          <span class="honour-icon">🙏</span>
-          <div><small>Day 01 Puja Yajaman</small><strong>Praveen & Family · Flat 201</strong><p>Prana Pratishtha & Sthapana Puja</p></div>
+
+      <div class="info-banner">
+
+        <div class="info-banner-icon">
+          🙏
         </div>
-        <div class="honour-card">
-          <span class="honour-icon">🍚</span>
-          <div><small>Maha Annadanam Host</small><strong>Mohan Rao & Family · Flat 101</strong><p>Saturday, 19 September 2026</p></div>
+
+        <div>
+
+          <strong>
+            Family Sankalpam
+          </strong>
+
+          <p>
+            Select an available Puja Seva slot
+            and register your family.
+          </p>
+
         </div>
+
       </div>
 
-      <div class="content-panel">
-        <div class="panel-heading">
-          <div><span class="panel-icon"><span class="material-symbols-outlined">volunteer_activism</span></span><div><h3>Puja Yajaman Seva Slots</h3><p>Book a family sankalpam slot for the festival.</p></div></div>
-          <span class="count-pill"><span id="availableSlotCount">0</span> slots available</span>
+
+      <div class="availability-summary">
+
+        <div>
+
+          <span>
+            Available Seva Slots
+          </span>
+
+          <strong id="availablePujaCount">
+            —
+          </strong>
+
         </div>
 
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>Slot</th><th>Flat</th><th>Family</th><th>Seva</th><th>Action</th></tr></thead>
-            <tbody id="yajamanTableBody"></tbody>
-          </table>
+        <div>
+
+          <span>
+            Maximum Families / Day
+          </span>
+
+          <strong>
+            3
+          </strong>
+
         </div>
+
       </div>
 
-      <div class="content-panel annadanam-panel">
-        <div class="panel-heading">
-          <div class="panel-heading-text"><span class="panel-icon"><span class="material-symbols-outlined">restaurant</span></span><div><h3>Annadanam Sponsorship</h3><p>Support the community feast with a food or dining requirement.</p></div></div>
-          <span class="saffron-pill">Seva opportunity</span>
-        </div>
 
-        <div class="annadanam-banner">
-          <div><span class="material-symbols-outlined">volunteer_activism</span><div><strong>Every contribution to Annadanam is a service.</strong><small>Open sponsorship slots can be selected below.</small></div></div>
-        </div>
+      <div class="table-container">
 
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>Sponsor</th><th>Flat</th><th>Requirement</th><th>Status / Action</th></tr></thead>
-            <tbody id="annadanamTableBody"></tbody>
-          </table>
-        </div>
+        <table class="data-table">
+
+          <thead>
+
+            <tr>
+              <th>Date</th>
+              <th>Slot</th>
+              <th>Family</th>
+              <th>Seva</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="pujaTableBody">
+
+          </tbody>
+
+        </table>
+
       </div>
+
     </section>
 
-    <section id="gallery" class="section section-dark">
+
+    <!-- =========================
+         ANNADANAM
+    ========================== -->
+
+    <section id="annadanam" class="section section-tinted">
+
+      <div class="section-heading">
+
+        <span class="section-kicker">
+          Seva & Sharing
+        </span>
+
+        <h2>
+          Maha
+          <em>Annadanam</em>
+        </h2>
+
+        <p>
+          There are exactly three Annadanam slots.
+          Multiple families can support each slot.
+        </p>
+
+      </div>
+
+
+      <div class="annadanam-highlight">
+
+        <div class="annadanam-symbol">
+          🍚
+        </div>
+
+        <div>
+
+          <h3>
+            Annadanam is Mahadanam
+          </h3>
+
+          <p>
+            Residents can join together to support
+            any of the three community feast slots.
+          </p>
+
+        </div>
+
+        <div class="annadanam-slot-count">
+
+          <strong>
+            3
+          </strong>
+
+          <span>
+            Slots
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="annadanamContainer"
+        class="annadanam-grid"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================
+         GALLERY
+    ========================== -->
+
+    <section id="gallery" class="section gallery-section">
+
       <div class="section-heading light">
-        <span class="section-kicker">Festival moments</span>
-        <h2>Celebration <em>gallery</em></h2>
-        <p>Capture and preserve the beautiful moments of our community celebration.</p>
+
+        <span class="section-kicker">
+          Festival Moments
+        </span>
+
+        <h2>
+          Celebration
+          <em>Gallery</em>
+        </h2>
+
+        <p>
+          Photos uploaded by the festival admin
+          are visible to everyone.
+        </p>
+
       </div>
 
-      <div class="gallery-toolbar">
-        <button class="btn btn-light" type="button" onclick="openPhotoUploadModal()"><span class="material-symbols-outlined">add_photo_alternate</span>Add Festival Photo</button>
-        <button class="btn btn-outline-light" type="button" onclick="openCarouselModal()"><span class="material-symbols-outlined">view_carousel</span>Manage Hero Slides</button>
+
+      <div class="gallery-status">
+
+        <span
+          id="galleryStatus"
+          class="gallery-live-status"
+        >
+          Loading shared gallery...
+        </span>
+
+        <button
+          id="adminGalleryButton"
+          class="btn btn-light hidden"
+          type="button"
+        >
+          <span class="material-symbols-outlined">
+            add_photo_alternate
+          </span>
+          Upload Photo
+        </button>
+
       </div>
 
-      <div id="galleryGrid" class="gallery-grid"></div>
+
+      <div
+        id="galleryGrid"
+        class="gallery-grid"
+      ></div>
+
     </section>
+
+
+    <!-- =========================
+         ADMIN PANEL
+    ========================== -->
+
+    <section
+      id="adminPanel"
+      class="section admin-section hidden"
+    >
+
+      <div class="admin-header">
+
+        <div>
+
+          <span class="section-kicker">
+            Administrator
+          </span>
+
+          <h2>
+            Festival
+            <em>Control Panel</em>
+          </h2>
+
+          <p id="adminWelcome">
+            Admin controls
+          </p>
+
+        </div>
+
+        <button
+          id="adminLogout"
+          class="btn btn-danger"
+          type="button"
+        >
+          <span class="material-symbols-outlined">
+            logout
+          </span>
+          Logout
+        </button>
+
+      </div>
+
+
+      <div class="admin-grid">
+
+        <div class="admin-card">
+
+          <div class="admin-card-icon">
+            📷
+          </div>
+
+          <h3>
+            Gallery Management
+          </h3>
+
+          <p>
+            Upload and remove festival photographs.
+            Uploaded images are stored centrally in
+            Supabase Storage.
+          </p>
+
+          <button
+            id="adminUploadPhoto"
+            class="btn btn-primary"
+            type="button"
+          >
+            Upload Image
+          </button>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-card-icon">
+            🙏
+          </div>
+
+          <h3>
+            Puja Seva Management
+          </h3>
+
+          <p>
+            Update Puja Seva family registrations
+            and manage available slots.
+          </p>
+
+          <button
+            id="adminManagePuja"
+            class="btn btn-secondary"
+            type="button"
+          >
+            Manage Puja Seva
+          </button>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-card-icon">
+            🍚
+          </div>
+
+          <h3>
+            Annadanam Management
+          </h3>
+
+          <p>
+            View and manage multiple families
+            participating in each Annadanam slot.
+          </p>
+
+          <button
+            id="adminManageAnnadanam"
+            class="btn btn-secondary"
+            type="button"
+          >
+            Manage Annadanam
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
   </main>
 
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
   <footer class="site-footer">
+
     <div class="footer-inner">
-      <div><strong>॥ श्री गणेशाय नमः ॥</strong><p>Vinayaka Festival 2026 · Gowtham Sai Elite Towers</p></div>
-      <a href="#top" class="back-top">Back to top <span class="material-symbols-outlined">north</span></a>
+
+      <div>
+
+        <strong>
+          ॥ श्री गणेशाय नमः ॥
+        </strong>
+
+        <p>
+          Vinayaka Festival 2026
+          · Gowtham Sai Elite Towers
+        </p>
+
+      </div>
+
+      <a href="#home">
+        Back to top
+        <span class="material-symbols-outlined">
+          north
+        </span>
+      </a>
+
     </div>
+
   </footer>
 
-  <!-- Puja Slot Modal -->
-  <div id="slotModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="slotModalTitle">
+
+  <!-- =========================
+       PUJA BOOKING MODAL
+  ========================== -->
+
+  <div
+    id="pujaModal"
+    class="modal"
+  >
+
     <div class="modal-card">
-      <button class="modal-close" onclick="closeSlotModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      <div class="modal-heading"><span class="modal-icon">🙏</span><div><h3 id="slotModalTitle">Book Puja Seva</h3><p>Enter the family details for this seva slot.</p></div></div>
-      <form onsubmit="saveSlotDetails(event)">
-        <input type="hidden" id="slotIndexInput">
-        <label>Seva Slot<select id="slotSelect" onchange="onSlotSelectionChange(this.value)" required></select></label>
-        <div class="form-grid">
-          <label>Flat Number<input id="flatNumberInput" placeholder="e.g. 203" required></label>
-          <label>Family / Yajaman<input id="familyYajamanInput" placeholder="Family name" required></label>
+
+      <button
+        class="modal-close"
+        data-close-modal="pujaModal"
+      >
+        ×
+      </button>
+
+      <div class="modal-heading">
+
+        <div class="modal-icon">
+          🙏
         </div>
-        <label>Seva Preference<input id="sevaPreferenceInput" required></label>
-        <label>Gotram <span class="optional">(optional)</span><input id="gotramInput" placeholder="e.g. Kasyapa Gotram"></label>
-        <div class="modal-actions"><button type="button" class="btn btn-danger-outline" onclick="clearSlotBooking()">Mark Vacant</button><button class="btn btn-primary" type="submit">Save Booking</button></div>
+
+        <div>
+
+          <h3>
+            Register for Puja Seva
+          </h3>
+
+          <p>
+            Enter your family details.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <form id="pujaForm">
+
+        <input
+          type="hidden"
+          id="pujaSlotId"
+        >
+
+        <div class="form-grid">
+
+          <label>
+
+            Flat Number
+
+            <input
+              id="pujaFlatNumber"
+              type="text"
+              placeholder="Example: 203"
+              required
+            >
+
+          </label>
+
+
+          <label>
+
+            Family Name
+
+            <input
+              id="pujaFamilyName"
+              type="text"
+              placeholder="Family name"
+              required
+            >
+
+          </label>
+
+        </div>
+
+
+        <label>
+
+          Contact Number
+
+          <input
+            id="pujaContact"
+            type="tel"
+            placeholder="Optional"
+          >
+
+        </label>
+
+
+        <label>
+
+          Notes
+
+          <textarea
+            id="pujaNotes"
+            rows="3"
+            placeholder="Optional message"
+          ></textarea>
+
+        </label>
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            data-close-modal="pujaModal"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            Confirm Seva
+          </button>
+
+        </div>
+
       </form>
+
     </div>
+
   </div>
 
-  <!-- Annadanam Modal -->
-  <div id="annadanamModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="annadanamModalTitle">
+
+  <!-- =========================
+       ANNADANAM MODAL
+  ========================== -->
+
+  <div
+    id="annadanamModal"
+    class="modal"
+  >
+
     <div class="modal-card">
-      <button class="modal-close" onclick="closeAnnadanamModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      <div class="modal-heading"><span class="modal-icon">🍚</span><div><h3 id="annadanamModalTitle">Sponsor Annadanam</h3><p>Thank you for supporting the community feast.</p></div></div>
-      <form onsubmit="saveAnnadanamSponsorship(event)">
-        <input type="hidden" id="annadanamIndexInput">
-        <label>Requirement<select id="annadanamItemSelect" onchange="onAnnadanamSelectionChange(this.value)" required></select></label>
-        <div class="form-grid">
-          <label>Flat Number<input id="annadanamFlatInput" placeholder="e.g. 203" required></label>
-          <label>Family / Sponsor<input id="annadanamDonorInput" placeholder="Family name" required></label>
+
+      <button
+        class="modal-close"
+        data-close-modal="annadanamModal"
+      >
+        ×
+      </button>
+
+      <div class="modal-heading">
+
+        <div class="modal-icon">
+          🍚
         </div>
-        <div class="modal-actions"><button type="button" class="btn btn-danger-outline" onclick="clearAnnadanamSponsorship()">Mark Open</button><button class="btn btn-primary" type="submit">Confirm Sponsorship</button></div>
+
+        <div>
+
+          <h3>
+            Join Annadanam
+          </h3>
+
+          <p id="annadanamModalDescription">
+            Support this community feast slot.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <form id="annadanamForm">
+
+        <input
+          type="hidden"
+          id="annadanamSlotId"
+        >
+
+
+        <label>
+
+          Flat Number
+
+          <input
+            id="annadanamFlatNumber"
+            type="text"
+            placeholder="Example: 203"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Family Name
+
+          <input
+            id="annadanamFamilyName"
+            type="text"
+            placeholder="Family name"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Contact Number
+
+          <input
+            id="annadanamContact"
+            type="tel"
+            placeholder="Optional"
+          >
+
+        </label>
+
+
+        <label>
+
+          Notes
+
+          <textarea
+            id="annadanamNotes"
+            rows="3"
+            placeholder="What would you like to support?"
+          ></textarea>
+
+        </label>
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            data-close-modal="annadanamModal"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            Confirm Seva
+          </button>
+
+        </div>
+
       </form>
+
     </div>
+
   </div>
 
-  <!-- Gallery Lightbox -->
-  <div id="galleryModal" class="modal lightbox-modal" role="dialog" aria-modal="true">
+
+  <!-- =========================
+       GALLERY UPLOAD MODAL
+  ========================== -->
+
+  <div
+    id="galleryUploadModal"
+    class="modal"
+  >
+
+    <div class="modal-card">
+
+      <button
+        class="modal-close"
+        data-close-modal="galleryUploadModal"
+      >
+        ×
+      </button>
+
+      <div class="modal-heading">
+
+        <div class="modal-icon">
+          📷
+        </div>
+
+        <div>
+
+          <h3>
+            Upload Festival Photo
+          </h3>
+
+          <p>
+            Only administrators can upload images.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <form id="galleryUploadForm">
+
+        <label>
+
+          Select Image
+
+          <input
+            id="galleryFile"
+            type="file"
+            accept="image/*"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Caption
+
+          <input
+            id="galleryCaption"
+            type="text"
+            placeholder="Example: Evening Maha Aarti"
+            required
+          >
+
+        </label>
+
+
+        <div
+          id="imagePreview"
+          class="image-preview hidden"
+        ></div>
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            data-close-modal="galleryUploadModal"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            Upload Photo
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       ADMIN LOGIN MODAL
+  ========================== -->
+
+  <div
+    id="loginModal"
+    class="modal"
+  >
+
+    <div class="modal-card login-card">
+
+      <button
+        class="modal-close"
+        data-close-modal="loginModal"
+      >
+        ×
+      </button>
+
+      <div class="login-icon">
+        🔐
+      </div>
+
+      <h2>
+        Festival Admin
+      </h2>
+
+      <p>
+        Sign in to access administrator controls.
+      </p>
+
+
+      <form id="loginForm">
+
+        <label>
+
+          Email
+
+          <input
+            id="loginEmail"
+            type="email"
+            autocomplete="username"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Password
+
+          <input
+            id="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+
+        </label>
+
+
+        <button
+          class="btn btn-primary btn-full"
+          type="submit"
+        >
+          <span class="material-symbols-outlined">
+            login
+          </span>
+          Sign In
+        </button>
+
+      </form>
+
+      <p
+        id="loginError"
+        class="form-error hidden"
+      ></p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       GALLERY LIGHTBOX
+  ========================== -->
+
+  <div
+    id="lightboxModal"
+    class="modal lightbox-modal"
+  >
+
     <div class="lightbox-card">
-      <button class="modal-close" onclick="closeLightbox()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      <img id="modalImg" src="" alt="">
-      <div class="lightbox-caption"><strong id="modalTitle"></strong><button class="btn btn-danger-outline" onclick="deleteCurrentLightboxPhoto()">Remove Photo</button></div>
-    </div>
-  </div>
 
-  <!-- Photo Upload Modal -->
-  <div id="photoUploadModal" class="modal" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closePhotoUploadModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      <div class="modal-heading"><span class="modal-icon">📷</span><div><h3>Add Festival Photo</h3><p>Upload a local image or provide an image URL.</p></div></div>
-      <form id="photoUploadForm" onsubmit="handlePhotoUpload(event)">
-        <label>Photo file<input id="photoFileInput" type="file" accept="image/*" onchange="previewSelectedPhoto(this)"></label>
-        <div class="or-divider"><span>OR</span></div>
-        <label>Image URL<input id="photoUrlInput" type="url" placeholder="https://..."></label>
-        <label>Photo title<input id="photoTitleInput" placeholder="Festival moment" required></label>
-        <label>Category<select id="photoTagSelect"><option>Festival</option><option>Decorations</option><option>Aarti</option><option>Cultural</option><option>Prasadam</option><option>Annadanam</option><option>Visarjan</option></select></label>
-        <div class="modal-actions"><button class="btn btn-primary" type="submit">Add to Gallery</button></div>
-      </form>
-    </div>
-  </div>
+      <button
+        class="modal-close"
+        data-close-modal="lightboxModal"
+      >
+        ×
+      </button>
 
-  <!-- Carousel Manager Modal -->
-  <div id="carouselModal" class="modal" role="dialog" aria-modal="true">
-    <div class="modal-card modal-wide">
-      <button class="modal-close" onclick="closeCarouselModal()" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      <div class="modal-heading"><span class="modal-icon">🎞️</span><div><h3>Hero Carousel Manager</h3><p>Add and remove the images shown in the hero area.</p></div></div>
+      <img
+        id="lightboxImage"
+        src=""
+        alt=""
+      >
 
-      <div class="modal-tabs">
-        <button id="tabBtnAddSlide" class="modal-tab active" onclick="switchCarouselTab('add')">Add Slide</button>
-        <button id="tabBtnListSlides" class="modal-tab" onclick="switchCarouselTab('list')">Current Slides <span id="carouselSlideCount">0</span></button>
+      <div class="lightbox-caption">
+
+        <div>
+
+          <strong id="lightboxTitle">
+          </strong>
+
+          <small id="lightboxDate">
+          </small>
+
+        </div>
+
+        <button
+          id="lightboxDelete"
+          class="btn btn-danger hidden"
+          type="button"
+        >
+          Delete
+        </button>
+
       </div>
 
-      <div id="tabAddSlideContent">
-        <form id="carouselSlideForm" onsubmit="handleCarouselSlideUpload(event)">
-          <label>Slide image<input id="carouselFileInput" type="file" accept="image/*" onchange="previewCarouselPhoto(this)"></label>
-          <div class="or-divider"><span>OR</span></div>
-          <label>Image URL<input id="carouselUrlInput" type="url" placeholder="https://..."></label>
-          <label>Title<input id="carouselTitleInput" placeholder="Festival highlight" required></label>
-          <div class="form-grid">
-            <label>Caption tag<input id="carouselTagInput" placeholder="Every evening at 7:30 PM"></label>
-            <label>CTA text<input id="carouselCtaTextInput" placeholder="View schedule"></label>
-          </div>
-          <label>CTA link<input id="carouselCtaLinkInput" placeholder="#schedule"></label>
-          <div class="modal-actions"><button class="btn btn-primary" type="submit">Add Slide</button></div>
-        </form>
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       ADMIN PUJA MODAL
+  ========================== -->
+
+  <div
+    id="adminPujaModal"
+    class="modal"
+  >
+
+    <div class="modal-card modal-large">
+
+      <button
+        class="modal-close"
+        data-close-modal="adminPujaModal"
+      >
+        ×
+      </button>
+
+      <div class="modal-heading">
+
+        <div class="modal-icon">
+          🙏
+        </div>
+
+        <div>
+
+          <h3>
+            Manage Puja Seva
+          </h3>
+
+          <p>
+            Administrator-only controls.
+          </p>
+
+        </div>
+
       </div>
 
-      <div id="tabListSlidesContent" style="display:none">
-        <div id="carouselSlidesList" class="carousel-slides-list"></div>
-        <div class="modal-actions"><button class="btn btn-danger-outline" type="button" onclick="resetCarouselSlidesToDefault()">Restore Default Slides</button></div>
-      </div>
+
+      <div
+        id="adminPujaList"
+        class="admin-list"
+      ></div>
+
     </div>
+
   </div>
+
+
+  <!-- =========================
+       ADMIN ANNADANAM MODAL
+  ========================== -->
+
+  <div
+    id="adminAnnadanamModal"
+    class="modal"
+  >
+
+    <div class="modal-card modal-large">
+
+      <button
+        class="modal-close"
+        data-close-modal="adminAnnadanamModal"
+      >
+        ×
+      </button>
+
+      <div class="modal-heading">
+
+        <div class="modal-icon">
+          🍚
+        </div>
+
+        <div>
+
+          <h3>
+            Manage Annadanam
+          </h3>
+
+          <p>
+            Multiple families can participate in
+            every Annadanam slot.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="adminAnnadanamList"
+        class="admin-list"
+      ></div>
+
+    </div>
+
+  </div>
+
 
   <script src="script.js"></script>
+
 </body>
 </html>
