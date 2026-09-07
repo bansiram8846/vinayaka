@@ -23,10 +23,10 @@
 ============================================================ */
 
 const SUPABASE_URL =
-  "YOUR_SUPABASE_PROJECT_URL";
+  "https://pezibfmuogaorcyyhqaj.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
+  "sb_publishable_70bx8FZ74U7Cm1ykDNF-CQ_92f145Bz";
 
 
 let supabaseClient = null;
