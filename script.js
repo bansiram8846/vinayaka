@@ -4355,18 +4355,33 @@ function setupFestivalRat() {
   rat.id = "festivalRat";
   rat.className = "festival-rat";
   rat.setAttribute("aria-hidden", "true");
-  rat.innerHTML = '<span class="rat-body">🐀</span><span class="rat-sparkle">✦</span>';
+  rat.innerHTML = `
+    <span class="rat-tail"></span>
+    <span class="rat-body-shape">
+      <span class="rat-ear rat-ear-back"></span>
+      <span class="rat-ear rat-ear-front"></span>
+      <span class="rat-head"></span>
+      <span class="rat-eye"></span>
+      <span class="rat-nose"></span>
+      <span class="rat-whiskers"></span>
+      <span class="rat-leg rat-leg-1"></span>
+      <span class="rat-leg rat-leg-2"></span>
+      <span class="rat-leg rat-leg-3"></span>
+      <span class="rat-leg rat-leg-4"></span>
+    </span>`;
   document.body.appendChild(rat);
 
   let pointerX = window.innerWidth * 0.55;
   let pointerY = window.innerHeight * 0.55;
-  let x = Math.max(30, window.innerWidth * 0.08);
-  let y = Math.max(100, window.scrollY + window.innerHeight * 0.18);
+  let x = Math.max(35, window.innerWidth * 0.08);
+  let y = Math.max(120, window.scrollY + window.innerHeight * 0.20);
   let targetX = x;
   let targetY = y;
   let lastTime = performance.now();
   let state = "moving";
-  let stateUntil = lastTime + 2600;
+  let stateUntil = lastTime + 3000;
+  // The CSS rat faces RIGHT by default. Therefore it must be flipped
+  // when travelling left, not when travelling right.
   let facing = 1;
 
   document.addEventListener("pointermove", e => {
@@ -4375,11 +4390,11 @@ function setupFestivalRat() {
   }, { passive: true });
 
   function chooseTarget() {
-    const margin = 40;
-    const top = window.scrollY + Math.max(90, margin);
+    const margin = 55;
+    const top = window.scrollY + Math.max(95, margin);
     const bottom = window.scrollY + window.innerHeight - margin;
     const left = margin;
-    const right = window.innerWidth - margin;
+    const right = Math.max(left + 20, window.innerWidth - margin);
     const side = Math.floor(Math.random() * 4);
     if (side === 0) { targetX = left; targetY = top + Math.random() * Math.max(10, bottom - top); }
     if (side === 1) { targetX = right; targetY = top + Math.random() * Math.max(10, bottom - top); }
@@ -4397,17 +4412,24 @@ function setupFestivalRat() {
       const dx = targetX - x;
       const dy = targetY - y;
       const distance = Math.hypot(dx, dy);
-      if (distance < 10) {
+      if (distance < 12) {
         state = "watching";
-        stateUntil = now + 1300 + Math.random() * 1300;
+        stateUntil = now + 1400 + Math.random() * 1300;
+        rat.classList.remove("rat-walking");
         rat.classList.add("rat-watching");
       } else {
-        const speed = Math.min(210, 90 + distance * 0.16);
+        const speed = Math.min(155, 72 + distance * 0.12);
         x += (dx / distance) * speed * dt;
         y += (dy / distance) * speed * dt;
-        if (Math.abs(dx) > 5) facing = dx >= 0 ? 1 : -1;
+
+        if (Math.abs(dx) > 3) {
+          // CSS rat faces right at scaleX(1). Flip only while moving left.
+          facing = dx >= 0 ? 1 : -1;
+        }
+        rat.classList.add("rat-walking");
       }
     } else if (state === "watching") {
+      // While paused, turn its head/body toward the visitor.
       const dx = pointerX - x;
       if (Math.abs(dx) > 8) facing = dx >= 0 ? 1 : -1;
       if (now >= stateUntil) {
@@ -4417,19 +4439,18 @@ function setupFestivalRat() {
       }
     }
 
-    const bob = state === "moving" ? Math.sin(now / 115) * 2 : 0;
-    rat.style.transform = `translate3d(${x - 27}px, ${y - window.scrollY - 27 + bob}px, 0) scaleX(${facing})`;
+    const bob = state === "moving" ? Math.sin(now / 90) * 1.2 : 0;
+    rat.style.transform = `translate3d(${x - 32}px, ${y - window.scrollY - 25 + bob}px, 0) scaleX(${facing})`;
     requestAnimationFrame(tick);
   }
 
   requestAnimationFrame(tick);
 
   window.addEventListener("resize", () => {
-    x = Math.min(x, window.innerWidth - 35);
-    targetX = Math.min(targetX, window.innerWidth - 35);
+    x = Math.max(30, Math.min(x, window.innerWidth - 35));
+    targetX = Math.max(30, Math.min(targetX, window.innerWidth - 35));
   }, { passive: true });
 }
-
 
 
 
