@@ -75,7 +75,7 @@ const DEFAULT_HERO_SLIDES = [
 
     tag: "Sacred Idol • Flat 201",
 
-    title: "Eco-Friendly 7ft Clay Ganesha Murti",
+    title: "Eco-Friendly 4ft Clay Ganesha Murti",
 
     ctaText: "Explore Puja Slots",
 
