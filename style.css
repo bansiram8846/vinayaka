@@ -3082,54 +3082,7 @@ body.admin-mode .admin-only-control {
   background: transparent !important;
 }
 
-/* =========================================================
-   NATURAL FORWARD-WALKING RAT
-   ========================================================= */
-.festival-rat {
-  position: fixed; left: 0; top: 0; width: 64px; height: 42px;
-  z-index: 2850; pointer-events: none; user-select: none;
-  transform-origin: 50% 55%; will-change: transform; overflow: visible;
-  filter: drop-shadow(0 5px 5px rgba(0,0,0,.24));
-}
-.rat-body-shape {
-  position:absolute; left:14px; top:13px; width:35px; height:21px;
-  border-radius:55% 48% 42% 48%;
-  background:linear-gradient(180deg,#777 0%,#555 58%,#3d3d3d 100%);
-  border:1px solid rgba(20,20,20,.45);
-  box-shadow:inset -4px -3px 0 rgba(0,0,0,.12),inset 5px 3px 0 rgba(255,255,255,.08);
-}
-.rat-head { position:absolute; right:-7px; top:3px; width:20px; height:18px; border-radius:58% 65% 55% 45%; background:linear-gradient(180deg,#777,#444); }
-.rat-ear { position:absolute; width:10px; height:10px; border-radius:50%; background:#8d666a; border:2px solid #4b4b4b; z-index:2; }
-.rat-ear-back { right:6px; top:-1px; } .rat-ear-front { right:-1px; top:1px; }
-.rat-eye { position:absolute; right:4px; top:8px; width:4px; height:4px; border-radius:50%; background:#090909; box-shadow:0 0 0 1px rgba(255,255,255,.65); z-index:4; }
-.rat-nose { position:absolute; right:-11px; top:11px; width:6px; height:5px; border-radius:50%; background:#bd7279; z-index:4; }
-.rat-whiskers { position:absolute; right:-17px; top:14px; width:18px; height:1px; background:rgba(35,35,35,.75); transform:rotate(-8deg); box-shadow:1px 4px 0 rgba(35,35,35,.65),1px -4px 0 rgba(35,35,35,.55); transform-origin:left center; }
-.rat-tail { position:absolute; left:-2px; top:25px; width:31px; height:15px; border-bottom:2px solid #a56f73; border-radius:0 0 80% 70%; transform:rotate(-18deg); transform-origin:right top; z-index:-1; }
-.rat-leg { position:absolute; top:17px; width:4px; height:10px; border-radius:0 0 4px 4px; background:#3c3c3c; transform-origin:top center; }
-.rat-leg-1 { left:5px; } .rat-leg-2 { left:13px; } .rat-leg-3 { right:9px; } .rat-leg-4 { right:2px; }
-.rat-walking .rat-body-shape { animation:ratBodyWalk .22s ease-in-out infinite alternate; }
-.rat-walking .rat-leg-1,.rat-walking .rat-leg-3 { animation:ratLegA .22s ease-in-out infinite alternate; }
-.rat-walking .rat-leg-2,.rat-walking .rat-leg-4 { animation:ratLegB .22s ease-in-out infinite alternate; }
-.rat-walking .rat-tail { animation:ratTailWalk .32s ease-in-out infinite alternate; }
-@keyframes ratBodyWalk { from{transform:translateY(1px)} to{transform:translateY(-1px)} }
-@keyframes ratLegA { from{transform:rotate(18deg)} to{transform:rotate(-18deg)} }
-@keyframes ratLegB { from{transform:rotate(-18deg)} to{transform:rotate(18deg)} }
-@keyframes ratTailWalk { from{transform:rotate(-25deg)} to{transform:rotate(3deg)} }
-.rat-watching .rat-head { animation:ratLook .45s ease-in-out infinite alternate; }
-.rat-watching .rat-eye { box-shadow:0 0 0 1px rgba(255,255,255,.8),0 0 5px rgba(255,255,255,.55); }
-@keyframes ratLook { from{transform:rotate(-3deg)} to{transform:rotate(7deg)} }
-@media(max-width:600px){ .festival-rat{width:52px;height:36px}.rat-body-shape{transform:scale(.82);transform-origin:left top}.rat-tail{transform:scale(.82) rotate(-18deg);transform-origin:right top} }
-@media(prefers-reduced-motion:reduce){ .rat-walking .rat-body-shape,.rat-walking .rat-leg,.rat-walking .rat-tail,.rat-watching .rat-head{animation:none!important} }
-
-/* Prevent every page element, including the animated rat, from creating mobile horizontal scrolling. */
-html,body { width:100%; max-width:100%; overflow-x:clip !important; }
-@supports not (overflow:clip) { html,body { overflow-x:hidden !important; } }
-@media(max-width:768px){
-  *,*::before,*::after { box-sizing:border-box; }
-  html,body,#root { width:100%; max-width:100vw !important; overflow-x:hidden !important; }
-  img,video,iframe,canvas,svg { max-width:100%; }
-  .festival-rat { max-width:none; }
-}
+/* =========================================================\n   FINAL SYNCHRONIZED OVERRIDES — 2026-09-07\n   ========================================================= */\n.slideshow .slide {\n  position: absolute;\n  inset: 0;\n  overflow: hidden;\n}\n.slideshow .slide img {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  display: block;\n}\n.slideshow .slide-overlay,\n.slideshow .slide-caption-tag,\n.slideshow .slide-title,\n.slideshow .btn-primary-action {\n  display: none !important;\n}\n\n/* Bell + flower controls are immediately before Home. */\n.desktop-nav {\n  display: flex !important;\n  align-items: center;\n}\n.header-fx-controls {\n  position: static !important;\n  order: 1 !important;\n  flex: 0 0 auto;\n}\n.desktop-nav > .nav-link {\n  order: 3;\n}\n.desktop-nav > .nav-link:first-of-type {\n  order: 2;\n}\n.desktop-nav > .admin-login-btn {\n  order: 4;\n}\n\n/* Idol donor is informational only; no arrow/navigation affordance. */\n.honour-card-idol .honour-arrow,\n.honour-card-idol::after {\n  display: none !important;\n}\n\n/* Only admins see management controls. */\nbody:not(.admin-mode) .admin-only-control {\n  display: none !important;\n}\n\n@media (max-width: 720px) {\n  .desktop-nav { display: none !important; }\n}\n\n\n/* Final mobile navigation / overflow fixes */\nhtml, body {\n  max-width: 100%;\n  overflow-x: hidden !important;\n}\nbody {\n  width: 100%;\n}\n@media (max-width: 768px) {\n  .header-nav,\n  .main-nav,\n  nav,\n  .nav-links {\n    overflow-x: hidden !important;\n  }\n  .header-nav .nav-links,\n  .main-nav .nav-links {\n    display: grid !important;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 6px;\n    width: 100%;\n  }\n  /* Keep Bell and Flower outside the 3-line menu grid. */\n  .header-fx-controls {\n    display: flex !important;\n    flex: 0 0 auto;\n  }\n  .header-fx-controls + .nav-links {\n    display: grid !important;\n  }\n  .header-nav a, .main-nav a, .nav-links a, .nav-links button {\n    min-width: 0 !important;\n    white-space: normal !important;\n  }\n  .festival-rat {\n    will-change: transform;\n  }\n}\n
 
 /* FINAL MOBILE FIXES */
 html, body { max-width: 100%; overflow-x: hidden !important; }
@@ -3165,4 +3118,18 @@ html, body { max-width: 100%; overflow-x: hidden !important; }
   .festival-rat {
     pointer-events: none !important;
   }
+}
+
+
+/* FINAL ADMIN-ONLY BOOKING RULES */
+body:not(.admin-mode) .admin-only-control,
+body:not(.admin-mode) .btn-slot-book {
+  display: none !important;
+}
+body:not(.admin-mode) .admin-only-note {
+  display: inline-block !important;
+  color: var(--muted, #777);
+  font-size: .72rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
