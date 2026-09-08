@@ -47,7 +47,7 @@ const festivalConfig = {
 
   durationText: "6 Auspicious Days",
 
-  mandapLocation: "Clubhouse Central Mandapam",
+  mandapLocation: "Ground Floor",
 
   idolDonor: {
     name: "Praveen & Family",
@@ -55,7 +55,7 @@ const festivalConfig = {
   },
 
   annadanamHost: {
-    name: "Mohan Rao",
+    name: "Mohan Rao & Family",
     flat: "102",
     date: "2026-09-19"
   }
@@ -129,10 +129,10 @@ const scheduleData = [
 
     time: "10:00 AM – 12:30 PM • Aarti 07:30 PM",
 
-    location: "Central Clubhouse Mandapam",
+    location: "Gound Floor",
 
     description:
-      "Ceremonial 7ft eco-clay idol installation followed by Vedic chanting, Panchamrutha Abhishekam and evening Maha Aarti.",
+      "Ceremonial 4ft eco-clay idol installation followed by Vedic chanting, Panchamrutha Abhishekam and evening Maha Aarti.",
 
     category: "puja special",
 
@@ -148,14 +148,14 @@ const scheduleData = [
 
     badgeType: "saffron",
 
-    title: "Daily Puja & Evening Maha Aarti",
+    title: "Daily Puja & Evening Aarti",
 
     time: "07:30 PM",
 
-    location: "Central Clubhouse Mandapam",
+    location: "Gound Floor",
 
     description:
-      "Daily family sankalpam, Ganapati Puja and community Maha Aarti.",
+      "Daily family sankalpam, Ganapati Puja and community Aarti.",
 
     category: "puja",
 
@@ -171,14 +171,14 @@ const scheduleData = [
 
     badgeType: "saffron",
 
-    title: "Ganapathi Homam & Evening Aarti",
+    title: "Ganapathi Puja & Evening Aarti",
 
     time: "07:30 PM",
 
-    location: "Central Clubhouse Mandapam",
+    location: "Gound Floor",
 
     description:
-      "Sacred Ganapathi Homam followed by family sankalpam and Maha Aarti.",
+      "Sacred Ganapathi puja followed by family sankalpam and Aarti.",
 
     category: "puja",
 
@@ -194,11 +194,11 @@ const scheduleData = [
 
     badgeType: "saffron",
 
-    title: "Gotra Archana & Evening Maha Aarti",
+    title: "Gotra Archana & Evening Aarti",
 
     time: "07:30 PM",
 
-    location: "Central Clubhouse Mandapam",
+    location: "Gound Floor Mandapam",
 
     description:
       "Family Gotra Archana and community Maha Aarti.",
@@ -221,10 +221,10 @@ const scheduleData = [
 
     time: "05:00 PM – 07:30 PM",
 
-    location: "Ground Floor Multi-Purpose Hall",
+    location: "Ground Floor ",
 
     description:
-      "Children's clay Ganesha art, Rangoli, Sloka and Bhajan Sandhya followed by Maha Aarti.",
+      "Children's clay Ganesha art, Rangoli, Sloka and Bhajan Sandhya followed by Aarti.",
 
     category: "cultural puja",
 
@@ -244,7 +244,7 @@ const scheduleData = [
 
     time: "10:00 AM – 12:30 PM",
 
-    location: "Clubhouse Central Mandapam",
+    location: "Gound Floor Mandapam",
 
     description:
       "Maha Purnahuti, Kalasa Udvasana and Rajopachara Puja.",
@@ -267,10 +267,10 @@ const scheduleData = [
 
     time: "12:30 PM – 03:30 PM",
 
-    location: "Central Banquet Lawn & Dining Tent",
+    location: "Gound Floor",
 
     description:
-      "Traditional Satvik community feast by Mohan Rao, Flat 102, for residents, staff, security and devotees.",
+      "Traditional Satvik community feast by Mohan Rao, Flat 102, for residents and devotees.",
 
     category: "special",
 
