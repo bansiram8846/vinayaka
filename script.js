@@ -129,7 +129,7 @@ const scheduleData = [
 
     time: "10:00 AM – 12:30 PM • Aarti 07:30 PM",
 
-    location: "Gound Floor",
+    location: "Ground Floor",
 
     description:
       "Ceremonial 4ft eco-clay idol installation followed by Vedic chanting, Panchamrutha Abhishekam and evening Maha Aarti.",
@@ -152,7 +152,7 @@ const scheduleData = [
 
     time: "07:30 PM",
 
-    location: "Gound Floor",
+    location: "Ground Floor",
 
     description:
       "Daily family sankalpam, Ganapati Puja and community Aarti.",
@@ -175,7 +175,7 @@ const scheduleData = [
 
     time: "07:30 PM",
 
-    location: "Gound Floor",
+    location: "Ground Floor",
 
     description:
       "Sacred Ganapathi puja followed by family sankalpam and Aarti.",
@@ -198,7 +198,7 @@ const scheduleData = [
 
     time: "07:30 PM",
 
-    location: "Gound Floor Mandapam",
+    location: "Ground Floor Mandapam",
 
     description:
       "Family Gotra Archana and community Maha Aarti.",
@@ -244,7 +244,7 @@ const scheduleData = [
 
     time: "10:00 AM – 12:30 PM",
 
-    location: "Gound Floor Mandapam",
+    location: "Ground Floor Mandapam",
 
     description:
       "Maha Purnahuti, Kalasa Udvasana and Rajopachara Puja.",
@@ -267,7 +267,7 @@ const scheduleData = [
 
     time: "12:30 PM – 03:30 PM",
 
-    location: "Gound Floor",
+    location: "Ground Floor",
 
     description:
       "Traditional Satvik community feast by Mohan Rao, Flat 102, for residents and devotees.",
