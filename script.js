@@ -403,6 +403,8 @@ document.addEventListener(
 
     setupModalAccessibility();
 
+    setupLightboxNavigation();
+
     renderSchedule();
 
     setupPujaDateSelect();
@@ -823,6 +825,45 @@ async function uploadImage(
 }
 
 
+async function uploadGalleryMedia(file) {
+
+  if (!file) {
+    throw new Error("Please select a photo or video.");
+  }
+
+  const isVideo = file.type.startsWith("video/");
+
+  if (!file.type.startsWith("image/") && !isVideo) {
+    throw new Error("Only image and video files are allowed.");
+  }
+
+  const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+
+  if (file.size > maxSize) {
+    throw new Error(
+      isVideo
+        ? "Video is larger than 50 MB. Please choose a smaller video."
+        : "Image is larger than 5 MB. Please choose a smaller image."
+    );
+  }
+
+  const storagePath = createStoragePath("gallery", file);
+
+  const { error } = await supabaseClient.storage.from(STORAGE_BUCKET).upload(
+    storagePath,
+    file,
+    { cacheControl: "3600", upsert: false, contentType: file.type }
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  return { storagePath, publicUrl: getPublicStorageUrl(storagePath) };
+
+}
+
+
 /* =========================================================
    CAROUSEL
    ========================================================= */
@@ -1090,7 +1131,7 @@ function initSlideshow() {
 }
 
 
-function showSlide(index) {
+function showSlide(index, direction = "next") {
 
   const slides =
     document.querySelectorAll(
@@ -1108,16 +1149,54 @@ function showSlide(index) {
 
   }
 
+  const previousIndex = currentSlideIndex;
+
   currentSlideIndex =
     (index + slides.length) %
     slides.length;
+
+  const previousSlide = slides[previousIndex];
+  const nextSlideElement = slides[currentSlideIndex];
+
+  if (
+    previousSlide &&
+    previousSlide !== nextSlideElement
+  ) {
+
+    const leavingClass =
+      direction === "prev"
+        ? "is-leaving-prev"
+        : "is-leaving-next";
+
+    const enteringClass =
+      direction === "prev"
+        ? "is-entering-prev"
+        : "is-entering-next";
+
+    previousSlide.classList.add(leavingClass);
+    nextSlideElement.classList.add(enteringClass);
+
+    requestAnimationFrame(() => {
+      nextSlideElement.classList.add("active");
+      nextSlideElement.classList.remove(enteringClass);
+    });
+
+    setTimeout(() => {
+      previousSlide.classList.remove("active", leavingClass);
+    }, 700);
+
+  }
 
   slides.forEach(
     (slide, i) => {
 
       slide.classList.toggle(
         "active",
-        i === currentSlideIndex
+        i === currentSlideIndex &&
+        (
+          previousSlide === nextSlideElement ||
+          slide !== previousSlide
+        )
       );
 
     }
@@ -1140,7 +1219,8 @@ function showSlide(index) {
 function nextSlide() {
 
   showSlide(
-    currentSlideIndex + 1
+    currentSlideIndex + 1,
+    "next"
   );
 
 }
@@ -1149,7 +1229,8 @@ function nextSlide() {
 function prevSlide() {
 
   showSlide(
-    currentSlideIndex - 1
+    currentSlideIndex - 1,
+    "prev"
   );
 
 }
@@ -1157,7 +1238,10 @@ function prevSlide() {
 
 function goToSlide(index) {
 
-  showSlide(index);
+  showSlide(
+    index,
+    index < currentSlideIndex ? "prev" : "next"
+  );
 
   restartSlideshowTimer();
 
@@ -1740,6 +1824,13 @@ async function loadGallery() {
           storagePath:
             row.storage_path,
 
+          mediaType:
+            isGalleryVideo(
+              row.file_name || row.image_url || row.storage_path || ""
+            )
+              ? "video"
+              : "image",
+
           title:
             row.caption ||
             row.file_name ||
@@ -1876,10 +1967,16 @@ function renderGallery() {
               : ""
           }
 
-          <img
-            src="${escapeHtml(item.image)}"
-            alt="${escapeHtml(item.alt)}"
-            loading="lazy">
+          ${
+            item.mediaType === "video"
+              ? `
+                <video src="${escapeHtml(item.image)}" muted playsinline preload="metadata" aria-label="${escapeHtml(item.alt)}"></video>
+                <span class="gallery-video-indicator material-symbols-outlined" aria-hidden="true">play_circle</span>
+              `
+              : `
+                <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.alt)}" loading="lazy">
+              `
+          }
 
           <div class="gallery-overlay">
 
@@ -1980,7 +2077,7 @@ window.handlePhotoUpload =
     if (!file || !title) {
 
       showToast(
-        "Please select an image and enter a title.",
+        "Please select a photo or video and enter a title.",
         "info"
       );
 
@@ -1992,16 +2089,13 @@ window.handlePhotoUpload =
     try {
 
       showToast(
-        "Uploading photo...",
+        "Uploading media...",
         "info"
       );
 
 
       const uploaded =
-        await uploadImage(
-          file,
-          "gallery"
-        );
+        await uploadGalleryMedia(file);
 
 
       const {
@@ -2056,7 +2150,7 @@ window.handlePhotoUpload =
         .value = "";
 
       showToast(
-        "Festival photo uploaded successfully."
+        "Festival media uploaded successfully."
       );
 
     }
@@ -2066,7 +2160,7 @@ window.handlePhotoUpload =
 
       showToast(
         error.message ||
-        "Photo upload failed.",
+        "Media upload failed.",
         "error"
       );
 
@@ -2263,6 +2357,11 @@ window.openLightbox =
         "modalImg"
       );
 
+    const video =
+      document.getElementById(
+        "modalVideo"
+      );
+
     const title =
       document.getElementById(
         "modalTitle"
@@ -2274,12 +2373,26 @@ window.openLightbox =
       );
 
 
-    image.src =
-      item.image;
+    if (item.mediaType === "video") {
 
-    image.alt =
-      item.alt ||
-      item.title;
+      image.removeAttribute("src");
+      image.style.display = "none";
+      video.src = item.image;
+      video.load();
+      video.style.display = "block";
+
+    }
+    else {
+
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+      video.style.display = "none";
+      image.src = item.image;
+      image.alt = item.alt || item.title;
+      image.style.display = "block";
+
+    }
 
     title.textContent =
       item.title;
@@ -2303,6 +2416,8 @@ window.openLightbox =
 window.closeLightbox =
   function () {
 
+    document.getElementById("modalVideo")?.pause();
+
     closeModal(
       document.getElementById(
         "galleryModal"
@@ -2313,6 +2428,82 @@ window.closeLightbox =
       null;
 
   };
+
+
+window.showNextGalleryItem = function () {
+  showLightboxItem(1);
+};
+
+
+window.showPreviousGalleryItem = function () {
+  showLightboxItem(-1);
+};
+
+
+function showLightboxItem(direction) {
+
+  const currentIndex = galleryData.findIndex(
+    item => item.id === currentLightboxItem?.id
+  );
+
+  if (currentIndex < 0 || galleryData.length < 2) {
+    return;
+  }
+
+  openLightbox(
+    (currentIndex + direction + galleryData.length) % galleryData.length
+  );
+
+}
+
+
+function isGalleryVideo(fileName) {
+  return /\.(mp4|webm|mov|m4v)$/i.test(fileName);
+}
+
+
+function setupLightboxNavigation() {
+
+  const modal = document.getElementById("galleryModal");
+
+  if (!modal) {
+    return;
+  }
+
+  document.addEventListener("keydown", event => {
+    if (!modal.classList.contains("open")) {
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showLightboxItem(1);
+    }
+    else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showLightboxItem(-1);
+    }
+  });
+
+  let lastWheelNavigation = 0;
+
+  modal.addEventListener("wheel", event => {
+    if (!modal.classList.contains("open") || !currentLightboxItem) {
+      return;
+    }
+
+    const now = Date.now();
+
+    if (Math.abs(event.deltaY) < 24 || now - lastWheelNavigation < 500) {
+      return;
+    }
+
+    event.preventDefault();
+    lastWheelNavigation = now;
+    showLightboxItem(event.deltaY > 0 ? 1 : -1);
+  }, { passive: false });
+
+}
 
 
 window.deleteCurrentLightboxPhoto =
@@ -4358,4 +4549,3 @@ window.scatterFlowers = function () {
 };
 
 /* Rat removed — festival page intentionally has no wandering rat. */
-

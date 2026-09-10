@@ -1060,6 +1060,31 @@
       src=""
       alt="">
 
+    <video
+      id="modalVideo"
+      controls
+      playsinline
+      style="display:none;">
+    </video>
+
+    <button
+      id="lightboxPrevBtn"
+      class="lightbox-nav lightbox-nav-prev"
+      type="button"
+      onclick="showPreviousGalleryItem()"
+      aria-label="Previous gallery item">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    <button
+      id="lightboxNextBtn"
+      class="lightbox-nav lightbox-nav-next"
+      type="button"
+      onclick="showNextGalleryItem()"
+      aria-label="Next gallery item">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+
 
     <div class="lightbox-caption">
 
@@ -1067,11 +1092,12 @@
 
       <button
         id="deleteLightboxBtn"
-        class="btn btn-danger-outline"
+        class="lightbox-delete"
         onclick="deleteCurrentLightboxPhoto()"
+        aria-label="Remove gallery item"
+        title="Remove gallery item"
         style="display:none;">
-
-        Remove Photo
+        <span class="material-symbols-outlined">delete</span>
 
       </button>
 
@@ -1105,10 +1131,10 @@
 
       <div>
 
-        <h3>Add Festival Photo</h3>
+        <h3>Add Festival Media</h3>
 
         <p>
-          Uploaded photos are visible to all members.
+          Uploaded photos and videos are visible to all members.
         </p>
 
       </div>
@@ -1120,12 +1146,12 @@
 
       <label>
 
-        Photo
+        Photo or video
 
         <input
           id="photoFileInput"
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
+          accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
           required>
 
       </label>
@@ -1133,7 +1159,7 @@
 
       <label>
 
-        Photo title
+        Media title
 
         <input
           id="photoTitleInput"
@@ -1169,7 +1195,7 @@
         </span>
 
         <span>
-          Maximum recommended size: 5 MB per image.
+          Images (up to 5 MB) and videos (up to 50 MB) are supported.
         </span>
 
       </div>
@@ -1181,7 +1207,7 @@
           class="btn btn-primary"
           type="submit">
 
-          Upload Photo
+          Upload Media
 
         </button>
 

@@ -313,6 +313,7 @@ button {
 .hero-copy h1 span {
   color: var(--primary);
   display: block;
+  margin-top: .14em;
 }
 
 .hero-lead {
@@ -1426,6 +1427,22 @@ button {
   transition: transform .5s ease;
 }
 
+.gallery-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-video-indicator {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  left: 14px;
+  color: #fff;
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.55));
+}
+
 .gallery-card:hover img {
   transform: scale(1.06);
 }
@@ -1925,7 +1942,8 @@ button {
   box-shadow: var(--shadow-lg);
 }
 
-.lightbox-card > img {
+.lightbox-card > img,
+.lightbox-card > video {
   max-width: 90vw;
 
   max-height: 78vh;
@@ -1937,6 +1955,57 @@ button {
   object-fit: contain;
 
   margin: auto;
+}
+
+.lightbox-card > video {
+  display: block;
+  background: #000;
+}
+
+.lightbox-nav,
+.lightbox-delete {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.lightbox-nav {
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.58);
+  transform: translateY(-50%);
+}
+
+.lightbox-nav:hover,
+.lightbox-delete:hover {
+  background: rgba(110,20,15,.9);
+}
+
+.lightbox-nav-prev { left: 14px; }
+.lightbox-nav-next { right: 14px; }
+
+.lightbox-delete {
+  position: static;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  background: rgba(110,20,15,.8);
+}
+
+@media (max-width: 600px) {
+  .lightbox-nav {
+    width: 38px;
+    height: 38px;
+  }
+  .lightbox-nav-prev { left: 8px; }
+  .lightbox-nav-next { right: 8px; }
 }
 
 .lightbox-card .modal-close {
